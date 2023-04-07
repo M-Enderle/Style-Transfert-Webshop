@@ -1,5 +1,8 @@
 FROM ubuntu:latest
 
+# Set variable for branch to be used
+ARG BRANCH=main
+
 # Install necessary packages and update system
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
@@ -9,7 +12,9 @@ RUN apt-get update && \
 
 # Clone the repository
 RUN apt-get install -y git && \
-    git clone https://mygit.th-deg.de/me04536/style-transfer-webshop.git
+    git clone https://mygit.th-deg.de/me04536/style-transfer-webshop.git && \
+    cd style-transfer-webshop && \
+    git checkout $BRANCH
 
 # navigate into repository
 WORKDIR style-transfer-webshop
