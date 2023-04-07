@@ -5,10 +5,8 @@ stages:          # List of stages for jobs, and their order of execution
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
-  image: ubuntu:20.04
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+    -  docker build --build-arg BRANCH=Feature-Project-structure -f Dockerfile .
 
 test-job:
   stage: test
