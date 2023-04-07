@@ -1,0 +1,31 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  image: ubuntu:20.04
+  script:
+    - echo "Compiling the code..."
+    - echo "Compile complete."
+
+test-job:
+  stage: test
+  image: ubuntu:20.04
+  script:
+    - echo "Testing code"
+
+linting-job:
+  stage: test
+  image: ubuntu:20.04
+  script:
+    - echo "testing for linting"
+
+deploy-job:      # This job runs in the deploy stage only on main branch
+  stage: deploy
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
