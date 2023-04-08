@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a webshop for style transfer. It is a project for the course "AI Project" at the Institute of Technology Deggendorf.
+This is a webshop for style transfer. It is a project for the course "AI Project" at the Deggendorf Institute of Technology.
 
 ## Installation
 
