@@ -1,4 +1,8 @@
+# use the latest ubuntu image
 FROM ubuntu:latest
+
+# Set variable for branch to be used if not set by user
+ARG BRANCH=main
 
 # Install necessary packages and update system
 RUN apt-get update && \
@@ -8,8 +12,11 @@ RUN apt-get update && \
     apt-get install -y python3.10
 
 # Clone the repository
+RUN echo "Cloning from branch: $BRANCH ..."
 RUN apt-get install -y git && \
-    git clone https://mygit.th-deg.de/me04536/style-transfer-webshop.git
+    git clone https://mygit.th-deg.de/me04536/style-transfer-webshop.git && \
+    cd style-transfer-webshop && \
+    git checkout $BRANCH
 
 # navigate into repository
 WORKDIR style-transfer-webshop

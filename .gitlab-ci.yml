@@ -5,10 +5,11 @@ stages:          # List of stages for jobs, and their order of execution
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
-  image: ubuntu:20.04
+  image: docker:latest
+  services:
+    - docker:dind
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+    - docker build --build-arg BRANCH=$CI_COMMIT_BRANCH -f Dockerfile .
 
 test-job:
   stage: test
