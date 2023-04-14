@@ -2,8 +2,7 @@
 This file contains the database models for the application.
 """
 
-from sqlalchemy import (VARCHAR, Column, DateTime, ForeignKey, Integer,
-                        create_engine)
+from sqlalchemy import VARCHAR, Column, DateTime, ForeignKey, Integer, create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
@@ -105,8 +104,8 @@ class Order(MyBase):
     timestamp = Column(DateTime, nullable=False)
     status = Column(VARCHAR(45), nullable=False)
 
-    user = relationship("User", back_populates="orders") # type: ignore
-    address = relationship("Address", back_populates="orders") # type: ignore
+    user = relationship("User", back_populates="orders")  # type: ignore
+    address = relationship("Address", back_populates="orders")  # type: ignore
 
     def __repr__(self):
         return f"Order {self.id} for user {self.user.username} at address {self.address_id}."
