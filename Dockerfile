@@ -25,8 +25,6 @@ RUN pip install poetry
 # Create and activate a virtual environment
 ENV POETRY_HOME=/opt/poetry
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
-ENV PATH="$POETRY_HOME/bin:$PATH"
-
 RUN poetry install --no-interaction --no-ansi -vvv
 ENV PATH="/style-transfer-webshop/.venv"
 
