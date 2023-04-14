@@ -10,7 +10,7 @@ build-job:       # This job runs in the build stage, which runs first.
   services:
     - docker:dind
   script:
-    - echo "Building image..."
+    - docker build -f Dockerfile .
 
 test-job:
   stage: test
@@ -36,7 +36,6 @@ black:
   needs: [setup]
   script:
     - source .venv/bin/activate
-    - pip freeze
     - black --check src tests
 
 mypy:
@@ -44,14 +43,16 @@ mypy:
   image: python:3.10
   needs: [setup]
   script:
-    - poetry run mypy src tests
+    - source .venv/bin/activate
+    - mypy src tests
 
 pylint:
   stage: lint
   image: python:3.10
   needs: [setup]
   script:
-    - poetry run pylint src tests
+    - source .venv/bin/activate
+    - pylint src tests
 
 deploy-job:      # This job runs in the deploy stage only on main branch
   stage: deploy
