@@ -18,25 +18,30 @@ test-job:
   script:
     - echo "Testing code"
 
+setup:
+  stage: lint
+  image: python:3.10
+  script:
+    - pip install poetry
+    - poetry config virtualenvs.in-project true
+    - poetry install
+
 black:
   stage: lint
   image: python:3.10
   script:
-    - pip install black
     - black --check src tests
 
 mypy:
   stage: lint
   image: python:3.10
   script:
-    - pip install mypy types-toml sqlalchemy-stubs
     - mypy src tests
 
 pylint:
   stage: lint
   image: python:3.10
   script:
-    - pip install pylint
     - pylint src tests
 
 deploy-job:      # This job runs in the deploy stage only on main branch
