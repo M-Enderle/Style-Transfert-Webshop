@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "style-transfer-webshop"
+version = "0.1.0"
+description = "Project @ DIT"
+authors = ["Moritz Enderle <moritz.enderle@th-deg.de>",
+           "Florian Eder <florian.eder3@stud.th-deg.de>",
+           "Amelie Kammerer <amelie.kammerer@stud.th-deg.de>",
+           "QuirinJoshua Groszeibl <quirin.groszeibl@stud.th-deg.de>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "3.10.*"
+pandas = "^2.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
