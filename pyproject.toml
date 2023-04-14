@@ -12,6 +12,14 @@ packages = [{include = "src"}]
 [tool.poetry.dependencies]
 python = "3.10.*"
 pandas = "^2.0.0"
+sqlalchemy = "^2.0.9"
+toml = "^0.10.2"
+flask = "^2.2.3"
+pymysql = "^1.0.3"
+black = "^23.3.0"
+mypy = "^1.2.0"
+types-toml = "^0.10.8.6"
+sqlalchemy-stubs = "^0.4"
 
 
 [build-system]
