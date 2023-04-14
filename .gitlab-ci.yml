@@ -29,20 +29,23 @@ setup:
 black:
   stage: lint
   image: python:3.10
+  needs: [setup]
   script:
-    - black --check src tests
+    - poetry run black --check src tests
 
 mypy:
   stage: lint
   image: python:3.10
+  needs: [setup]
   script:
-    - mypy src tests
+    - poetry run mypy src tests
 
 pylint:
   stage: lint
   image: python:3.10
+  needs: [setup]
   script:
-    - pylint src tests
+    - poetry run pylint src tests
 
 deploy-job:      # This job runs in the deploy stage only on main branch
   stage: deploy
