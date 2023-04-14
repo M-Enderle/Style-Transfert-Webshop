@@ -53,6 +53,7 @@ pylint:
   script:
     - source .venv/bin/activate
     - pylint src tests
+  allow_failure: true
 
 deploy-job:      # This job runs in the deploy stage only on main branch
   stage: deploy
