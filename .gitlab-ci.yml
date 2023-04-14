@@ -9,7 +9,7 @@ build-job:       # This job runs in the build stage, which runs first.
   services:
     - docker:dind
   script:
-    - docker build --build-arg BRANCH=$CI_COMMIT_BRANCH -f Dockerfile .
+    - docker build -f Dockerfile .
 
 test-job:
   stage: test
