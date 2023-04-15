@@ -78,4 +78,5 @@ deploy-job:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: always
