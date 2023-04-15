@@ -29,7 +29,7 @@ class User(MyBase):
      - email: the email of the user
     """
 
-    __tablename__ = "User" 
+    __tablename__ = "User"
 
     id = Column(Integer, primary_key=True, nullable=False)
     username = Column(VARCHAR(45), nullable=False)
