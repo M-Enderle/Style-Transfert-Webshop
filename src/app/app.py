@@ -3,7 +3,7 @@ Main application module for the app.
 """
 
 import flask
-from . import session, User, Order, Address
+from . import session, User
 
 app = flask.Flask(__name__)
 
