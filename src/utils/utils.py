@@ -1,6 +1,6 @@
 from pathlib import Path
-
 import toml
+import os
 
 
 def get_project_root() -> Path:
@@ -10,4 +10,6 @@ def get_project_root() -> Path:
 
 def load_user_toml() -> dict:
     """Loads user.toml file."""
-    return toml.load(get_project_root() / "user.toml")
+    if os.path.exists(get_project_root() / "user.toml"):
+        return toml.load(get_project_root() / "user.toml")
+    return toml.load(get_project_root() / "default.toml")

@@ -3,6 +3,7 @@ Main application module for the app.
 """
 
 import flask
+from . import session, User, Order, Address
 
 app = flask.Flask(__name__)
 
@@ -10,7 +11,7 @@ app = flask.Flask(__name__)
 @app.route("/")
 def index():
     """Index page."""
-    return "Hello world!"
+    return str(session.query(User).all())
 
 
 if __name__ == "__main__":
