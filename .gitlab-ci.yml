@@ -68,7 +68,7 @@ scss:
   image: ubuntu:20.04
   script:
     - apt-get update
-    - apt-get install ruby-rubygems ruby-dev
+    - apt-get install ruby-dev
     - gem install scss_lint
     - scss-lint src/app/static/scss/*.scss
 
