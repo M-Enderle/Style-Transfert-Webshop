@@ -63,6 +63,14 @@ jinjaninja:
     - source .venv/bin/activate
     - jinja-ninja src/app/templates/*.html 
 
+scss:
+  stage: lint
+  image: ubuntu:20.04
+  script:
+    - apt install ruby-rubygems ruby-dev
+    - gem install scss_lint
+    - scss-lint src/app/static/scss/*.scss
+
 deploy-job:      # This job runs in the deploy stage only on main branch
   stage: deploy
   script:
