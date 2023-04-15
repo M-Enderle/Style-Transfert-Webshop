@@ -68,13 +68,10 @@ scss:
   image: ubuntu:20.04
   script:
     - apt-get update
-    - apt-get install -y ruby-dev libz-dev libiconv-hook1 libiconv-hook-dev
+    - apt-get install -y apt-get install -y ruby-dev libz-dev libiconv-hook1 libiconv-hook-dev libffi-dev build-essential
     - gem install scss_lint
     - scss-lint src/app/static/scss/*.scss
-  artifacts:
-    paths:
-        - /var/lib/gems/2.7.0/extensions/x86_64-linux/2.7.0/ffi-1.15.5/
-
+  
 deploy-job:
   stage: deploy
   script:
