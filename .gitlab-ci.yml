@@ -55,6 +55,14 @@ pylint:
     - pylint src tests
   allow_failure: true
 
+jinjaninja:
+  stage: lint
+  image: python:3.10
+  needs: [setup]
+  script:
+    - source .venv/bin/activate
+    - jinja-ninja src/app/templates/*.html 
+
 deploy-job:      # This job runs in the deploy stage only on main branch
   stage: deploy
   script:

@@ -280,6 +280,17 @@ MarkupSafe = ">=2.0"
 i18n = ["Babel (>=2.7)"]
 
 [[package]]
+name = "jinjaninja"
+version = "0.1.2"
+description = "Jinja template style enforcement tool"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "jinjaninja-0.1.2.tar.gz", hash = "sha256:996f11530fb9aaec6b509e5a577ffa0baa6070e4af2828a94e678847042ff06d"},
+]
+
+[[package]]
 name = "lazy-object-proxy"
 version = "1.9.0"
 description = "A fast and thorough lazy object proxy."
@@ -1058,4 +1069,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.10.*"
-content-hash = "4d6e380b446f53848dcc079f5a984b69d52ea40606db75af65b992903a91d65f"
+content-hash = "8bfc7b19a71c2e7933f94294b24031849c6905b870459918fec3b78d5ff830b0"

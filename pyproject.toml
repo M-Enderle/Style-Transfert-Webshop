@@ -16,6 +16,7 @@ sqlalchemy = "^2.0.9"
 toml = "^0.10.2"
 flask = "^2.2.3"
 pymysql = "^1.0.3"
+jinjaninja = "^0.1.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.0"
