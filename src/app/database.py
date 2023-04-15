@@ -36,7 +36,7 @@ class User(MyBase):
     password_hash = Column(VARCHAR(45), nullable=False)
     email = Column(VARCHAR(45), nullable=False)
 
-    orders = relationship("Order", back_populates="user_id")
+    orders = relationship("Order")
 
     def __repr__(self):
         return f"User {self.username} with email {self.email}."
@@ -104,8 +104,10 @@ class Order(MyBase):
     timestamp = Column(DateTime, nullable=False)
     status = Column(VARCHAR(45), nullable=False)
 
-    user = relationship("User", back_populates="orders")  # type: ignore
-    address = relationship("Address", back_populates="orders")  # type: ignore
+    # relationships
+    # user is ref User class and user_id is ref User.id
+    user = relationship("User", back_populates="orders")
+    address = relationship("Address")
 
     def __repr__(self):
         return f"Order {self.id} for user {self.user.username} at address {self.address_id}."
