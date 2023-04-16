@@ -12,7 +12,20 @@ packages = [{include = "src"}]
 [tool.poetry.dependencies]
 python = "3.10.*"
 pandas = "^2.0.0"
+sqlalchemy = "^2.0.9"
+toml = "^0.10.2"
+flask = "^2.2.3"
+pymysql = "^1.0.3"
+jinjaninja = "^0.1.2"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.0"
+black = "^23.3.0"
+mypy = "^1.2.0"
+types-toml = "^0.10.8.6"
+sqlalchemy-stubs = "^0.4"
+types-flask = "^1.1.6"
+pylint = "^2.17.2"
 
 [build-system]
 requires = ["poetry-core"]

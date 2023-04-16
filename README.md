@@ -26,6 +26,16 @@ To keep the requirements for this project consistent, we use [poetry](https://py
 To add a dependency, run `poetry add <dependency>`. If you want to add a development dependency, run `poetry add --dev <dependency>`. 
 Do not install any dependencies via pip as this will not update the `pyproject.toml` file.
 
+### Linting
+
+Before committing, please check your code with the following commands:
+
+- `black .` to format the code (will fix errors automatically)
+- `pylint .` to check for code smells
+- `mypy .` to check for type errors
+
+If you do not fix all errors, the commit will be rejected!
+
 ## Docker
 
 ### Requirements
