@@ -1,11 +1,14 @@
-from pathlib import Path
-import toml
+""" Utility functions for the project. """
+
 import os
+from pathlib import Path
+
+import toml
 
 
 def get_project_root() -> Path:
     """Returns project root folder."""
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent.parent.parent
 
 
 def load_user_toml() -> dict:

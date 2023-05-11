@@ -8,7 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm.session import Session
 
-from . import load_user_toml
+from src.sts.utils.utils import load_user_toml
 
 MyBase = declarative_base()
 
@@ -104,8 +104,6 @@ class Order(MyBase):
     timestamp = Column(DateTime, nullable=False)
     status = Column(VARCHAR(45), nullable=False)
 
-    # relationships
-    # user is ref User class and user_id is ref User.id
     user = relationship("User", back_populates="orders")
     address = relationship("Address")
 
@@ -138,6 +136,5 @@ def create_session(_engine: Engine) -> Session:
     return _session()
 
 
-# create all
 engine = create_database()
 session = create_session(engine)

@@ -12,6 +12,9 @@ RUN apt-get update && \
 COPY . ./style-transfer-webshop
 WORKDIR style-transfer-webshop
 
+# delete .venv folder if it exists
+RUN rm -rf .venv
+
 # Set Python 3.10 as default python version
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
     update-alternatives --set python3 /usr/bin/python3.10
@@ -28,6 +31,11 @@ ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 RUN poetry install --no-interaction --no-ansi -vvv
 ENV PATH="/style-transfer-webshop/.venv"
 
+EXPOSE 5000
+
 # -- Start of running the actual program once it is implemented --
+
+# run flask app
+ENTRYPOINT [".venv/bin/python3", "./src/sts/app/app.py"]
 
 # -- End --
