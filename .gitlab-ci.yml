@@ -20,13 +20,13 @@ database-build:
   script:
     - docker build -f docker/database/Dockerfile -t database .
 
-ai-build:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker build -f docker/ai/Dockerfile -t ai .
+# ai-build:
+#   stage: build
+#  image: docker:latest
+#  services:
+#    - docker:dind
+#  script:
+#    - docker build -f docker/ai/Dockerfile -t ai .
 
 test-job:
   stage: test
@@ -49,7 +49,7 @@ mypy:
   script:
     - pip install mypy types-toml types-Flask
     - pip install torch==1.13.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
-    - mypy src --namespace-packages --explicit-package-bases
+    - mypy src
 
 pylint:
   stage: lint

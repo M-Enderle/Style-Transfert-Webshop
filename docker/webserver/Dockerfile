@@ -9,18 +9,20 @@ RUN apt-get update && \
     apt-get install -y python3.10
 
 # navigate into repository
-COPY . ./style-transfer-webshop
-WORKDIR style-transfer-webshop
+COPY ./src ./style-transfer-webshop/src
+COPY ./pyproject.toml ./style-transfer-webshop/pyproject.toml
+COPY ./poetry.lock ./style-transfer-webshop/poetry.lock
+COPY ./README.md ./style-transfer-webshop/README.md
+COPY ./default.toml ./style-transfer-webshop/default.toml
 
-# delete .venv folder if it exists
-RUN rm -rf .venv
+WORKDIR style-transfer-webshop
 
 # Set Python 3.10 as default python version
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
     update-alternatives --set python3 /usr/bin/python3.10
 
 # Install pip
-RUN apt-get install -y python3-pip
+RUN apt-get update && apt-get install -y python3-pip
 
 # Install poetry
 RUN pip install poetry
@@ -36,6 +38,6 @@ EXPOSE 5000
 # -- Start of running the actual program once it is implemented --
 
 # run flask app
-ENTRYPOINT [".venv/bin/python3", "./src/sts/app/app.py"]
+ENTRYPOINT [".venv/bin/python3", "-m", "sts"]
 
 # -- End --

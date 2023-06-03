@@ -20,4 +20,4 @@ COPY . ./style-transfer-webshop
 WORKDIR style-transfer-webshop
 
 # print version for debug
-ENTRYPOINT ["python3", "src/sts/style_transfer/version.py"]
+# ENTRYPOINT ["python3", "-m", "sts", "--version"]
