@@ -4,7 +4,7 @@ Main application module for the app.
 
 import flask
 
-from src.sts.app import database
+from sts.app import database
 
 session = database.session
 

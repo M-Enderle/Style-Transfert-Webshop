@@ -8,7 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm.session import Session
 
-from src.sts.utils.utils import load_user_toml
+from sts.utils.utils import load_user_toml
 
 MyBase = declarative_base()
 
