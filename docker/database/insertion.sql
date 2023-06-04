@@ -30,7 +30,7 @@ USE `StyleTransfer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `Address` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `last_name` varchar(45) NOT NULL,
   `street` varchar(45) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `Address` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `Order` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) DEFAULT NULL,
   `timestamp` datetime(6) NOT NULL,
   `address_id` int(11) NOT NULL,
@@ -78,10 +78,9 @@ CREATE TABLE IF NOT EXISTS `Order` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `User` (
-  `id` int(11) NOT NULL,
-  `username` varchar(45) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `password_hash` varchar(45) NOT NULL,
-  `email` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL UNIQUE,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -91,11 +90,11 @@ CREATE TABLE IF NOT EXISTS `User` (
 -- Dumping data for table `User`
 --
 
-INSERT INTO `User` (`id`, `username`, `password_hash`, `email`) VALUES (1,'max_mustermann','$Hui2bhsad34§4','max.mustermann@gmail.com');
+INSERT INTO `User` (`password_hash`, `email`) VALUES ('$Hui2bhsad34§4','max.mustermann@gmail.com');
 
-INSERT INTO `Address` (`id`, `name`, `last_name`, `street`, `zip`, `city`, `country`) VALUES (1,'Max','Mustermann','Dieter-Görlitz-Platz 1','94469','Deggendorf','DE');
+INSERT INTO `Address` (`name`, `last_name`, `street`, `zip`, `city`, `country`) VALUES ('Max','Mustermann','Dieter-Görlitz-Platz 1','94469','Deggendorf','DE');
 
-INSERT INTO `Order` (`id`, `customer_id`, `timestamp`, `address_id`, `status`) VALUES (1,1,'2021-04-15 20:02:31',1,'in progress');
+INSERT INTO `Order` (`customer_id`, `timestamp`, `address_id`, `status`) VALUES (1,'2021-04-15 20:02:31',1,'in progress');
 
 --
 -- Dumping routines for database 'StyleTransfer'
