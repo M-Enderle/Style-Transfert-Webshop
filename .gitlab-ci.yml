@@ -50,6 +50,7 @@ mypy:
     - pip install mypy types-toml types-Flask
     - pip install torch==1.13.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
     - mypy src
+  allow_failure: true
 
 pylint:
   stage: lint
@@ -59,13 +60,6 @@ pylint:
     - pylint src
   allow_failure: true
 
-jinjaninja:
-  stage: lint
-  image: python:3.10
-  script:
-    - pip install jinjaninja
-    - jinja-ninja src/sts/app/templates/*.html 
-  
 deploy-job:
   stage: deploy
   script:

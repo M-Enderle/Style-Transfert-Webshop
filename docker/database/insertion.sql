@@ -79,6 +79,8 @@ CREATE TABLE IF NOT EXISTS `Order` (
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `User` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `username` varchar(45) NOT NULL,
   `password_hash` varchar(45) NOT NULL,
   `email` varchar(100) NOT NULL UNIQUE,
   PRIMARY KEY (`id`),
@@ -90,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `User` (
 -- Dumping data for table `User`
 --
 
-INSERT INTO `User` (`password_hash`, `email`) VALUES ('$Hui2bhsad34§4','max.mustermann@gmail.com');
+INSERT INTO `User` (`username`, `name`, `password_hash`, `email`) VALUES ('test','test','$2b$12$WUXOCZmZqU0HTbggJ4hIBuCutUdQQo3xHWtafRkHtcjbo.TlboHq.','test@test.com');
 
 INSERT INTO `Address` (`name`, `last_name`, `street`, `zip`, `city`, `country`) VALUES ('Max','Mustermann','Dieter-Görlitz-Platz 1','94469','Deggendorf','DE');
 

@@ -1,8 +1,10 @@
 [database]
-host="database"
+host="localhost"
 port="3306"
 username="root_user"
 password="Test123456"
 
-[app]
-secret_key="f124nUn4uji1q4"
+[stauth]
+cookie_name="stauth"
+cookie_secret_key="Test123456"
+cookie_expiry_days=30  # days

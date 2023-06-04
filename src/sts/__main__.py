@@ -1,4 +1,11 @@
-from sts.app.app import app
+""" This file is used to run the streamlit app. """
+
+import sys
+from pathlib import Path
+import streamlit.web.cli as stcli
+
+parent = Path(__file__).parent
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    sys.argv = ["streamlit", "run", str(parent / "app" / "home.py")]
+    sys.exit(stcli.main())

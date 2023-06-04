@@ -3,7 +3,9 @@
 import os
 from pathlib import Path
 
+import requests
 import toml
+from PIL import Image
 
 
 def get_project_root() -> Path:
@@ -16,3 +18,18 @@ def load_user_toml() -> dict:
     if os.path.exists(get_project_root() / "user.toml"):
         return toml.load(get_project_root() / "user.toml")
     return toml.load(get_project_root() / "default.toml")
+
+
+def transfer(content_img, style_img):
+    """Transfer style from style image to content image."""
+
+    # TODO Josh: Implement this function, see notebook
+
+    retult_img = None
+
+    return content_img
+
+
+class Cart:
+    # TODO Josh: Implement this class
+    pass

@@ -32,6 +32,8 @@ class User(MyBase):
     __tablename__ = "User"
 
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    username = Column(VARCHAR(45), nullable=False, unique=True)
+    name = Column(VARCHAR(45), nullable=False)
     email = Column(VARCHAR(45), nullable=False, unique=True)
     password_hash = Column(VARCHAR(45), nullable=False)
 
@@ -46,7 +48,11 @@ class User(MyBase):
     def __eq__(self, other):
         return self.email == other.email
 
-    # TODO: Add password hashing
+    def get_plain_password(self):
+        return self.password_hash
+
+    def set_plain_password(self, password):
+        self.password_hash = password
 
 
 class Address(MyBase):
