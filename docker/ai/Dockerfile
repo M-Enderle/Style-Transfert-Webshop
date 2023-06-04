@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.0.1-runtime-ubuntu22.04
+FROM nvidia/cuda:11.8.0-runtime-ubuntu20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -9,15 +9,28 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y python3.8
 
-# install pip3
-RUN apt-get install -y python3-pip
+# COPY files
+COPY ./src ./style-transfer-webshop/src
+COPY ./pyproject.toml ./style-transfer-webshop/pyproject.toml
+COPY ./poetry.lock ./style-transfer-webshop/poetry.lock
+COPY ./README.md ./style-transfer-webshop/README.md
+COPY ./default.toml ./style-transfer-webshop/default.toml
 
-# install torch and torchvision
-RUN pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-
-# copy code
-COPY . ./style-transfer-webshop
 WORKDIR style-transfer-webshop
 
+# Set Python 3.10 as default python version
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1 && \
+    update-alternatives --set python3 /usr/bin/python3.8
+
+# Install pip
+RUN apt-get update && apt-get install -y python3-pip
+
+RUN pip install poetry
+
+ENV POETRY_HOME=/opt/poetry
+ENV POETRY_VIRTUALENVS_IN_PROJECT=true
+RUN poetry install --no-interaction --no-ansi -vvv --without dev \
+    && poetry run pip install torch==2.0.0+cu118 torchvision==0.15.1+cu118 --index-url https://download.pytorch.org/whl/cu118
+
 # print version for debug
-# ENTRYPOINT ["python3", "-m", "sts", "--version"]
+ENTRYPOINT ["/style-transfer-webshop/.venv/bin/python3", "-m", "style_ai"]

@@ -8,7 +8,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y python3.10
 
-# navigate into repository
+# COPY files
 COPY ./src ./style-transfer-webshop/src
 COPY ./pyproject.toml ./style-transfer-webshop/pyproject.toml
 COPY ./poetry.lock ./style-transfer-webshop/poetry.lock

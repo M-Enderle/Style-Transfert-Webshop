@@ -24,8 +24,8 @@ services:
       - backend
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pTest123456"]
-      interval: 30s
-      timeout: 10s
+      interval: 5s
+      timeout: 30s
       retries: 3
     restart: on-failure
       
@@ -35,7 +35,7 @@ services:
       context: .
       dockerfile: ./docker/ai/Dockerfile
     expose:
-      - 5001
+      - 8000
     restart: on-failure
     networks:
       - backend
