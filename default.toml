@@ -3,3 +3,6 @@ host="database"
 port="3306"
 username="root_user"
 password="Test123456"
+
+[app]
+secret_key="f124nUn4uji1q4"

@@ -9,7 +9,7 @@ authors = ["Moritz Enderle <moritz.enderle@th-deg.de>",
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.10.*"
+python = "^3.8.10" # please us 3.10, this is only because of the AI
 pandas = "^2.0.0"
 sqlalchemy = "^2.0.9"
 toml = "^0.10.2"
@@ -18,9 +18,14 @@ pymysql = "^1.0.3"
 jinjaninja = "^0.1.2"
 mysql-connector-python = "^8.0.33"
 pillow = "^9.5.0"
-types-pillow = "^9.5.0.4"
 pyyaml = "^6.0"
 lark = "^1.1.5"
+tqdm = "^4.65.0"
+fastapi = "^0.96.0"
+uvicorn = "^0.22.0"
+jupyter = "^1.0.0"
+requests = "^2.31.0"
+python-multipart = "^0.0.6"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.0"
@@ -30,6 +35,10 @@ types-toml = "^0.10.8.6"
 sqlalchemy-stubs = "^0.4"
 types-flask = "^1.1.6"
 pylint = "^2.17.2"
+types-pillow = "^9.5.0.4"
+ipykernel = "^6.23.1"
+matplotlib = "^3.7.1"
+types-tqdm = "^4.65.0.1"
 
 [build-system]
 requires = ["poetry-core"]

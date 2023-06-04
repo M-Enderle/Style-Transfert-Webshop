@@ -20,13 +20,13 @@ database-build:
   script:
     - docker build -f docker/database/Dockerfile -t database .
 
-# ai-build:
-#   stage: build
-#  image: docker:latest
-#  services:
-#    - docker:dind
-#  script:
-#    - docker build -f docker/ai/Dockerfile -t ai .
+ai-build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -f docker/ai/Dockerfile -t ai .
 
 test-job:
   stage: test
