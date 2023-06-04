@@ -1,16 +1,5 @@
 import streamlit as st
 from PIL import Image
-from sts.utils.streamlit_utils import get_authenticator
-from sts.utils.utils import Cart, transfer
-
-# TODO Josh: Add two columns for the two images to be uplaoded
-# TODO Josh: Add a button to apply transfer style
-# TODO Josh: Show image after transfer style
-
-# Tips:
-# - use st.columns
-# - save a cart reference in the session state
-# - use st.session_state
 
 # Function to upload and display image
 def upload_image(column_num):
@@ -18,8 +7,14 @@ def upload_image(column_num):
     
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.sidebar.image(image, caption=f"Uploaded Image {column_num}", use_column_width=True)
+        st.image(image, caption=f"Uploaded Image {column_num}", use_column_width=True)
         return image
+
+def transfer(image1, image2):
+    # Apply transfer style algorithm
+    # Return the resulting AI image
+    ai_image = image1
+    return ai_image
 
 def main() -> None:
     # add sidebar with create_image, place product, cart, checkout
