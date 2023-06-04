@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ./docker/webserver/Dockerfile
     ports:
-      - "8080:5000"
+      - "8080:8501"
     networks:
       - backend
     depends_on:
@@ -20,6 +20,8 @@ services:
       dockerfile: ./docker/database/Dockerfile
     expose:
       - 3306
+    ports:
+      - "3306:3306"
     networks:
       - backend
     healthcheck:
