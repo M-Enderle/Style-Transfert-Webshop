@@ -31,10 +31,9 @@ class User(MyBase):
 
     __tablename__ = "User"
 
-    id = Column(Integer, primary_key=True, nullable=False)
-    username = Column(VARCHAR(45), nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    email = Column(VARCHAR(45), nullable=False, unique=True)
     password_hash = Column(VARCHAR(45), nullable=False)
-    email = Column(VARCHAR(45), nullable=False)
 
     orders = relationship("Order")
 
@@ -45,7 +44,9 @@ class User(MyBase):
         return self.__repr__()
 
     def __eq__(self, other):
-        return self.username == other.username and self.email == other.email
+        return self.email == other.email
+
+    # TODO: Add password hashing
 
 
 class Address(MyBase):
@@ -62,7 +63,7 @@ class Address(MyBase):
 
     __tablename__ = "Address"
 
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     street = Column(VARCHAR(45), nullable=False)
     city = Column(VARCHAR(45), nullable=False)
     state = Column(VARCHAR(45), nullable=False)
@@ -98,7 +99,7 @@ class Order(MyBase):
 
     __tablename__ = "Order"
 
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     user_id = Column(Integer, ForeignKey("User.id"), nullable=False)
     address_id = Column(Integer, ForeignKey("Address.id"), nullable=False)
     timestamp = Column(DateTime, nullable=False)
