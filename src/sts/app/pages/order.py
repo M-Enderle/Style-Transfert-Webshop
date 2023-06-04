@@ -1,5 +1,5 @@
 import streamlit as st
-
+from PIL import Image
 from sts.utils.streamlit_utils import get_authenticator
 from sts.utils.utils import Cart, transfer
 
@@ -12,6 +12,14 @@ from sts.utils.utils import Cart, transfer
 # - save a cart reference in the session state
 # - use st.session_state
 
+# Function to upload and display image
+def upload_image(column_num):
+    uploaded_file = st.sidebar.file_uploader(f"Upload Image {column_num}", type=["png", "jpg", "jpeg"])
+    
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.sidebar.image(image, caption=f"Uploaded Image {column_num}", use_column_width=True)
+        return image
 
 def main() -> None:
     # add sidebar with create_image, place product, cart, checkout
@@ -22,10 +30,9 @@ def main() -> None:
         # DO STUFF
         st.title("Cart")
 
-    # buttons
-    if st.sidebar.button("Create Image", use_container_width=True):
-        # DO STUFF
-        st.title("Create Image")
+    if st.sidebar.button("Cart [0]", key="cart_button", use_container_width=True):
+        st.title("Cart")
+
 
     # only enable if image is created
     if st.sidebar.button("Place Product", use_container_width=True, disabled=True):
