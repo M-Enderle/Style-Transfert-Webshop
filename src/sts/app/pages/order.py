@@ -25,13 +25,28 @@ def main() -> None:
     # add sidebar with create_image, place product, cart, checkout
     st.sidebar.title("Order Process")
 
-    # TODO update live
-    if st.sidebar.button("Cart [0]", use_container_width=True):
-        # DO STUFF
-        st.title("Cart")
-
     if st.sidebar.button("Cart [0]", key="cart_button", use_container_width=True):
         st.title("Cart")
+
+    # Two columns for uploading and displaying images
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Image 1")
+        image1 = upload_image(1)
+
+    with col2:
+        st.subheader("Image 2")
+        image2 = upload_image(2)
+
+    if st.sidebar.button("Create AI Image", key="create_image_button", use_container_width=True):
+        if image1 is None or image2 is None:
+            st.warning("Please upload both images before creating AI image.")
+        else:
+            st.title("AI Image Creation")
+            # Apply transfer style and display the result image
+            ai_image = transfer(image1, image2)
+            st.image(ai_image, caption="AI Image", use_column_width=True)
 
 
     # only enable if image is created
