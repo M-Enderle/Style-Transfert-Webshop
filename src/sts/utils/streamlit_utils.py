@@ -41,6 +41,12 @@ def get_authenticator() -> stauth.Authenticate:
 def transfer(content_img: Image, style_img: Image):
     """Transfer style from style image to content image."""
 
+    # convert to RBG if RGBA
+    if content_img.mode == "RGBA":
+        content_img = content_img.convert("RGB")
+    if style_img.mode == "RGBA":
+        style_img = style_img.convert("RGB")
+
     # Convert content_img to bytes-like object
     content_buffer = io.BytesIO()
     content_img.save(content_buffer, format="JPEG")
