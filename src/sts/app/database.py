@@ -2,8 +2,7 @@
 This file contains the database models for the application.
 """
 
-from sqlalchemy import (VARCHAR, Column, DateTime, ForeignKey, Integer,
-                        create_engine)
+from sqlalchemy import VARCHAR, Column, DateTime, ForeignKey, Integer, create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
