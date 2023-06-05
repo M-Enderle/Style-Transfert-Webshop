@@ -27,8 +27,8 @@ async def upload_images(content_img: UploadFile, style_img: UploadFile):
     content_file_content = await content_img.read()
     style_file_content = await style_img.read()
 
-    content = Image.open(io.BytesIO(content_file_content))
-    style = Image.open(io.BytesIO(style_file_content))
+    content = Image.open(io.BytesIO(base64.b64decode(content_file_content)))
+    style = Image.open(io.BytesIO(base64.b64decode(style_file_content)))
 
     result = style_transfer(content, style, resize_to=2**8)
 

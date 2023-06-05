@@ -1,8 +1,7 @@
 import streamlit as st
 from PIL import Image
 
-from sts.utils.streamlit_utils import get_authenticator
-from sts.utils.utils import Cart, transfer
+from sts.utils.streamlit_utils import get_authenticator, transfer
 
 # TODO Josh: Add two columns for the two images to be uplaoded
 # TODO Josh: Add a button to apply transfer style
