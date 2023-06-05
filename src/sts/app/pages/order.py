@@ -46,12 +46,33 @@ def create_image():
         st.subheader("Image 2")
         upload_image(2)
 
-    if all([image is not None for image in st.session_state["images"]]):
-        st.markdown("## AI Image")
+    generate = st.button(
+        "Generate AI Image",
+        use_container_width=True,
+        disabled=not all([image is not None for image in st.session_state["images"]]),
+    )
+
+    if generate and all([image is not None for image in st.session_state["images"]]):
         ai_image = transfer(
             st.session_state["images"][0], st.session_state["images"][1]
         )
-        st.image(ai_image, caption="AI Image", use_column_width=True)
+
+        st.session_state["ai_image"] = ai_image
+
+    if st.session_state["ai_image"] is not None:
+        _, col, _ = st.columns((1, 2, 1))
+        with col:
+            st.markdown("## AI Image")
+            st.image(
+                st.session_state["ai_image"],
+                use_column_width=True,
+            )
+
+            place_prod_btn = st.button("Next Step", use_container_width=True)
+
+            if place_prod_btn:
+                st.session_state["current_page"] = place_product
+                st.experimental_rerun()
 
 
 def cart():
@@ -108,7 +129,9 @@ def main() -> None:
         "Create AI Image", key="create_image_button", use_container_width=True
     )
     place_product_btn = st.sidebar.button(
-        "Place Product", use_container_width=True, disabled=True
+        "Place Product",
+        use_container_width=True,
+        disabled=st.session_state["ai_image"] is None,
     )
     checkout_btn = st.sidebar.button(
         "Checkout", use_container_width=True, disabled=True
