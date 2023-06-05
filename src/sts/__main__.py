@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+
 import streamlit.web.cli as stcli
 
 parent = Path(__file__).parent

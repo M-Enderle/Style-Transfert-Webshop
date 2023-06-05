@@ -14,20 +14,10 @@ from torch import nn, optim
 from torchvision import models
 from tqdm import tqdm
 
-from style_ai.utils import (
-    calculate_loss,
-    fold_laplace_pyramid,
-    laplacian,
-    load_image,
-    make_laplace_pyramid,
-    np_to_pil,
-    np_to_tensor,
-    pil_resize_long_edge_to,
-    pil_to_np,
-    sample_indices,
-    tensor_resample,
-    tensor_to_np,
-)
+from style_ai.utils import (calculate_loss, fold_laplace_pyramid, laplacian,
+                            load_image, make_laplace_pyramid, np_to_pil,
+                            np_to_tensor, pil_resize_long_edge_to, pil_to_np,
+                            sample_indices, tensor_resample, tensor_to_np)
 
 
 class Vgg16Extractor(nn.Module):
