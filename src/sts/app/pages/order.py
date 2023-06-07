@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+from streamlit_extras.switch_page_button import switch_page
 
 from sts.utils.streamlit_utils import get_authenticator, transfer
 
@@ -12,6 +13,13 @@ from sts.utils.streamlit_utils import get_authenticator, transfer
 # - save a cart reference in the session state
 # - use st.session_state
 # Function to upload and display image
+# TO DO:
+# - Shopping Cart
+#	- current Items in cart
+#	- gleiche Form wie bei Orders (s.o.)
+#	- Checkout button
+#	- Wenn leer: Button zu "Generate Image" ---> Streamlit hat dieses einfache Feature tatsächlich nicht.
+#   - Alle 'fixes' & neuimpimentierungen sind nicht schön nach Moritz def, also darf moritz das machen, weil dann kann er sich selber blamen, dass es much code ist. :>
 
 
 def upload_image(column_num):
@@ -76,37 +84,68 @@ def create_image():
 
 
 def cart():
-    # TODO Josh: Implement this function
-    st.title("Cart")
-    pass
+    placeholder = st.empty()
+    with placeholder.container():
+        st.title("Cart")
+        # Access the session state to retrieve the items in the cart
+        cart_items = st.session_state.get("cart_items", [])
+        # Display the current items in the cart
+        st.write("Current Items in Cart:")
+        for item in cart_items:
+            st.write(item)
+        #  Add a checkout button
+        checkout_button = st.button("Checkout")
+    if checkout_button:
+        # Set the current page to the checkout function
+        placeholder.empty()
+        checkout()
+        st.session_state["current_page"] = checkout
+
+        #st.experimental_rerun()
+
 
 
 def place_product():
-    # TODO Josh: Implement this function
     st.title("Place Product")
-    pass
+    # Access the session state to retrieve the AI image
+    ai_image = st.session_state.get("ai_image")
+    if ai_image is not None:
+        # Display the AI image
+        st.image(ai_image, caption="Generated AI Image")
+        # Add logic for placing the product in the shopping cart
+        place_product_button = st.button("Place Product in Cart")
+        if place_product_button:
+            # Retrieve the items in the cart from the session state
+            cart_items = st.session_state.get("cart_items", [])
+            # Add the AI image to the cart
+            cart_items.append(ai_image)
+            # Update the cart items in the session state
+            st.session_state["cart_items"] = cart_items
+            st.success("Product placed in cart!")
+            # Redirect back to the cart page
+            st.session_state["current_page"] = cart
+            st.experimental_rerun()
+    else:
+        st.warning("Please generate the AI image first!")
 
 
 def checkout():
-    # TODO Josh: Implement this function
     st.title("Checkout")
-    st.session_state["current_page"] = "checkout"
-    # TODO Josh: Move this into a function in utils
-    auth = get_authenticator()
-    res = auth.login("Login to access the app", location="sidebar")
+    # Access the session state to retrieve the cart items
+    cart_items = st.session_state.get("cart_items", [])
+    if len(cart_items) == 0:
+        st.warning("Your cart is empty!")
+        if st.button("Create Image"):
+            #TO DO: Redirect from Cart to Create AI Image, not staying in the Cart Container, but the Create AI Container.
+            pass
+    else:
+        # Display the cart items
+        st.write("Cart Items:")
+        for item in cart_items:
+            st.write(item)
+        # Add checkout logic and payment processing here
+        st.success("Checkout completed successfully!")
 
-    if not res[1]:
-        st.markdown("# Stop")
-        st.markdown("Please login to use this feature")
-        st.stop()
-    # THIS REQUIRES AUTHENTICATION
-
-    pass
-
-
-def home():
-    st.title("Home")
-    st.markdown("Welcome to the Style Transfer Shop!")
 
 
 def main() -> None:
@@ -120,7 +159,7 @@ def main() -> None:
         st.session_state["ai_image"] = None
 
     if "current_page" not in st.session_state:
-        st.session_state["current_page"] = home
+        pass
 
     cart_btn = st.sidebar.button(
         "Cart [0]", key="cart_button", use_container_width=True
