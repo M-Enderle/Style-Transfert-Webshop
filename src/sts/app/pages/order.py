@@ -112,13 +112,36 @@ def place_product():
     if ai_image is not None:
         # Display the AI image
         st.image(ai_image, caption="Generated AI Image")
+
         # Add logic for placing the product in the shopping cart
+        st.subheader("Select Product Type:")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            if st.button("T-Shirt"):
+                st.session_state["product_picture"] = "tshirt.jpg"
+
+        with col2:
+            if st.button("Hoodie"):
+                st.session_state["product_picture"] = "hoodie.jpg"
+
+        with col3:
+            if st.button("Cup"):
+                st.session_state["product_picture"] = "cup.jpg"
+
+        st.subheader("Select Size:")
+        size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
+
         place_product_button = st.button("Place Product in Cart")
         if place_product_button:
             # Retrieve the items in the cart from the session state
             cart_items = st.session_state.get("cart_items", [])
-            # Add the AI image to the cart
-            cart_items.append(ai_image)
+            # Create the product object with image and size information
+            product = {
+                "image": st.session_state["product_picture"],
+                "size": size,
+            }
+            # Add the product to the cart
+            cart_items.append(product)
             # Update the cart items in the session state
             st.session_state["cart_items"] = cart_items
             st.success("Product placed in cart!")
@@ -127,6 +150,7 @@ def place_product():
             st.experimental_rerun()
     else:
         st.warning("Please generate the AI image first!")
+
 
 
 def checkout():
