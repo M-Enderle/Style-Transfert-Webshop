@@ -187,7 +187,7 @@ def main() -> None:
         st.session_state["ai_image"] = None
 
     if "current_page" not in st.session_state:
-        st.session_state["current_page"] = None
+        st.session_state["current_page"] = create_image
 
     cart_btn = st.sidebar.button(
         "Cart [0]", key="cart_button", use_container_width=True
