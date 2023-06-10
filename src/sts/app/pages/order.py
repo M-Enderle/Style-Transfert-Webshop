@@ -20,6 +20,7 @@ from sts.utils.streamlit_utils import get_authenticator, transfer
 #	- Checkout button
 #	- Wenn leer: Button zu "Generate Image" ---> Streamlit hat dieses einfache Feature tatsächlich nicht.
 #   - Alle 'fixes' & neuimpimentierungen sind nicht schön nach Moritz def, also darf moritz das machen, weil dann kann er sich selber blamen, dass es much code ist. :>
+#   - empty
 
 
 def upload_image(column_num):
