@@ -104,7 +104,9 @@ def place_product():
         col1, col2, col3 = st.columns(3)
         with col1:
             if st.button("T-Shirt"):
-                st.session_state["product_picture"] = "tshirt.jpg"
+                st.session_state["product_picture"] = overlay_image(
+                    "sts/utils/images/tshirt.png", None, None, st.session_state["ai_image"], False, None
+                    )
 
         with col2:
             if st.button("Hoodie"):
