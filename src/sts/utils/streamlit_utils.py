@@ -14,19 +14,22 @@ from sts.utils.utils import load_user_toml
 session = db.session
 user_data = load_user_toml()
 #input_image_path = 'order.py'
-image_path = '/home/qsh1ne/style-transfer-webshop-3/src/sts/utils/images/tshirt.png'
+image_path = '/home/qsh1ne/style-transfer-webshop-3/src/sts/utils/images/tshirt_resize.png'
 black_path = 'sts/utils/images/black_tshirt.png'
 
+
+from PIL import Image, ImageDraw
 
 def overlay_image(image_path, x=None, y=None, input_image=None, is_circle=False, size=None):
     if input_image is None:
         raise ValueError("No image provided")
-    
+
     if size is None:
         size = int(min(input_image.size) * 0.25)  # Default size: 25% of the smaller dimension
     
     source_image = Image.open(image_path)
-    
+    source_image = source_image.convert("RGB")    
+    input_image = input_image.convert("RGB")
     if x is None or y is None:
         x = input_image.width // 2
         y = input_image.height // 2
@@ -35,11 +38,12 @@ def overlay_image(image_path, x=None, y=None, input_image=None, is_circle=False,
         mask = Image.new('L', input_image.size, 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((x - size, y - size, x + size, y + size), fill=255)
-        input_image.paste(source_image.resize((2 * size, 2 * size)) (0, 0), mask=mask)
+        source_image.paste(input_image.resize((2 * size, 2 * size)), (x - size, y - size), mask=mask)
     else:
-        input_image.paste(source_image.resize((2 * size, 2 * size)), (x - size, y - size, x + size, y + size))
+        source_image.paste(input_image.resize((2 * size, 2 * size)), (x - size, y - size))
     
-    return input_image
+    return source_image
+
 
 def get_authenticator() -> stauth.Authenticate:
     """

@@ -97,17 +97,23 @@ def place_product():
     ai_image = st.session_state.get("ai_image")
     if ai_image is not None:
         # Display the AI image
-        st.image(ai_image, caption="Generated AI Image")
+        if st.session_state["product_picture"] is not None:
+            #st.image(st.session_state.get("product_image"), caption="White Shirt")
+            pass
+        else:
+            st.image(ai_image, caption="Generated AI Image")
 
         # Add logic for placing the product in the shopping cart
         st.subheader("Select Product Type:")
         col1, col2, col3 = st.columns(3)
         with col1:
             if st.button("T-Shirt"):
-                st.session_state["product_picture"] = overlay_image(
+                shirt_image = overlay_image(
                     "/home/qsh1ne/style-transfer-webshop-3/src/sts/utils/images/tshirt.png", None, None, st.session_state["ai_image"], False, None
                     )
-
+                st.session_state["product_picture"] = shirt_image
+                if shirt_image is not None:
+                    st.image(st.session_state.get("product_image"), caption="White Shirt")                         
         with col2:
             if st.button("Hoodie"):
                 st.session_state["product_picture"] = "hoodie.jpg"
@@ -175,6 +181,9 @@ def main() -> None:
 
     if "current_page" not in st.session_state:
         st.session_state["current_page"] = create_image
+
+    if "product_picture" not in st.session_state:
+        st.session_state["product_picture"] = None
 
     cart_btn = st.sidebar.button(
         "Cart [0]", key="cart_button", use_container_width=True
