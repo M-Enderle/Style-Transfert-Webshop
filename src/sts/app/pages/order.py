@@ -2,26 +2,11 @@ import streamlit as st
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
 
-from sts.utils.streamlit_utils import get_authenticator, transfer
+from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
 
-# TODO Josh: Add two columns for the two images to be uplaoded
-# TODO Josh: Add a button to apply transfer style
-# TODO Josh: Show image after transfer style
-
-# Tips:
-# - use st.columns
-# - save a cart reference in the session state
-# - use st.session_state
-# Function to upload and display image
-# TO DO:
-# - Shopping Cart
-#	- current Items in cart
-#	- gleiche Form wie bei Orders (s.o.)
-#	- Checkout button
-#	- Wenn leer: Button zu "Generate Image" ---> Streamlit hat dieses einfache Feature tatsächlich nicht.
-#   - Alle 'fixes' & neuimpimentierungen sind nicht schön nach Moritz def, also darf moritz das machen, weil dann kann er sich selber blamen, dass es much code ist. :>
-#   - empty
-
+# TODO ChatGPT: Integrate into the palce Order system
+# TODO ChatGPT: 
+# TODO ChatGPT: 
 
 def upload_image(column_num):
     uploaded_file = st.file_uploader(
