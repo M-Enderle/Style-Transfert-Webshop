@@ -171,6 +171,9 @@ def checkout():
         # Add checkout logic and payment processing here
         st.success("Checkout completed successfully!")
 
+def index():
+    st.warning("Please continue to either your cart or create another AI Picture")
+
 
 
 def main() -> None:
@@ -184,7 +187,7 @@ def main() -> None:
         st.session_state["ai_image"] = None
 
     if "current_page" not in st.session_state:
-        pass
+        st.session_state["current_page"] = None
 
     cart_btn = st.sidebar.button(
         "Cart [0]", key="cart_button", use_container_width=True
@@ -218,8 +221,11 @@ def main() -> None:
         st.session_state["current_page"] = checkout
 
     else:
-        st.session_state["current_page"]()
-
+        if st.session_state["current_page"] is None:
+            st.warning("Hupsala")
+            pass
+        else:
+            st.session_state["current_page"]()
 
 if __name__ == "__main__":
     main()
