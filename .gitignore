@@ -4,3 +4,11 @@
 .env
 venv
 .vscode
+**.gitignore
+.gitignore
+src/sts/utils/images/orginal_tshirt.avif
+.gitignore
+src/sts/utils/images/1000_F_258989952_88GbEoXeMZHypGbkvK7wkC9eVBUqYICX.jpg
+.gitignore
+src/sts/utils/images/black-t-shirts-with-copy-space_53876-102012.avif
+.gitignore
