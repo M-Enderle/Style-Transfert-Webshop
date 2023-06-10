@@ -14,7 +14,7 @@ from sts.utils.utils import load_user_toml
 session = db.session
 user_data = load_user_toml()
 #input_image_path = 'order.py'
-image_path = 'sts/utils/images/tshirt.png'
+image_path = '/home/qsh1ne/style-transfer-webshop-3/src/sts/utils/images/tshirt.png'
 black_path = 'sts/utils/images/black_tshirt.png'
 
 
@@ -35,9 +35,9 @@ def overlay_image(image_path, x=None, y=None, input_image=None, is_circle=False,
         mask = Image.new('L', input_image.size, 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((x - size, y - size, x + size, y + size), fill=255)
-        input_image.paste(source_image, (0, 0), mask=mask)
+        input_image.paste(source_image.resize((2 * size, 2 * size)) (0, 0), mask=mask)
     else:
-        input_image.paste(source_image, (x - size, y - size, x + size, y + size))
+        input_image.paste(source_image.resize((2 * size, 2 * size)), (x - size, y - size, x + size, y + size))
     
     return input_image
 
