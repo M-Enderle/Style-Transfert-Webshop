@@ -14,11 +14,9 @@ from sts.utils.utils import load_user_toml
 session = db.session
 user_data = load_user_toml()
 #input_image_path = 'order.py'src/sts/utils/images/tshirt_resize.png
-image_path = 'src/sts/utils/images/tshirt_resize.png'
+image_path2 = 'src/sts/utils/images/tshirt_resize.png'
 black_path = 'sts/utils/images/black_tshirt.png'
 
-
-from PIL import Image, ImageDraw
 
 def overlay_image(image_path, x=None, y=None, input_image=None, is_circle=False, size=None):
     if input_image is None:
@@ -26,14 +24,14 @@ def overlay_image(image_path, x=None, y=None, input_image=None, is_circle=False,
 
     if size is None:
         size = int(min(input_image.size) * 0.25)  # Default size: 25% of the smaller dimension
-    
-    source_image = Image.open(image_path)
-    source_image = source_image.convert("RGB")    
-    input_image = input_image.convert("RGB")
+
+    source_image = Image.open(image_path2)
+    source_image = source_image.convert("RGBA")  # Convert to RGBA for transparency support
+    input_image = input_image.convert("RGBA")
     if x is None or y is None:
         x = input_image.width // 2
         y = input_image.height // 2
-    
+
     if is_circle:
         mask = Image.new('L', input_image.size, 0)
         draw = ImageDraw.Draw(mask)
@@ -41,9 +39,11 @@ def overlay_image(image_path, x=None, y=None, input_image=None, is_circle=False,
         source_image.paste(input_image.resize((2 * size, 2 * size)), (x - size, y - size), mask=mask)
     else:
         source_image.paste(input_image.resize((2 * size, 2 * size)), (x - size, y - size))
-    
-    return source_image
 
+    # Save the output as a PNG image
+    source_image.save("output.png", "PNG")
+
+    return source_image
 
 def get_authenticator() -> stauth.Authenticate:
     """

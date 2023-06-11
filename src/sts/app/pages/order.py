@@ -98,8 +98,7 @@ def place_product():
     if ai_image is not None:
         # Display the AI image
         if st.session_state["product_picture"] is not None:
-            #st.image(st.session_state.get("product_image"), caption="White Shirt")
-            pass
+            st.image(st.session_state.get("product_picture"), caption="White Shirt")
         else:
             st.image(ai_image, caption="Generated AI Image")
 
@@ -110,10 +109,10 @@ def place_product():
             if st.button("T-Shirt"):
                 shirt_image = overlay_image(
                     "src/sts/utils/images/tshirt.png", None, None, st.session_state["ai_image"], False, None
-                    )
+                )
                 st.session_state["product_picture"] = shirt_image
                 if shirt_image is not None:
-                    st.image(st.session_state.get("product_image"), caption="White Shirt")                         
+                    st.image(shirt_image, caption="White Shirt")  # Use the correct variable here
         with col2:
             if st.button("Hoodie"):
                 st.session_state["product_picture"] = "hoodie.jpg"
@@ -144,8 +143,6 @@ def place_product():
             st.experimental_rerun()
     else:
         st.warning("Please generate the AI image first!")
-
-
 
 def checkout():
     st.title("Checkout")
