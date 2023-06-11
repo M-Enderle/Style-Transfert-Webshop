@@ -7,6 +7,7 @@ import requests
 import streamlit as st
 import streamlit_authenticator as stauth
 from PIL import Image, ImageDraw
+from functools import lru_cache
 
 import sts.app.database as db
 from sts.utils.utils import load_user_toml
@@ -19,7 +20,7 @@ image_path3 = 'src/sts/utils/images/hoodie.png'
 black_path = 'sts/utils/images/black_tshirt.png'
 
 
-
+@lru_cache
 def overlay_image(strg="", x=None, y=None, input_image=None, is_circle=False, size=None):
     if input_image is None:
         raise ValueError("No image provided")

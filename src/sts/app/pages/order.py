@@ -43,6 +43,9 @@ def create_image():
         disabled=not all([image is not None for image in st.session_state["images"]]),
     )
 
+    if st.button("Debug", use_container_width=True):
+        st.session_state["ai_image"] = Image.open("/home/fe02174/style_transfer/style-transfer-webshop/src/sts/utils/images/black.png")
+
     if generate and all([image is not None for image in st.session_state["images"]]):
         ai_image = transfer(
             st.session_state["images"][0], st.session_state["images"][1]
@@ -95,46 +98,45 @@ def place_product():
     st.title("Place Product")
     # Access the session state to retrieve the AI image
     ai_image = st.session_state.get("ai_image")
+    product_preview = st.empty()
     if ai_image is not None:
         # Display the AI image
         if st.session_state["product_picture"] is not None:
-            st.image(st.session_state.get("product_picture"), caption="White Shirt")
+            product_preview.image(st.session_state.get("product_picture"), caption="White Shirt")
         else:
-            st.image(ai_image, caption="Generated AI Image")
+            product_preview.image(ai_image, caption="Generated AI Image")
 
         # Add logic for placing the product in the shopping cart
         st.subheader("Select Product Type:")
         col1, col2, col3 = st.columns(3)
+        product_type = "Shirt"
         with col1:
             if st.button("T-Shirt"):
                 shirt_image = overlay_image(
                     "shirt", None, None, st.session_state["ai_image"], st.session_state["cycle_image"], None
                 )
                 st.session_state["product_picture"] = shirt_image
-                if shirt_image is not None:
-                    st.image(shirt_image, caption="White Shirt")  
+                product_preview.image(shirt_image, caption="T-Shirt")
+                product_type = "Shirt"
         with col2:
             if st.button("Hoodie"):
                 shirt_image = overlay_image(
                     "hoodie", None, None, st.session_state["ai_image"], st.session_state["cycle_image"], None
                 )
                 st.session_state["product_picture"] = shirt_image
-                if shirt_image is not None:
-                    st.image(shirt_image, caption="Hoodie")  
-
+                product_preview.image(shirt_image, caption="Hoodie")
+                product_type = "Hoodie"
         with col3:
             if st.button("Not-White Shirt"):
                 shirt_image = overlay_image(
                     "black", None, None, st.session_state["ai_image"], st.session_state["cycle_image"], None
                 )
                 st.session_state["product_picture"] = shirt_image
-                if shirt_image is not None:
-                    st.image(shirt_image, caption="Black Shirt")
+                product_preview.image(shirt_image, caption="Black Shirt")
+                product_type = "Shirt(Black)"
                     
         st.subheader("Select Size:")
         size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
-        st.subheader("Select Product:")
-        type = st.selectbox("Product", ("Shirt", "Shirt(Black)", "Hoodie"))
         st.subheader("Form:")
         cycle = st.selectbox("Form", ("Rectangle", "Cycle"))
         print(cycle)
@@ -153,7 +155,7 @@ def place_product():
             product = {
                 "image": st.session_state["product_picture"],
                 "size": size,
-                "product": type,
+                "product": product_type,
             }
             # Add the product to the cart
             cart_items.append(product)
