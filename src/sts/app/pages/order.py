@@ -3,10 +3,7 @@ from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
 
 from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
-
-# TODO ChatGPT: Integrate into the palce Order system
-# TODO ChatGPT: 
-# TODO ChatGPT: 
+ 
 
 def upload_image(column_num):
     uploaded_file = st.file_uploader(
@@ -108,18 +105,28 @@ def place_product():
         with col1:
             if st.button("T-Shirt"):
                 shirt_image = overlay_image(
-                    "src/sts/utils/images/tshirt.png", None, None, st.session_state["ai_image"], False, None
+                    "shirt", None, None, st.session_state["ai_image"], False, None
                 )
                 st.session_state["product_picture"] = shirt_image
                 if shirt_image is not None:
                     st.image(shirt_image, caption="White Shirt")  # Use the correct variable here
         with col2:
             if st.button("Hoodie"):
-                st.session_state["product_picture"] = "hoodie.jpg"
+                shirt_image = overlay_image(
+                    "hoodie", None, None, st.session_state["ai_image"], False, None
+                )
+                st.session_state["product_picture"] = shirt_image
+                if shirt_image is not None:
+                    st.image(shirt_image, caption="Hoodie")  # Use the correct variable here
 
         with col3:
-            if st.button("Cup"):
-                st.session_state["product_picture"] = "cup.jpg"
+            if st.button("Not-White Shirt"):
+                shirt_image = overlay_image(
+                    "black", None, None, st.session_state["ai_image"], False, None
+                )
+                st.session_state["product_picture"] = shirt_image
+                if shirt_image is not None:
+                    st.image(shirt_image, caption="Black Shirt")  # Use the correct variable here
 
         st.subheader("Select Size:")
         size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))

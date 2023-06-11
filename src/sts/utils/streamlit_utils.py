@@ -14,18 +14,28 @@ from sts.utils.utils import load_user_toml
 session = db.session
 user_data = load_user_toml()
 #input_image_path = 'order.py'src/sts/utils/images/tshirt_resize.png
+image_path1 = 'src/sts/utils/images/black.png'
 image_path2 = 'src/sts/utils/images/tshirt_resize.png'
+image_path3 = 'src/sts/utils/images/hoodie.png'
 black_path = 'sts/utils/images/black_tshirt.png'
 
 
-def overlay_image(image_path, x=None, y=None, input_image=None, is_circle=False, size=None):
+def overlay_image(strg = "", x=None, y=None, input_image=None, is_circle=False, size=None):
     if input_image is None:
         raise ValueError("No image provided")
 
     if size is None:
         size = int(min(input_image.size) * 0.25)  # Default size: 25% of the smaller dimension
 
-    source_image = Image.open(image_path2)
+    if strg == 'shirt':
+        source_image = Image.open(image_path2)
+    elif strg == 'black':
+        source_image = Image.open(image_path1)
+    elif strg == 'hoodie':
+        source_image = Image.open(image_path3)
+    else:
+        raise EnvironmentError("Something went wrong calling overlay_image()")
+    
     source_image = source_image.convert("RGBA")  # Convert to RGBA for transparency support
     input_image = input_image.convert("RGBA")
     if x is None or y is None:
