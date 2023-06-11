@@ -46,9 +46,9 @@ def overlay_image(strg="", x=None, y=None, input_image=None, is_circle=False, si
         mask = Image.new('L', (size, size), 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((x - size, y - size, x + size, y + size), fill=255)
-        source_image.paste(input_image.resize((2 * size, 2 * size)), (int(x - size), int(y - size)), mask=mask)
+        source_image.paste(input_image.resize((size, size)), (int(x - size), int(y - size)), mask=mask)
     else:
-        source_image.paste(input_image.resize((2 * size, 2 * size)), (int(x - size), int(y - size)))
+        source_image.paste(input_image.resize((size, size)), (int(x - size), int(y - size)))
 
     # Save the output as a PNG image
     source_image.save("output.png", "PNG")

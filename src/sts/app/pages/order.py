@@ -75,7 +75,10 @@ def cart():
         # Display the current items in the cart
         st.write("Current Items in Cart:")
         for item in cart_items:
-            st.write(item)
+            strg = ""
+            strg = "Größe " + item["size"] + " : " +  item["product"]
+            st.image(item["image"], caption= strg)
+          
         #  Add a checkout button
         checkout_button = st.button("Checkout")
     if checkout_button:
@@ -176,7 +179,10 @@ def checkout():
         # Display the cart items
         st.write("Cart Items:")
         for item in cart_items:
-            st.write(item)
+             for item in cart_items:
+                strg = ""
+                strg = "Größe " + item["size"] + " : " +  item["product"]
+                st.image(item["image"], caption= strg)
         # Add checkout logic and payment processing here
         st.success("Checkout completed successfully!")
 
