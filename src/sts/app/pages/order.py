@@ -109,7 +109,7 @@ def place_product():
         with col1:
             if st.button("T-Shirt"):
                 shirt_image = overlay_image(
-                    "/home/qsh1ne/style-transfer-webshop-3/src/sts/utils/images/tshirt.png", None, None, st.session_state["ai_image"], False, None
+                    "src/sts/utils/images/tshirt.png", None, None, st.session_state["ai_image"], False, None
                     )
                 st.session_state["product_picture"] = shirt_image
                 if shirt_image is not None:

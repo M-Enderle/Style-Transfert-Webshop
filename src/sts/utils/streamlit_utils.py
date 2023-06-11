@@ -13,8 +13,8 @@ from sts.utils.utils import load_user_toml
 
 session = db.session
 user_data = load_user_toml()
-#input_image_path = 'order.py'
-image_path = '/home/qsh1ne/style-transfer-webshop-3/src/sts/utils/images/tshirt_resize.png'
+#input_image_path = 'order.py'src/sts/utils/images/tshirt_resize.png
+image_path = 'src/sts/utils/images/tshirt_resize.png'
 black_path = 'sts/utils/images/black_tshirt.png'
 
 
