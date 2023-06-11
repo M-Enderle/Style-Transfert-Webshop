@@ -13,7 +13,6 @@ from sts.utils.utils import load_user_toml
 
 session = db.session
 user_data = load_user_toml()
-#input_image_path = 'order.py'src/sts/utils/images/tshirt_resize.png
 image_path1 = 'src/sts/utils/images/black.png'
 image_path2 = 'src/sts/utils/images/tshirt_resize.png'
 image_path3 = 'src/sts/utils/images/hoodie.png'
@@ -38,9 +37,9 @@ def overlay_image(strg = "", x=None, y=None, input_image=None, is_circle=False, 
     
     source_image = source_image.convert("RGBA")  # Convert to RGBA for transparency support
     input_image = input_image.convert("RGBA")
-    if x is None or y is None:
-        x = input_image.width // 2
-        y = input_image.height // 2
+    # Set the x & y to the center of the background image
+    x = source_image.width // 2
+    y = source_image.height // 2
 
     if is_circle:
         mask = Image.new('L', input_image.size, 0)

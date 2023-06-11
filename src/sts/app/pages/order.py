@@ -109,7 +109,7 @@ def place_product():
                 )
                 st.session_state["product_picture"] = shirt_image
                 if shirt_image is not None:
-                    st.image(shirt_image, caption="White Shirt")  # Use the correct variable here
+                    st.image(shirt_image, caption="White Shirt")  
         with col2:
             if st.button("Hoodie"):
                 shirt_image = overlay_image(
@@ -117,7 +117,7 @@ def place_product():
                 )
                 st.session_state["product_picture"] = shirt_image
                 if shirt_image is not None:
-                    st.image(shirt_image, caption="Hoodie")  # Use the correct variable here
+                    st.image(shirt_image, caption="Hoodie")  
 
         with col3:
             if st.button("Not-White Shirt"):
@@ -126,10 +126,12 @@ def place_product():
                 )
                 st.session_state["product_picture"] = shirt_image
                 if shirt_image is not None:
-                    st.image(shirt_image, caption="Black Shirt")  # Use the correct variable here
-
+                    st.image(shirt_image, caption="Black Shirt")
+                    
         st.subheader("Select Size:")
         size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
+        st.subheader("Select Product:")
+        type = st.selectbox("Product", ("Shirt", "Shirt(Black)", "Hoodie"))
 
         place_product_button = st.button("Place Product in Cart")
         if place_product_button:
@@ -139,6 +141,7 @@ def place_product():
             product = {
                 "image": st.session_state["product_picture"],
                 "size": size,
+                "product": type,
             }
             # Add the product to the cart
             cart_items.append(product)
