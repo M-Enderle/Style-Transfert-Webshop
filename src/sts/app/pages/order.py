@@ -105,7 +105,7 @@ def place_product():
         with col1:
             if st.button("T-Shirt"):
                 shirt_image = overlay_image(
-                    "shirt", None, None, st.session_state["ai_image"], False, None
+                    "shirt", None, None, st.session_state["ai_image"], st.session_state["cycle_image"], None
                 )
                 st.session_state["product_picture"] = shirt_image
                 if shirt_image is not None:
@@ -113,7 +113,7 @@ def place_product():
         with col2:
             if st.button("Hoodie"):
                 shirt_image = overlay_image(
-                    "hoodie", None, None, st.session_state["ai_image"], False, None
+                    "hoodie", None, None, st.session_state["ai_image"], st.session_state["cycle_image"], None
                 )
                 st.session_state["product_picture"] = shirt_image
                 if shirt_image is not None:
@@ -122,7 +122,7 @@ def place_product():
         with col3:
             if st.button("Not-White Shirt"):
                 shirt_image = overlay_image(
-                    "black", None, None, st.session_state["ai_image"], False, None
+                    "black", None, None, st.session_state["ai_image"], st.session_state["cycle_image"], None
                 )
                 st.session_state["product_picture"] = shirt_image
                 if shirt_image is not None:
@@ -132,6 +132,15 @@ def place_product():
         size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
         st.subheader("Select Product:")
         type = st.selectbox("Product", ("Shirt", "Shirt(Black)", "Hoodie"))
+        st.subheader("Form:")
+        cycle = st.selectbox("Form", ("Rectangle", "Cycle"))
+        print(cycle)
+        if cycle is None:
+            st.session_state["cycle_image"] = False
+        if cycle == "Cycle":
+            st.session_state["cycle_image"] = True
+        if cycle == "Rectangle":
+            st.session_state["cycle_image"] = False
 
         place_product_button = st.button("Place Product in Cart")
         if place_product_button:
@@ -191,6 +200,9 @@ def main() -> None:
 
     if "product_picture" not in st.session_state:
         st.session_state["product_picture"] = None
+
+    if "cycle_image" not in st.session_state:
+        st.session_state["cycle_image"] = False
 
     cart_btn = st.sidebar.button(
         "Cart [0]", key="cart_button", use_container_width=True

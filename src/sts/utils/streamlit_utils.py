@@ -19,7 +19,8 @@ image_path3 = 'src/sts/utils/images/hoodie.png'
 black_path = 'sts/utils/images/black_tshirt.png'
 
 
-def overlay_image(strg = "", x=None, y=None, input_image=None, is_circle=False, size=None):
+
+def overlay_image(strg="", x=None, y=None, input_image=None, is_circle=False, size=None):
     if input_image is None:
         raise ValueError("No image provided")
 
@@ -34,20 +35,20 @@ def overlay_image(strg = "", x=None, y=None, input_image=None, is_circle=False, 
         source_image = Image.open(image_path3)
     else:
         raise EnvironmentError("Something went wrong calling overlay_image()")
-    
+
     source_image = source_image.convert("RGBA")  # Convert to RGBA for transparency support
     input_image = input_image.convert("RGBA")
     # Set the x & y to the center of the background image
     x = source_image.width // 2
-    y = source_image.height // 2
-
+    y = source_image.height // 2 - source_image.height*0.15
+ 
     if is_circle:
-        mask = Image.new('L', input_image.size, 0)
+        mask = Image.new('L', (size, size), 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((x - size, y - size, x + size, y + size), fill=255)
-        source_image.paste(input_image.resize((2 * size, 2 * size)), (x - size, y - size), mask=mask)
+        source_image.paste(input_image.resize((2 * size, 2 * size)), (int(x - size), int(y - size)), mask=mask)
     else:
-        source_image.paste(input_image.resize((2 * size, 2 * size)), (x - size, y - size))
+        source_image.paste(input_image.resize((2 * size, 2 * size)), (int(x - size), int(y - size)))
 
     # Save the output as a PNG image
     source_image.save("output.png", "PNG")
