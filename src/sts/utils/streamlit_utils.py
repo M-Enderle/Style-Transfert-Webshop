@@ -8,6 +8,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 from PIL import Image, ImageDraw
 from functools import lru_cache
+import numpy as np
 
 import sts.app.database as db
 from sts.utils.utils import load_user_toml
@@ -19,10 +20,11 @@ white_tshirt = 'src/sts/utils/images/white_tshirt.png'
 white_hoodie = 'src/sts/utils/images/white_hoodie.png'
 
 
-#@lru_cache
-def overlay_image(strg="", x=None, y=None, input_image=None, is_circle=False, size=None):
-    if input_image is None:
-        raise ValueError("No image provided")
+@lru_cache
+def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
+    input_image = np.frombuffer(input_image, np.uint8)
+    input_image = input_image.reshape(array_shape)
+    input_image = Image.fromarray(input_image)
 
     if size is None:
         size = 0.25  # Default size: 25% of the smaller dimension
@@ -41,7 +43,7 @@ def overlay_image(strg="", x=None, y=None, input_image=None, is_circle=False, si
     # Set the x & y to the center of the background image
     width, height = int(input_image.width * size), int(input_image.height * size)
     x = int(source_image.width  // 2 - width // 2)
-    y = int(source_image.height // 2 - height // 2)
+    y = int(source_image.height // 2 - height // 2 - source_image.height*0.12)
     input_image = input_image.resize((width, height))
 
     if is_circle:

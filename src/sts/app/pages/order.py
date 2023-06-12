@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
+import numpy as np
 
 from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
  
@@ -93,7 +94,6 @@ def cart():
         #st.experimental_rerun()
 
 
-
 def place_product():
     st.title("Place Product")
     # Access the session state to retrieve the AI image
@@ -109,43 +109,36 @@ def place_product():
         # Add logic for placing the product in the shopping cart
         st.subheader("Select Product Type:")
         col1, col2, col3 = st.columns(3)
-        product_type = "Shirt"
+        product_type = "shirt"
+        ai_image_array = np.array(ai_image)
+        array_shape = ai_image_array.shape
+        ai_image_bytes = ai_image_array.tobytes()
+        circle = False
         with col1:
             if st.button("T-Shirt"):
-                shirt_image = overlay_image(
-                    "shirt", None, None, st.session_state["ai_image"], st.session_state["cycle_image"], None
-                )
-                st.session_state["product_picture"] = shirt_image
-                product_preview.image(shirt_image, caption="T-Shirt")
-                product_type = "Shirt"
+                product_type = "shirt"
         with col2:
             if st.button("Hoodie"):
-                shirt_image = overlay_image(
-                    "hoodie", None, None, st.session_state["ai_image"], st.session_state["cycle_image"], None
-                )
-                st.session_state["product_picture"] = shirt_image
-                product_preview.image(shirt_image, caption="Hoodie")
-                product_type = "Hoodie"
+                product_type = "hoodie"
         with col3:
             if st.button("Not-White Shirt"):
-                shirt_image = overlay_image(
-                    "black", None, None, st.session_state["ai_image"], st.session_state["cycle_image"], None
-                )
-                st.session_state["product_picture"] = shirt_image
-                product_preview.image(shirt_image, caption="Black Shirt")
-                product_type = "Shirt(Black)"
+                product_type = "black"
                     
         st.subheader("Select Size:")
         size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
         st.subheader("Form:")
-        cycle = st.selectbox("Form", ("Rectangle", "Cycle"))
-        print(cycle)
-        if cycle is None:
-            st.session_state["cycle_image"] = False
-        if cycle == "Cycle":
-            st.session_state["cycle_image"] = True
-        if cycle == "Rectangle":
-            st.session_state["cycle_image"] = False
+        circle = st.selectbox("Form", ("Rectangle", "Cycle"))
+        if circle == "Cycle":
+            st.session_state["circle_image"] = True
+        else:
+            st.session_state["circle_image"] = False
+
+        shirt_image = overlay_image(
+            product_type, ai_image_bytes, array_shape, st.session_state["circle_image"], None
+        )
+        st.session_state["product_picture"] = shirt_image
+        product_preview.image(shirt_image, 
+                              caption="T-Shirt" if product_type=="shirt" else "Hoodie" if product_type=="hoodie" else "Black Shirt")
 
         place_product_button = st.button("Place Product in Cart")
         if place_product_button:
@@ -210,7 +203,7 @@ def main() -> None:
         st.session_state["product_picture"] = None
 
     if "cycle_image" not in st.session_state:
-        st.session_state["cycle_image"] = False
+        st.session_state["circle_image"] = False
 
     cart_btn = st.sidebar.button(
         "Cart [0]", key="cart_button", use_container_width=True
