@@ -2,14 +2,12 @@
 
 import base64
 import io
-
 import requests
 import streamlit as st
 import streamlit_authenticator as stauth
 from PIL import Image, ImageDraw
 from functools import lru_cache
 import numpy as np
-
 import sts.app.database as db
 from sts.utils.utils import load_user_toml
 
