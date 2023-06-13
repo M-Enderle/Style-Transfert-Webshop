@@ -57,42 +57,23 @@ def display_login():
         )
 
 
-def click(key):
-    st.session_state.clicks[key] = True
-    st.session_state.clicks["Register"] = False
-
-
-def unclick(key):
-    st.session_state.clicks[key] = True
-    st.session_state.clicks["Login"] = False
-
-
 def display_buttons():
     # if not res[1]: TODO amelie use function of Moritz
-    col1, col2 = st.columns(2)
+    tab1, tab2 = st.tabs(["Login", "Register"])
 
-    with col1:
-        login_button = st.button("Login", on_click=click, args=("Login",))
-        st.session_state["current_page"] = display_login
+    with tab1:
+        display_login()
 
-    with col2:
-        register_button = st.button("Register", on_click=unclick, args=("Register",))
-        st.session_state["current_page"] = display_register
+    with tab2:
+        display_register()
+        
 
 
 def main() -> None:
-    if "clicks" not in st.session_state:
-        st.session_state["clicks"] = {}
-        st.session_state.clicks["Login"] = True
-        st.session_state.clicks["Register"] = False
+    
 
     display_buttons()
 
-    if st.session_state.clicks.get("Login", False):
-        display_login()
-
-    elif st.session_state.clicks.get("Register", False):
-        display_register()
 
     # current_page = st.session_state.get("current_page")
     # if current_page == display_register:
