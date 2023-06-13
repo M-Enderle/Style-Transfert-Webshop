@@ -6,13 +6,12 @@ from sqlalchemy.exc import IntegrityError
 from sts.utils.streamlit_utils import get_authenticator
 
 st.title("Style Transfer Shop")
-auth = get_authenticator()
-res = auth.login("Login to access the app", location="sidebar")
 
 
 def register_user(username, name, email, password):
     try:
         user = User(username=username, name=name, email=email)
+        print("yippie")
         user.set_plain_password(password)
 
         session.add(user)
@@ -21,6 +20,7 @@ def register_user(username, name, email, password):
     except IntegrityError:
         session.rollback()
         st.error("Username or email already exists!")
+
 
 def display_register():
     st.title("User Registration")
@@ -36,71 +36,82 @@ def display_register():
         else:
             st.error("Please fill in all the fields.")
 
+
 def display_login():
-    st.title("User Login")
+    auth = get_authenticator()
+    res = auth.login("Login to access the app")
 
-def click():
-    st.session_state['clicks'] = True
-
-def unclick():
-    st.session_state['clicks'] = False
-
-def display_buttons():
-    col1, col2 = st.columns(2)
-
-    with col1:
-        login_button = st.button('Login', on_click = click, args=('Login',))
-        st.session_state["current_page"] = display_login
-
-    with col2:
-        register_button = st.button('Register', on_click = click, args=('Register',))
-        st.session_state["current_page"] = display_login
-
- 
-if not res[1]:
-    st.markdown(
-        """
+    if res[1]:
+        st.write("You are succesfully logged in!")
+        auth.logout("Logout")
+    else:
+        st.warning("Not registered yet? Just click on Register.")
+        st.markdown(
+            """
         test_user:<br>
         name: test<br>
         password: 3PXzAxtU6PSbCohf<br>
         email: test@test.com<br>
     """,
-        unsafe_allow_html=True,
-    )
-    
+            unsafe_allow_html=True,
+        )
 
-else:
-    auth.logout("Logout")
+
+def click(key):
+    st.session_state.clicks[key] = True
+    st.session_state.clicks["Register"] = False
+
+
+def unclick(key):
+    st.session_state.clicks[key] = True
+    st.session_state.clicks["Login"] = False
+
+
+def display_buttons():
+    # if not res[1]: TODO amelie use function of Moritz
+    col1, col2 = st.columns(2)
+
+    with col1:
+        login_button = st.button("Login", on_click=click, args=("Login",))
+        st.session_state["current_page"] = display_login
+
+    with col2:
+        register_button = st.button("Register", on_click=unclick, args=("Register",))
+        st.session_state["current_page"] = display_register
 
 
 def main() -> None:
+    if "clicks" not in st.session_state:
+        st.session_state["clicks"] = {}
+        st.session_state.clicks["Login"] = True
+        st.session_state.clicks["Register"] = False
 
-    if 'clicks' not in st.session_state:
-        st.session_state['clicks'] = {}
     display_buttons()
-    if st.session_state.clicks.get('Login', False):
+
+    if st.session_state.clicks.get("Login", False):
         display_login()
-    elif st.session_state.clicks.get('Register', False):
+
+    elif st.session_state.clicks.get("Register", False):
         display_register()
 
-    #current_page = st.session_state.get("current_page")
-    #if current_page == display_register:
+    # current_page = st.session_state.get("current_page")
+    # if current_page == display_register:
     #    display_register()
-    #elif current_page == display_login:
+    # elif current_page == display_login:
     #    display_login()
 
-    #if "display_register" not in st.session_state:
+    # if "display_register" not in st.session_state:
     #    st.session_state["display_register"] = None
 
-    #if "diplay_login" not in st.session_state:
+    # if "diplay_login" not in st.session_state:
     #    st.session_state["display_login"] = None
 
-    #if current_page == display_register:
+    # if current_page == display_register:
     #    display_buttons()
     #    display_register()
-    #if current_page == display_login:
+    # if current_page == display_login:
     #    display_buttons()
-    #    display_login()  
+    #    display_login()
 
 
 if __name__ == "__main__":
