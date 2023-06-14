@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 
 from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
+from sts.utils.utils import generate_payment_link
  
 
 def upload_image(column_num):
@@ -208,7 +209,6 @@ def checkout():
             #TODO amelie: set price as item["price"]
             single_price = item["price"]
             new_item = {
-                "Product": image_paths[product],
                 "Productname": product_name,
                 "product_type": product,
                 "Amount": amount,
@@ -224,11 +224,17 @@ def checkout():
     total_sum = checkout_table["Price Total"].str.replace(" €", "").astype(float).sum()
     st.table(checkout_table[["Productname", "Amount", "Size", "Price Item", "Price Total"]])
 
+    st.session_state["cart_items"] = checkout_items
+
     st.markdown(
         f"<div style='display: flex; justify-content: flex-end;'><p>"\
             f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
         unsafe_allow_html=True
     )
+
+    if st.button("Proceed to Payment"):
+        generate_payment_link(checkout_items)
+
 
     
 
