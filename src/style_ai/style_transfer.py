@@ -14,20 +14,10 @@ from torch import nn, optim
 from torchvision import models
 from tqdm import tqdm
 
-from style_ai.utils import (
-    calculate_loss,
-    fold_laplace_pyramid,
-    laplacian,
-    load_image,
-    make_laplace_pyramid,
-    np_to_pil,
-    np_to_tensor,
-    pil_resize_long_edge_to,
-    pil_to_np,
-    sample_indices,
-    tensor_resample,
-    tensor_to_np,
-)
+from style_ai.utils import (calculate_loss, fold_laplace_pyramid, laplacian,
+                            load_image, make_laplace_pyramid, np_to_pil,
+                            np_to_tensor, pil_resize_long_edge_to, pil_to_np,
+                            sample_indices, tensor_resample, tensor_to_np)
 
 
 class Vgg16Extractor(nn.Module):
@@ -188,7 +178,12 @@ def optimize(res, content, style, w_content, learning_rate, extractor):
 
 
 def strotss(
-    content_pil, style_pil, content_weight=1.0 * 16.0, device="cuda:0", space="uniform"
+    content_pil,
+    style_pil,
+    content_weight=1.0 * 16.0,
+    extractor: Vgg16Extractor = None,
+    device="cuda:0",
+    space="uniform",
 ):
     """
     Strotss implementation
@@ -207,7 +202,11 @@ def strotss(
     style_full = np_to_tensor(style_np, space).to(device)
 
     learning_rate = 2e-3
-    extractor = Vgg16Extractor(space=space).to(device)
+
+    if extractor is None:
+        extractor = Vgg16Extractor(space=space)
+
+    extractor.to(device)
 
     scales = []
     for scale in range(10):
@@ -271,6 +270,7 @@ def strotss(
 def style_transfer(
     content: Image,
     style: Image,
+    extractor: Vgg16Extractor = None,
     weight: float = 1.5,
     device: str = "cuda:0",
     resize_to: int = 512,
@@ -289,7 +289,9 @@ def style_transfer(
     """
     content = pil_resize_long_edge_to(content, resize_to)
     style = pil_resize_long_edge_to(style, resize_to)
-    stylized = strotss(content, style, content_weight=weight, device=device)
+    stylized = strotss(
+        content, style, content_weight=weight, extractor=extractor, device=device
+    )
     return stylized
 
 

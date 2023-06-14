@@ -2,6 +2,7 @@
 
 import base64
 import io
+import runpod
 
 import requests
 import streamlit as st
@@ -78,38 +79,68 @@ def get_authenticator() -> stauth.Authenticate:
     )
 
 
-def transfer(content_img: Image, style_img: Image):
+def convert_img_to_base64(img) -> str:
+    """
+    Converts an image to base64 string.
+    """
+
+    result_bytes = io.BytesIO()
+    img.save(result_bytes, format="JPEG")
+    result_bytes.seek(0)
+    result_base64 = base64.b64encode(result_bytes.getvalue()).decode("utf-8")
+    return result_base64
+
+
+def convert_base64_to_img(base64_str: str):
+    """
+    Converts a base64 string to an image.
+    """
+
+    img = Image.open(io.BytesIO(base64.b64decode(base64_str)))
+    return img
+
+
+def transfer(content_img, style_img):
     """Transfer style from style image to content image."""
 
-    # convert to RBG if RGBAs  
-    content_img = content_img.convert("RGB")    
+    content_img = content_img.convert("RGB")
     style_img = style_img.convert("RGB")
 
-    # Convert content_img to bytes-like object
-    content_buffer = io.BytesIO()
-    content_img.save(content_buffer, format="JPEG")
-    content_img_bytes = content_buffer.getvalue()
+    content_img = convert_img_to_base64(content_img)
+    style_img = convert_img_to_base64(style_img)
 
-    # Convert style_img to bytes-like object
-    style_buffer = io.BytesIO()
-    style_img.save(style_buffer, format="JPEG")
-    style_img_bytes = style_buffer.getvalue()
+    if load_user_toml()["runpod"]["use_runpod"] == "true":
+        runpod.api_key = load_user_toml()["runpod"]["api_key"]
+        endpoint = runpod.Endpoint(load_user_toml()["runpod"]["endpoint"])
 
-    # Encode as base64 strings
-    content_img_64 = base64.b64encode(content_img_bytes).decode("utf-8")
-    style_img_64 = base64.b64encode(style_img_bytes).decode("utf-8")
+        data = {
+            "content_img": content_img,
+            "style_img": style_img,
+            "resize_to": 512,
+        }
 
-    files = [("content_img", content_img_64), ("style_img", style_img_64)]
+        run_request = endpoint.run(
+            data["input"],
+        )
 
-    try:
         with st.spinner("Transferring style..."):
-            response = requests.post("http://localhost:8000/transfer", files=files)
-    except requests.exceptions.ConnectionError:
-        st.error("ConnectionError: Make sure the server is running.")
-        return None
+            result = run_request.output()
 
-    retult_img = Image.open(
-        io.BytesIO(base64.b64decode(response.json()["result_image"]))
-    )
+        result_image = convert_base64_to_img(result["result_image"])
+        return result_image
 
-    return retult_img
+    else:
+        files = [("content_img", content_img), ("style_img", style_img)]
+
+        try:
+            with st.spinner("Transferring style..."):
+                response = requests.post("http://localhost:8000/transfer", files=files)
+        except requests.exceptions.ConnectionError:
+            st.error("ConnectionError: Make sure the server is running.")
+            return None
+
+        retult_img = Image.open(
+            io.BytesIO(base64.b64decode(response.json()["result_image"]))
+        )
+
+        return retult_img
