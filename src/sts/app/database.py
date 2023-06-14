@@ -16,7 +16,7 @@ user_data = load_user_toml()
 host = user_data["database"]["host"]
 port = int(user_data["database"]["port"])
 username = user_data["database"]["username"]
-password = user_data["database"]["password"]
+user_password = user_data["database"]["password"]
 
 
 class User(MyBase):
@@ -130,7 +130,7 @@ def create_database() -> Engine:
     """
 
     _engine = create_engine(
-        f"mysql+pymysql://{username}:{password}@{host}:{port}/StyleTransfer"
+        f"mysql+pymysql://{username}:{user_password}@{host}:{port}/StyleTransfer"
     )
     return _engine
 

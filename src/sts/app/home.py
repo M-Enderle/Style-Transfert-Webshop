@@ -8,6 +8,7 @@ from sts.utils.streamlit_utils import get_authenticator
 st.title("Style Transfer Shop")
 auth = get_authenticator()
 
+
 def register_user(username, name, email, password):
     try:
         user = User(username=username, name=name, email=email)
@@ -17,15 +18,14 @@ def register_user(username, name, email, password):
         session.add(user)
         session.commit()
 
-        st.session_state['name'] = name 
-        st.session_state['authentication_status'] = True
-        st.session_state['username'] = username
+        st.session_state["name"] = name
+        st.session_state["authentication_status"] = True
+        st.session_state["username"] = username
         st.experimental_rerun()
     except IntegrityError:
         session.rollback()
         st.error("Username or email already exists!")
         return
-
 
 
 def display_register():
@@ -47,7 +47,6 @@ def display_login(after_register=False):
     if after_register:
         st.success("User registered successfully! Now log in!")
 
-    
     res = auth.login("Login to access the app")
 
     if res[1]:
@@ -78,28 +77,30 @@ def display_buttons():
 
 def logged_in_home():
     st.title("Style Transfer Webshop")
-    st.write("Welcome to our Style Transfer Webshop! Create unique and artistic images by combining the styles of two different pictures.")
+    st.write(
+        "Welcome to our Style Transfer Webshop!"\
+             "Create unique and artistic images by combining"\
+                 "the styles of two different pictures."
+    )
     auth.logout("Logout")
     st.header("How it Works")
-    st.markdown("""
+    st.markdown(
+        """
         1. Upload an image you want to apply the style to (Content Image).
         2. Upload an image that represents the desired artistic style (Style Image).
         3. Our AI model will apply the style of the Style Image to the Content Image.
         4. You can then select from a range of products to print your AI-generated image on!
 
         Get started now and unleash your creativity!
-    """)
-        
+    """
+    )
 
 
 def main() -> None:
-    
-    #if TODO moritzmethode:
+    # if TODO moritzmethode:
     #   logged_in_home()
-    #else
-        display_buttons()
-
-    
+    # else
+    display_buttons()
 
 
 if __name__ == "__main__":
