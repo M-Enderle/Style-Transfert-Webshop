@@ -109,7 +109,7 @@ def transfer(content_img, style_img):
     content_img = convert_img_to_base64(content_img)
     style_img = convert_img_to_base64(style_img)
 
-    if load_user_toml()["runpod"]["use_runpod"] == "true":
+    if load_user_toml()["runpod"]["use"] == "true":
         runpod.api_key = load_user_toml()["runpod"]["api_key"]
         endpoint = runpod.Endpoint(load_user_toml()["runpod"]["endpoint"])
 
@@ -120,7 +120,7 @@ def transfer(content_img, style_img):
         }
 
         run_request = endpoint.run(
-            data["input"],
+            data,
         )
 
         with st.spinner("Transferring style..."):
