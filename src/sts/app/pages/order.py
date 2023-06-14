@@ -126,7 +126,7 @@ def place_product():
                 product_type = "black"
                     
         st.subheader("Select Size:")
-        size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
+        size = st.selectbox("Size", ("S", "M", "L", "XL"))
         st.subheader("Form:")
         circle = st.selectbox("Form", ("Rectangle", "Cycle"))
         if circle == "Cycle":
