@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
 import numpy as np
+import pandas as pd
 
 from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
  
@@ -145,10 +146,17 @@ def place_product():
             # Retrieve the items in the cart from the session state
             cart_items = st.session_state.get("cart_items", [])
             # Create the product object with image and size information
+            prices = {
+                "hoodie": 25,
+                "shirt" : 15,
+                "black" : 15
+            }
+            price = prices[product_type]
             product = {
                 "image": st.session_state["product_picture"],
                 "size": size,
                 "product": product_type,
+                "price": price
             }
             # Add the product to the cart
             cart_items.append(product)
@@ -162,24 +170,67 @@ def place_product():
         st.warning("Please generate the AI image first!")
 
 def checkout():
+    #TODO: you cannot get to this page, when there is nothing added to your cart
     st.title("Checkout")
     # Access the session state to retrieve the cart items
     cart_items = st.session_state.get("cart_items", [])
-    if len(cart_items) == 0:
-        st.warning("Your cart is empty!")
-        if st.button("Create Image"):
-            #TO DO: Redirect from Cart to Create AI Image, not staying in the Cart Container, but the Create AI Container.
-            pass
-    else:
-        # Display the cart items
-        st.write("Cart Items:")
-        for item in cart_items:
-             for item in cart_items:
-                strg = ""
-                strg = "Größe " + item["size"] + " : " +  item["product"]
-                st.image(item["image"], caption= strg)
-        # Add checkout logic and payment processing here
-        st.success("Checkout completed successfully!")
+
+    shipping_cost = {
+        "Productname": "Shipping",
+        "Amount": "via DHL",
+        "Price Total": "5.49 €"
+    }
+    
+    checkout_items = []
+    for item in cart_items:
+        already_added = False
+        size = item["size"]
+        product = item["product"]
+
+        for checkout_item in checkout_items:
+            if checkout_items:
+                if checkout_item["Size"] == size and checkout_item["product_type"] == product:
+                    checkout_item["Amount"] += 1
+                    sum = int(checkout_item["Price Item"].replace(" €", "")) * int(checkout_item["Amount"])
+                    checkout_item["Price Total"] = str(sum) + " €"
+                    already_added = True 
+
+        if not already_added:
+            product_name="T-Shirt - white" if product=="shirt" \
+                else "Hoodie - white" if product=="hoodie" \
+                else "T-Shirt - black"
+            amount = 1
+            image_paths = {
+                "hoodie": "src/sts/utils/images/white_hoodie.png",
+                "shirt":"src/sts/utils/images/white_tshirt.png",
+                "black": "src/sts/utils/images/black_tshirt.png"
+            }
+            #TODO amelie: set price as item["price"]
+            single_price = item["price"]
+            new_item = {
+                "Product": image_paths[product],
+                "Productname": product_name,
+                "product_type": product,
+                "Amount": amount,
+                "Size": size,
+                "Price Item": str(single_price) + " €",
+                "Price Total": str(single_price) + " €"
+            }
+            checkout_items.append(new_item)
+        
+    checkout_items.append(shipping_cost)
+    checkout_table = pd.DataFrame(checkout_items)
+    checkout_table = checkout_table.fillna("")
+    total_sum = checkout_table["Price Total"].str.replace(" €", "").astype(float).sum()
+    st.table(checkout_table[["Productname", "Amount", "Size", "Price Item", "Price Total"]])
+
+    st.markdown(
+        f"<div style='display: flex; justify-content: flex-end;'><p>"\
+            f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
+        unsafe_allow_html=True
+    )
+
+    
 
 def index():
     st.warning("Please continue to either your cart or create another AI Picture")
