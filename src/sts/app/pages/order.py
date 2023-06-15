@@ -77,22 +77,25 @@ def cart():
         st.title("Cart")
         # Access the session state to retrieve the items in the cart
         cart_items = st.session_state.get("cart_items", [])
-        # Display the current items in the cart
-        st.write("Current Items in Cart:")
-        for item in cart_items:
-            strg = ""
-            strg = "Größe " + item["size"] + " : " +  item["product"]
-            st.image(item["image"], caption= strg)
+        if cart_items:
+            # Display the current items in the cart
+            st.write("Current Items in Cart:")
+    
+            for item in cart_items:
+                strg = ""
+                strg = "Größe " + item["size"] + " : " +  item["product"]
+                st.image(item["image"], caption= strg)
           
-        #  Add a checkout button
-        checkout_button = st.button("Checkout")
-    if checkout_button:
-        # Set the current page to the checkout function
-        placeholder.empty()
-        checkout()
-        st.session_state["current_page"] = checkout
-
-        #st.experimental_rerun()
+            #  Add a checkout button
+            checkout_button = st.button("Checkout")
+            if checkout_button:
+                # Set the current page to the checkout function
+                placeholder.empty()
+                checkout()
+                st.session_state["current_page"] = checkout
+        else:
+            st.warning("You have currently not added anything to your cart."\
+                       "\nPlace a order and it will be displayed here.")
 
 
 def place_product():
@@ -177,17 +180,19 @@ def checkout():
     the items that he is about to order. On this page the user can direct to payment
     to end his shopping experience.
     """
-    #TODO: you cannot get to this page, when there is nothing added to your cart
     st.title("Checkout")
+
     # Access the session state to retrieve the cart items
     cart_items = st.session_state.get("cart_items", [])
 
+    # Adding information about shipping cost.
     shipping_cost = {
         "Productname": "Shipping",
         "Amount": "via DHL",
         "Price Total": "5.49 €"
     }
     
+    # Clustering and storing items the customer added to his cart.
     checkout_items = []
     for item in cart_items:
         already_added = False
@@ -212,7 +217,7 @@ def checkout():
                 "shirt":"src/sts/utils/images/white_tshirt.png",
                 "black": "src/sts/utils/images/black_tshirt.png"
             }
-            
+
             single_price = item["price"]
             new_item = {
                 "Productname": product_name,
@@ -223,21 +228,26 @@ def checkout():
                 "Price Total": str(single_price) + " €"
             }
             checkout_items.append(new_item)
-        
+
+    # Displaying the the items in the customers cart.
     checkout_items.append(shipping_cost)
     checkout_table = pd.DataFrame(checkout_items)
     checkout_table = checkout_table.fillna("")
     total_sum = checkout_table["Price Total"].str.replace(" €", "").astype(float).sum()
     st.table(checkout_table[["Productname", "Amount", "Size", "Price Item", "Price Total"]])
 
+    # Setting the cart items in the session_state to the more ordered checkout items
     st.session_state["cart_items"] = checkout_items
 
+    # Calculating and displaying the total sum of the order including shipping fees.
     st.markdown(
         f"<div style='display: flex; justify-content: flex-end;'><p>"\
             f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
         unsafe_allow_html=True
     )
 
+    # Displaying a Payment Button which generates a payment link and directs to the 
+    # stripe payment page
     if st.button("Proceed to Payment"):
         generate_payment_link(checkout_items)
 
