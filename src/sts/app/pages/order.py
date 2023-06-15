@@ -4,8 +4,7 @@ from streamlit_extras.switch_page_button import switch_page
 import numpy as np
 import pandas as pd
 
-from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
-from sts.utils.utils import generate_payment_link
+from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image, generate_payment_link
  
 
 def upload_image(column_num):
@@ -171,6 +170,13 @@ def place_product():
         st.warning("Please generate the AI image first!")
 
 def checkout():
+    """
+    Creates the checkout page. 
+    All of the items, added to the cart and stored in the session are shown.
+    The user should just get an overview of his order means the amount and
+    the items that he is about to order. On this page the user can direct to payment
+    to end his shopping experience.
+    """
     #TODO: you cannot get to this page, when there is nothing added to your cart
     st.title("Checkout")
     # Access the session state to retrieve the cart items
@@ -206,7 +212,7 @@ def checkout():
                 "shirt":"src/sts/utils/images/white_tshirt.png",
                 "black": "src/sts/utils/images/black_tshirt.png"
             }
-            #TODO amelie: set price as item["price"]
+            
             single_price = item["price"]
             new_item = {
                 "Productname": product_name,

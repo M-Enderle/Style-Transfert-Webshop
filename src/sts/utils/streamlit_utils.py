@@ -3,7 +3,9 @@
 import base64
 import io
 import runpod
+import time
 
+import stripe
 import requests
 import streamlit as st
 import streamlit_authenticator as stauth
@@ -15,9 +17,9 @@ from sts.utils.utils import load_user_toml
 
 session = db.session
 user_data = load_user_toml()
-black_tshirt = "src/sts/utils/images/black_tshirt.png"
-white_tshirt = "src/sts/utils/images/white_tshirt.png"
-white_hoodie = "src/sts/utils/images/white_hoodie.png"
+BLACK_SHIRT = "src/sts/utils/images/black_tshirt.png"
+WHITE_SHIRT = "src/sts/utils/images/white_tshirt.png"
+WHITE_HOODIE = "src/sts/utils/images/white_hoodie.png"
 
 
 @lru_cache
@@ -30,11 +32,11 @@ def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
         size = 0.25  # Default size: 25% of the smaller dimension
 
     if strg == "shirt":
-        source_image = Image.open(white_tshirt)
+        source_image = Image.open(WHITE_SHIRT)
     elif strg == "black":
-        source_image = Image.open(black_tshirt)
+        source_image = Image.open(BLACK_SHIRT)
     elif strg == "hoodie":
-        source_image = Image.open(white_hoodie)
+        source_image = Image.open(WHITE_HOODIE)
     else:
         raise EnvironmentError("Something went wrong calling overlay_image()")
 
@@ -160,3 +162,56 @@ def transfer(content_img, style_img):
         )
 
         return retult_img
+
+
+def generate_payment_link(checkout_items):
+    """
+    This function generates a payment link via the stripe API. All of the items
+    the customer added to the car are forwarded to stripe to then generate the
+    payment link.
+    :params:
+        checkout_items: The already sorted items having to be paid
+    """
+    with open("api_key.conf", "r") as f:
+        stripe.api_key = f.read()
+
+    items = {
+        "shirt": "price_1NIwaDESoYzI2jIeLtaeYFB1",
+        "hoodie": "price_1NIwbjESoYzI2jIerbxUMCYb",
+        "black": "price_1NIwYnESoYzI2jIeRGmnZbVs",
+    }
+
+    order = []
+
+    for item in checkout_items:
+        copy_item = {"Product": item["product_type"], "Amount": item["Amount"]}
+        order.append(copy_item)
+
+    session = stripe.checkout.Session.create(
+        payment_method_types=["card"],
+        line_items=[
+            {
+                "price": items[order_item["item"]],
+                "quantity": order_item["quantity"],
+            }
+            for order_item in order
+        ],
+        mode="payment",
+        success_url="https://www.metritests.com/metrica/MobileRedirectPage.aspx",
+        # We have to find some way to close the tab
+        cancel_url="https://www.metritests.com/metrica/MobileRedirectPage.aspx",
+        # We have to find some way to close the tab
+    )
+
+    timeout_after = time.time() + 60 * 2  # 2 minutes from now
+
+    while session.payment_status != "paid":
+        if time.time() > timeout_after:
+            # Timeout Logik == Cancelled Logik
+            print("Timeout / Cancelled")
+            break
+        session = stripe.checkout.Session.retrieve(session.id)
+        # We wait
+    else:
+        # Paid Logik
+        print("Payment status: %s" % session.payment_status)
