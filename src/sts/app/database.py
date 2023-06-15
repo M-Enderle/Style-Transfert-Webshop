@@ -49,9 +49,16 @@ class User(MyBase):
         return self.email == other.email
 
     def get_plain_password(self):
+        """
+        This function returns the password of the user.
+        """
         return self.password_hash
 
     def set_plain_password(self, password):
+        """
+        This function sets the password for the user. This is used, when registering.
+        TODO: hash the password
+        """
         self.password_hash = password
 
 

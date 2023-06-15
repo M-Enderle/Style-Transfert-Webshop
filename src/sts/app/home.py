@@ -3,13 +3,24 @@ import streamlit_authenticator as stauth
 from database import session, engine, User
 from sqlalchemy.exc import IntegrityError
 
-from sts.utils.streamlit_utils import get_authenticator
+from sts.utils.streamlit_utils import get_authenticator, is_logged_in
 
 st.title("Style Transfer Shop")
 auth = get_authenticator()
 
 
 def register_user(username, name, email, password):
+    """
+    This function tries to register a new user. If the users E-Mail
+    or username already exists in the database, there will be an Integrity Error
+    and the user will see a warning, that he cannot register. Otherwise the user is
+    registered in the database.
+    :params:
+        username: username the user entered
+        name: name the user entered
+        email: email the user entered
+        password: password the user entered
+    """
     try:
         user = User(username=username, name=name, email=email)
         print("yippie")
@@ -29,6 +40,11 @@ def register_user(username, name, email, password):
 
 
 def display_register():
+    """
+    This page is displayed, when the user clicks on the Register Tab.
+    Here the user can enter his personal inforation and try to register
+    in the WebApp.
+    """
     st.title("User Registration")
 
     username = st.text_input("Username")
@@ -39,33 +55,35 @@ def display_register():
     if st.button("Register now"):
         if username and name and email and password:
             register_user(username, name, email, password)
+            st.success("You are succesfully registered. Log In now.")
         else:
             st.error("Please fill in all the fields.")
 
 
-def display_login(after_register=False):
-    if after_register:
-        st.success("User registered successfully! Now log in!")
-
+def display_login():
+    """
+    This page is displayed, when the user first visits our home-page, or when they click
+    on the Login-tab. The user can enter his login information and login to the app. When logged
+    in succesfully, it will be saved in the session.
+    """
     res = auth.login("Login to access the app")
-
-    if res[1]:
-        st.write("You are succesfully logged in!")
-    else:
-        st.warning("Not registered yet? Just click on Register.")
-        st.markdown(
-            """
+    st.warning("Not registered yet? Just click on Register.")
+    st.markdown(
+        """
         test_user:<br>
         name: test<br>
         password: 3PXzAxtU6PSbCohf<br>
         email: test@test.com<br>
-    """,
-            unsafe_allow_html=True,
-        )
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def display_buttons():
-    # if not res[1]: TODO amelie use function of Moritz
+    """
+    This creates the buttons to switch in between the Register and the
+    Login Layout.
+    """
     tab1, tab2 = st.tabs(["Login", "Register"])
 
     with tab1:
@@ -76,13 +94,17 @@ def display_buttons():
 
 
 def logged_in_home():
-    st.title("Style Transfer Webshop")
-    st.write(
-        "Welcome to our Style Transfer Webshop!"\
-             "Create unique and artistic images by combining"\
-                 "the styles of two different pictures."
-    )
+    """
+    This creates the homepage, which the user can see, when logged in.
+    A short description of the WebShop and how it works is included.
+    The user can logout if they want to.
+    """
     auth.logout("Logout")
+    st.write(
+        "Welcome to our Style Transfer Webshop!"
+        "Create unique and artistic images by combining"
+        "the styles of two different pictures."
+    )
     st.header("How it Works")
     st.markdown(
         """
@@ -97,10 +119,14 @@ def logged_in_home():
 
 
 def main() -> None:
-    # if TODO moritzmethode:
-    #   logged_in_home()
-    # else
-    display_buttons()
+    """
+    This handles the checking of the logged in status and
+    organizes what should be shown at the moment.
+    """
+    if is_logged_in():
+        logged_in_home()
+    else:
+        display_buttons()
 
 
 if __name__ == "__main__":

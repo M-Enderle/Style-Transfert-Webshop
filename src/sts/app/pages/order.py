@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 
-from sts.utils.streamlit_utils import get_authenticator, transfer
+from sts.utils.streamlit_utils import get_authenticator, transfer, is_logged_in
 
 # TODO Josh: Add two columns for the two images to be uplaoded
 # TODO Josh: Add a button to apply transfer style
@@ -110,51 +110,59 @@ def home():
 
 
 def main() -> None:
-    # add sidebar with create_image, place product, cart, checkout
-    st.sidebar.title("Order Process")
+    if is_logged_in():
+        # add sidebar with create_image, place product, cart, checkout
+        st.sidebar.title("Order Process")
 
-    if "images" not in st.session_state:
-        st.session_state["images"] = [None, None]
+        if "images" not in st.session_state:
+            st.session_state["images"] = [None, None]
 
-    if "ai_image" not in st.session_state:
-        st.session_state["ai_image"] = None
+        if "ai_image" not in st.session_state:
+            st.session_state["ai_image"] = None
 
-    if "current_page" not in st.session_state:
-        st.session_state["current_page"] = home
+        if "current_page" not in st.session_state:
+            st.session_state["current_page"] = home
 
-    cart_btn = st.sidebar.button(
-        "Cart [0]", key="cart_button", use_container_width=True
-    )
-    create_image_btn = st.sidebar.button(
-        "Create AI Image", key="create_image_button", use_container_width=True
-    )
-    place_product_btn = st.sidebar.button(
-        "Place Product",
-        use_container_width=True,
-        disabled=st.session_state["ai_image"] is None,
-    )
-    checkout_btn = st.sidebar.button(
-        "Checkout", use_container_width=True, disabled=True
-    )
+        cart_btn = st.sidebar.button(
+            "Cart [0]", key="cart_button", use_container_width=True
+        )
+        create_image_btn = st.sidebar.button(
+            "Create AI Image", key="create_image_button", use_container_width=True
+        )
+        place_product_btn = st.sidebar.button(
+            "Place Product",
+            use_container_width=True,
+            disabled=st.session_state["ai_image"] is None,
+        )
+        checkout_btn = st.sidebar.button(
+            "Checkout", use_container_width=True, disabled=True
+        )
 
-    if cart_btn:
-        cart()
-        st.session_state["current_page"] = cart
+        if cart_btn:
+            cart()
+            st.session_state["current_page"] = cart
 
-    elif create_image_btn:
-        create_image()
-        st.session_state["current_page"] = create_image
+        elif create_image_btn:
+            create_image()
+            st.session_state["current_page"] = create_image
 
-    elif place_product_btn:
-        place_product()
-        st.session_state["current_page"] = place_product
+        elif place_product_btn:
+            place_product()
+            st.session_state["current_page"] = place_product
 
-    elif checkout_btn:
-        checkout()
-        st.session_state["current_page"] = checkout
+        elif checkout_btn:
+            checkout()
+            st.session_state["current_page"] = checkout
 
+        else:
+            st.session_state["current_page"]()
     else:
-        st.session_state["current_page"]()
+        st.warning(
+            "You have to log in to use the features of the Webshop. Please log in."
+            "\nIf you do not have an account yet, feel free to register in home."
+        )
+        auth = get_authenticator()
+        res = auth.login("Login to access the app", location="sidebar")
 
 
 if __name__ == "__main__":
