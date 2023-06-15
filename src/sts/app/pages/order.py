@@ -4,7 +4,7 @@ from streamlit_extras.switch_page_button import switch_page
 import numpy as np
 import pandas as pd
 
-from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image, generate_payment_link
+from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image, generate_payment_link, pay_articles
  
 
 def upload_image(column_num):
@@ -46,7 +46,7 @@ def create_image():
     )
 
     if st.button("Debug", use_container_width=True):
-        st.session_state["ai_image"] = Image.open("/home/fe02174/style_transfer/style-transfer-webshop/src/sts/utils/images/black_tshirt.png")
+        st.session_state["ai_image"] = Image.open("src/sts/utils/images/black_tshirt.png")
 
     if generate and all([image is not None for image in st.session_state["images"]]):
         ai_image = transfer(
@@ -73,6 +73,7 @@ def create_image():
 
 def cart():
     placeholder = st.empty()
+    checkout_button = None
     with placeholder.container():
         st.title("Cart")
         # Access the session state to retrieve the items in the cart
@@ -83,19 +84,22 @@ def cart():
     
             for item in cart_items:
                 strg = ""
-                strg = "Größe " + item["size"] + " : " +  item["product"]
+                item_str = "T-Shirt" if item["product"]=="shirt" else "Hoodie" \
+                    if item["product"]=="hoodie" else "Black Shirt"
+                strg = "Größe " + item["size"] + " : " +  item_str
                 st.image(item["image"], caption= strg)
           
             #  Add a checkout button
             checkout_button = st.button("Checkout")
-            if checkout_button:
-                # Set the current page to the checkout function
-                placeholder.empty()
-                checkout()
-                st.session_state["current_page"] = checkout
         else:
             st.warning("You have currently not added anything to your cart."\
                        "\nPlace a order and it will be displayed here.")
+    if checkout_button:
+        # Set the current page to the checkout function
+        placeholder.empty()
+        checkout()
+        st.session_state["current_page"] = checkout
+        
 
 
 def place_product():
@@ -113,7 +117,11 @@ def place_product():
         # Add logic for placing the product in the shopping cart
         st.subheader("Select Product Type:")
         col1, col2, col3 = st.columns(3)
-        product_type = "shirt"
+        if "product" in st.session_state:
+            product_type = st.session_state["product"]
+        else: 
+            st.session_state["product"] = "shirt"
+            product_type = "shirt"
         ai_image_array = np.array(ai_image)
         array_shape = ai_image_array.shape
         ai_image_bytes = ai_image_array.tobytes()
@@ -121,12 +129,15 @@ def place_product():
         with col1:
             if st.button("T-Shirt"):
                 product_type = "shirt"
+                st.session_state["product"] = product_type
         with col2:
             if st.button("Hoodie"):
                 product_type = "hoodie"
+                st.session_state["product"] = product_type
         with col3:
             if st.button("Not-White Shirt"):
                 product_type = "black"
+                st.session_state["product"] = product_type
                     
         st.subheader("Select Size:")
         size = st.selectbox("Size", ("S", "M", "L", "XL"))
@@ -158,7 +169,7 @@ def place_product():
             product = {
                 "image": st.session_state["product_picture"],
                 "size": size,
-                "product": product_type,
+                "product": st.session_state["product"],
                 "price": price
             }
             # Add the product to the cart
@@ -188,8 +199,10 @@ def checkout():
     # Adding information about shipping cost.
     shipping_cost = {
         "Productname": "Shipping",
-        "Amount": "via DHL",
-        "Price Total": "5.49 €"
+        "Amount": "1",
+        "Size": "via DHL",
+        "Price Total": "5.49 €",
+        "product_type": "shipping"
     }
     
     # Clustering and storing items the customer added to his cart.
@@ -237,7 +250,7 @@ def checkout():
     st.table(checkout_table[["Productname", "Amount", "Size", "Price Item", "Price Total"]])
 
     # Setting the cart items in the session_state to the more ordered checkout items
-    st.session_state["cart_items"] = checkout_items
+    # st.session_state["cart_items"] = checkout_items
 
     # Calculating and displaying the total sum of the order including shipping fees.
     st.markdown(
@@ -245,14 +258,13 @@ def checkout():
             f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
         unsafe_allow_html=True
     )
-
+    link = generate_payment_link(checkout_items)
     # Displaying a Payment Button which generates a payment link and directs to the 
     # stripe payment page
-    if st.button("Proceed to Payment"):
-        generate_payment_link(checkout_items)
+    st.markdown(f'''
+        <a href={link}><button style="background-color:LightGrey;">Proceed to Payment</button></a>
+        ''', unsafe_allow_html=True)     
 
-
-    
 
 def index():
     st.warning("Please continue to either your cart or create another AI Picture")
