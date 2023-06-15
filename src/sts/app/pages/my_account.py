@@ -5,23 +5,6 @@ from sts.utils.streamlit_utils import get_authenticator
 
 auth = get_authenticator()
 
-
-def display_my_account():
-    """
-    Creates the My Account page the user sees, when logged in.
-    """
-    st.title("My Account")
-    auth.logout("Logout")
-
-    tab1, tab2 = st.tabs(["Your information", "Change your information"])
-
-    with tab1:
-        display_user_information()
-
-    with tab2:
-        display_changeable_information()
-
-
 def display_user_information():
     """
     The user can have a look at the information which they
@@ -29,7 +12,6 @@ def display_user_information():
     """
     user_information = [{"Username": st.session_state["username"],
                         "Name": st.session_state["name"]
-                        #TODO just shows <NA>
                         #TODO key does not exist "Email": st.session_state["email"]
                         }
     ]
@@ -38,14 +20,6 @@ def display_user_information():
     user_information_table = pd.DataFrame(user_information)
     st.table(user_information_table)
 
-
-
-
-def display_changeable_information():
-    """
-    If wanting to change something in their user information.
-    The user can do this here.
-    """
 
 
 def display_login_possibility():
@@ -63,12 +37,13 @@ def main() -> None:
     This handles the checking of the logged in status and
     organizes what should be shown at the moment.
     """
+    st.title("My Account")
     # if is_logged_in():
-    #    display_my_account()
+    #    display_user_information()
     # else:
     #    display_login_possibility()
 
-    display_my_account()
+    display_user_information()
 
 
 if __name__ == "__main__":
