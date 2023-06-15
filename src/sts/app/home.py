@@ -43,7 +43,7 @@ def register_user(username, name, email, password):
 def display_register():
     """
     This page is displayed, when the user clicks on the Register Tab.
-    Here the user can enter his personal inforation and try to register
+    Here the user can enter his personal information and try to register
     in the WebApp.
     """
     st.title("User Registration")
@@ -103,7 +103,7 @@ def logged_in_home():
     auth.logout("Logout")
     st.write(
         "Welcome to our Style Transfer Webshop!"
-        "Create unique and artistic images by combining"
+        "Create unique and artistic images by combining "
         "the styles of two different pictures."
     )
     st.header("How it Works")
