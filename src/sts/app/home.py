@@ -32,6 +32,7 @@ def register_user(username, name, email, password):
         st.session_state["name"] = name
         st.session_state["authentication_status"] = True
         st.session_state["username"] = username
+        st.session_state["email"] = email
         st.experimental_rerun()
     except IntegrityError:
         session.rollback()

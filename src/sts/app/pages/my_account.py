@@ -26,10 +26,14 @@ def display_user_information():
     The user can have a look at the information which they
     are registered with
     """
-    user_information = {"Username": st.session_state.username}
+    user_information = {"Username": st.session_state["username"],
+                        "Name": st.session_state["name"],
+                        "Email": st.session_state["email"]
+                        }
 
     st.write("This is the information about your account")
     st.write("\nUser Information:")
+
 
 
 def display_changeable_information():
