@@ -1,6 +1,7 @@
 import streamlit as st
+import pandas as pd
 
-from sts.utils.streamlit_utils import get_authenticator, is_logged_in
+from sts.utils.streamlit_utils import get_authenticator
 
 auth = get_authenticator()
 
@@ -12,7 +13,7 @@ def display_my_account():
     st.title("My Account")
     auth.logout("Logout")
 
-    tab1, tab2 = st.tabs(["Login", "Register"])
+    tab1, tab2 = st.tabs(["Your information", "Change your information"])
 
     with tab1:
         display_user_information()
@@ -26,13 +27,17 @@ def display_user_information():
     The user can have a look at the information which they
     are registered with
     """
-    user_information = {"Username": st.session_state["username"],
-                        "Name": st.session_state["name"],
-                        "Email": st.session_state["email"]
+    user_information = [{"Username": st.session_state["username"],
+                        "Name": st.session_state["name"]
+                        #TODO just shows <NA>
+                        #TODO key does not exist "Email": st.session_state["email"]
                         }
-
+    ]
     st.write("This is the information about your account")
-    st.write("\nUser Information:")
+    st.write("User Information:")
+    user_information_table = pd.DataFrame(user_information)
+    st.table(user_information_table)
+
 
 
 
