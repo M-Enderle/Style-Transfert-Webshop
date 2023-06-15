@@ -75,3 +75,10 @@ def transfer(content_img: Image, style_img: Image):
     )
 
     return retult_img
+
+
+def is_logged_in():
+    """Returns True if user is logged in."""
+    if "username" in st.session_state and st.session_state.username is not None:
+        return True
+    return False
