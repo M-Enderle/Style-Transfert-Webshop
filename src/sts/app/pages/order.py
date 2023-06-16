@@ -88,8 +88,11 @@ def cart():
                 st.image(item["image"], use_column_width=True, caption= strg)
             item["count"]=st.number_input(label="Quantity", min_value=0, max_value=69, value=item["count"], format="%i", key = i)
             st.session_state["cart_items"][i] = cart_items[i]
+            nuke_button = st.button("Nuke", key = 70+i)
+            if nuke_button:
+                del cart_items[i]
+                st.session_state["cart_items"] = cart_items
             i += 1
-            
         #  Add a checkout button
        
         checkout_button = st.button("Checkout")
