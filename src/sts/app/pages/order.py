@@ -2,10 +2,7 @@ import numpy as np
 import streamlit as st
 from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
-
-from sts.utils.streamlit_utils import (get_authenticator, overlay_image,
-                                       transfer)
-
+from sts.utils.streamlit_utils import (get_authenticator, overlay_image, transfer)
 
 def upload_image(column_num):
     uploaded_file = st.file_uploader(
@@ -28,7 +25,6 @@ def upload_image(column_num):
 
 def create_image():
     st.title("Create AI Image")
-
     col1, col2 = st.columns(2)
 
     with col1:
@@ -57,6 +53,7 @@ def create_image():
 
     if st.session_state["ai_image"] is not None:
         _, col, _ = st.columns((1, 2, 1))
+
         with col:
             st.markdown("## AI Image")
             st.image(
@@ -95,19 +92,15 @@ def cart():
                 label_size = ("XL", "S", "M", "L")
             item["size"]=st.selectbox(strg, label_size, key=-i-1)
             item["count"]=st.number_input(label="Quantity", min_value=0, max_value=69, value=item["count"], format="%i", key = i)
-            st.session_state["cart_items"][i] = cart_items[i]
-            
+            st.session_state["cart_items"][i] = cart_items[i]            
             with _s:
                 nuke_button = st.button("Delete 🗑️", key = 70+i)
                 if nuke_button:
                     del cart_items[i]
                     st.session_state["cart_items"] = cart_items
-            i += 1
-        #  Add a checkout button
-       
+            i += 1       
         checkout_button = st.button("Checkout")
     if checkout_button:
-        # Set the current page to the checkout function
         placeholder.empty()
         checkout()
         st.session_state["current_page"] = checkout
@@ -120,29 +113,16 @@ def place_product():
     ai_image = st.session_state.get("ai_image")
     product_preview = st.empty()
     if ai_image is not None:
-        # Display the AI image
         if st.session_state["product_picture"] is not None:
             product_preview.image(st.session_state.get("product_picture"), caption="White Shirt")
         else:
             product_preview.image(ai_image, caption="Generated AI Image")
-
-        # Add logic for placing the product in the shopping cart
         st.subheader("Select Product Type:")
-        #col1, col2, col3 = st.columns(3)
         product_type = "shirt"
         ai_image_array = np.array(ai_image)
         array_shape = ai_image_array.shape
         ai_image_bytes = ai_image_array.tobytes()
         circle = False
-        #with col1:
-        #    if st.button("T-Shirt"):
-        #        product_type = "shirt"
-        #with col2:
-        #    if st.button("Hoodie"):
-        #        product_type = "hoodie"
-        #with col3:
-        #    if st.button("Not-White Shirt"):
-        #        product_type = "black"
         st.subheader("Select Product:")
         product_type2 = st.selectbox("Product:", ("Shirt White", "Shirt Black", "Hoodie")) 
         if product_type2 == "Shirt White":
@@ -158,31 +138,24 @@ def place_product():
             st.session_state["circle_image"] = True
         else:
             st.session_state["circle_image"] = False
-
         shirt_image = overlay_image(
             product_type, ai_image_bytes, array_shape, st.session_state["circle_image"], None
         )
         st.session_state["product_picture"] = shirt_image
         product_preview.image(shirt_image, 
                               caption="T-Shirt" if product_type=="shirt" else "Hoodie" if product_type=="hoodie" else "Black Shirt")
-
         place_product_button = st.button("Place Product in Cart")
         if place_product_button:
-            # Retrieve the items in the cart from the session state
             cart_items = st.session_state.get("cart_items", [])
-            # Create the product object with image and size information
             product = {
                 "image": st.session_state["product_picture"],
                 "size": size,
                 "product": product_type,
                 "count" : 1,
             }
-            # Add the product to the cart
             cart_items.append(product)
-            # Update the cart items in the session state
             st.session_state["cart_items"] = cart_items
             st.success("Product placed in cart!")
-            # Redirect back to the cart page
             st.session_state["current_page"] = cart
             st.experimental_rerun()
     else:
@@ -190,13 +163,9 @@ def place_product():
 
 def checkout():
     st.title("Checkout")
-    # Access the session state to retrieve the cart items
     cart_items = st.session_state.get("cart_items", [])
     if len(cart_items) == 0:
         st.warning("Your cart is empty!")
-        if st.button("Create Image"):
-            #TO DO: Redirect from Cart to Create AI Image, not staying in the Cart Container, but the Create AI Container.
-            pass
     else:
         # Display the cart items
         st.write("Cart Items:")

@@ -3,14 +3,12 @@
 import base64
 import io
 from functools import lru_cache
-
 import numpy as np
 import requests
 import runpod
 import streamlit as st
 import streamlit_authenticator as stauth
 from PIL import Image, ImageDraw
-
 import sts.app.database as db
 from sts.utils.utils import load_user_toml
 
@@ -68,8 +66,7 @@ def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
         source_image.paste(input_image, (x, y))
 
     # Save the output as a PNG image
-    source_image.save("output.png", "PNG")
-
+  
     return source_image
 
 
