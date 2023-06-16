@@ -100,7 +100,7 @@ def cart():
             st.session_state["cart_items"][i] = cart_items[i]
             
             with _s:
-                nuke_button = st.button("Nuke", key = 70+i)
+                nuke_button = st.button("Delete 🗑️", key = 70+i)
                 if nuke_button:
                     del cart_items[i]
                     st.session_state["cart_items"] = cart_items
