@@ -134,9 +134,8 @@ def place_product():
             product_type = "hoodie"           
         st.subheader("Select Size:")
         size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
-        st.subheader("Form:")
-        circle = st.selectbox("Form", ("Rectangle", "Circle"))
-        if circle == "Circle":
+        circle = st.checkbox("Form: Circle", False, None, None, on_change = None, args = None, kwargs = None, label_visibility = "visible", )
+        if circle:
             st.session_state["circle_image"] = True
         else:
             st.session_state["circle_image"] = False
