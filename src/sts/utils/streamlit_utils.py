@@ -16,9 +16,9 @@ from sts.utils.utils import load_user_toml
 
 session = db.session
 user_data = load_user_toml()
-black_tshirt = "src/sts/utils/images/black_tshirt.png"
-white_tshirt = "src/sts/utils/images/white_tshirt.png"
-white_hoodie = "src/sts/utils/images/white_hoodie.png"
+black_tshirt = "src/sts/.images/black_tshirt.png"
+white_tshirt = "src/sts/.images/white_tshirt.png"
+white_hoodie = "src/sts/.images/white_hoodie.png"
 
 
 @lru_cache

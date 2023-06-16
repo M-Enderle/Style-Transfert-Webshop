@@ -46,7 +46,7 @@ def create_image():
     )
 
     if st.button("Debug", use_container_width=True):
-        st.session_state["ai_image"] = Image.open("src/sts/utils/images/black_tshirt.png")
+        st.session_state["ai_image"] = Image.open("src/sts/.images/black_tshirt.png")
 
     if generate and all([image is not None for image in st.session_state["images"]]):
         ai_image = transfer(
