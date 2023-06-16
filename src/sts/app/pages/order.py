@@ -79,12 +79,19 @@ def cart():
         cart_items = st.session_state.get("cart_items", [])
         # Display the current items in the cart
         st.write("Current Items in Cart:")
+        i = 0
         for item in cart_items:
-            strg = ""
-            strg = "Größe " + item["size"] + " : " +  item["product"]
-            st.image(item["image"], caption= strg)
-          
+            _, col, _ = st.columns((1, 2, 1))
+            with col:
+                strg = ""
+                strg = "Größe " + item["size"] + " : " +  item["product"]
+                st.image(item["image"], use_column_width=True, caption= strg)
+            item["count"]=st.number_input(label="Quantity", min_value=0, max_value=69, value=item["count"], format="%i", key = i)
+            st.session_state["cart_items"][i] = cart_items[i]
+            i += 1
+            
         #  Add a checkout button
+       
         checkout_button = st.button("Checkout")
     if checkout_button:
         # Set the current page to the checkout function
@@ -92,7 +99,6 @@ def cart():
         checkout()
         st.session_state["current_page"] = checkout
 
-        #st.experimental_rerun()
 
 
 def place_product():
@@ -109,7 +115,7 @@ def place_product():
 
         # Add logic for placing the product in the shopping cart
         st.subheader("Select Product Type:")
-        col1, col2, col3 = st.columns(3)
+        #col1, col2, col3 = st.columns(3)
         product_type = "shirt"
         ai_image_array = np.array(ai_image)
         array_shape = ai_image_array.shape
@@ -156,6 +162,7 @@ def place_product():
                 "image": st.session_state["product_picture"],
                 "size": size,
                 "product": product_type,
+                "count" : 1,
             }
             # Add the product to the cart
             cart_items.append(product)
@@ -213,7 +220,7 @@ def main() -> None:
         st.session_state["circle_image"] = False
 
     cart_btn = st.sidebar.button(
-        "Cart [0]", key="cart_button", use_container_width=True
+        "Cart", key="cart_button", use_container_width=True
     )
     create_image_btn = st.sidebar.button(
         "Create AI Image", key="create_image_button", use_container_width=True
