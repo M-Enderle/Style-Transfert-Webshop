@@ -128,8 +128,8 @@ def place_product():
         st.subheader("Select Size:")
         size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
         st.subheader("Form:")
-        circle = st.selectbox("Form", ("Rectangle", "Cycle"))
-        if circle == "Cycle":
+        circle = st.selectbox("Form", ("Rectangle", "Circle"))
+        if circle == "Circle":
             st.session_state["circle_image"] = True
         else:
             st.session_state["circle_image"] = False
@@ -203,7 +203,7 @@ def main() -> None:
     if "product_picture" not in st.session_state:
         st.session_state["product_picture"] = None
 
-    if "cycle_image" not in st.session_state:
+    if "circle_image" not in st.session_state:
         st.session_state["circle_image"] = False
 
     cart_btn = st.sidebar.button(
