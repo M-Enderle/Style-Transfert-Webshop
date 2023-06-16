@@ -46,7 +46,7 @@ def create_image():
     )
 
     if st.button("Debug", use_container_width=True):
-        st.session_state["ai_image"] = Image.open("/home/fe02174/style_transfer/style-transfer-webshop/src/sts/utils/images/black_tshirt.png")
+        st.session_state["ai_image"] = Image.open("src/sts/utils/images/black_tshirt.png")
 
     if generate and all([image is not None for image in st.session_state["images"]]):
         ai_image = transfer(
@@ -115,16 +115,23 @@ def place_product():
         array_shape = ai_image_array.shape
         ai_image_bytes = ai_image_array.tobytes()
         circle = False
-        with col1:
-            if st.button("T-Shirt"):
-                product_type = "shirt"
-        with col2:
-            if st.button("Hoodie"):
-                product_type = "hoodie"
-        with col3:
-            if st.button("Not-White Shirt"):
-                product_type = "black"
-                    
+        #with col1:
+        #    if st.button("T-Shirt"):
+        #        product_type = "shirt"
+        #with col2:
+        #    if st.button("Hoodie"):
+        #        product_type = "hoodie"
+        #with col3:
+        #    if st.button("Not-White Shirt"):
+        #        product_type = "black"
+        st.subheader("Select Product:")
+        product_type2 = st.selectbox("Product:", ("Shirt White", "Shirt Black", "Hoodie")) 
+        if product_type2 == "Shirt White":
+            product_type = "shirt"
+        elif product_type2 == "Shirt Black":
+            product_type = "black"
+        elif product_type2 == "Hoodie":
+            product_type = "hoodie"           
         st.subheader("Select Size:")
         size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
         st.subheader("Form:")
