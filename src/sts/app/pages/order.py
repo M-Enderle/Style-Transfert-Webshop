@@ -81,17 +81,29 @@ def cart():
         st.write("Current Items in Cart:")
         i = 0
         for item in cart_items:
-            _, col, _ = st.columns((1, 2, 1))
+            _, col, _s = st.columns((1, 2, 1))
             with col:
                 strg = ""
                 strg = "Größe " + item["size"] + " : " +  item["product"]
                 st.image(item["image"], use_column_width=True, caption= strg)
+            strg_size = "Confirm Size: " + item["size"] + " "
+            if item["size"]== "S":
+                label_size = ("S", "M", "L", "XL")
+            elif item["size"] == "M":
+                label_size = ("M", "S", "L", "XL")
+            elif item["size"] == "L":
+                label_size = ("L", "S", "M", "XL")
+            elif item["size"] == "XL":
+                label_size = ("XL", "S", "M", "L")
+            item["size"]=st.selectbox(strg_size, label_size, key=-i-1)
             item["count"]=st.number_input(label="Quantity", min_value=0, max_value=69, value=item["count"], format="%i", key = i)
             st.session_state["cart_items"][i] = cart_items[i]
-            nuke_button = st.button("Nuke", key = 70+i)
-            if nuke_button:
-                del cart_items[i]
-                st.session_state["cart_items"] = cart_items
+            
+            with _s:
+                nuke_button = st.button("Nuke", key = 70+i)
+                if nuke_button:
+                    del cart_items[i]
+                    st.session_state["cart_items"] = cart_items
             i += 1
         #  Add a checkout button
        
@@ -142,7 +154,7 @@ def place_product():
         elif product_type2 == "Hoodie":
             product_type = "hoodie"           
         st.subheader("Select Size:")
-        size = st.selectbox("Size", ("S", "M", "L", "XL", "FatFuck"))
+        size = st.selectbox("Size", ("S", "M", "L", "XL"))
         circle = st.checkbox("Form: Circle", False, None, None, on_change = None, args = None, kwargs = None, label_visibility = "visible", )
         if circle:
             st.session_state["circle_image"] = True
