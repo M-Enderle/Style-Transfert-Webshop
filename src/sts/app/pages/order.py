@@ -83,10 +83,8 @@ def cart():
         for item in cart_items:
             _, col, _s = st.columns((1, 2, 1))
             with col:
-                strg = ""
-                strg = "Größe " + item["size"] + " : " +  item["product"]
-                st.image(item["image"], use_column_width=True, caption= strg)
-            strg_size = "Confirm Size: " + item["size"] + " "
+                st.image(item["image"], use_column_width=True)
+            strg = "Confirm Size: " + item["size"] + " "
             if item["size"]== "S":
                 label_size = ("S", "M", "L", "XL")
             elif item["size"] == "M":
@@ -95,7 +93,7 @@ def cart():
                 label_size = ("L", "S", "M", "XL")
             elif item["size"] == "XL":
                 label_size = ("XL", "S", "M", "L")
-            item["size"]=st.selectbox(strg_size, label_size, key=-i-1)
+            item["size"]=st.selectbox(strg, label_size, key=-i-1)
             item["count"]=st.number_input(label="Quantity", min_value=0, max_value=69, value=item["count"], format="%i", key = i)
             st.session_state["cart_items"][i] = cart_items[i]
             
