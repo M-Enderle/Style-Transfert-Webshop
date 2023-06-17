@@ -50,6 +50,7 @@ def pay_articles(session):
     while session.payment_status != "paid":
         if time.time() > timeout_after:
             # Timeout Logik == Cancelled Logik
+            return False
             print("Timeout / Cancelled")
             break
         session = stripe.checkout.Session.retrieve(session.id)
@@ -57,4 +58,5 @@ def pay_articles(session):
     else:
         # Paid Logik
         # TODO amelie
+        return True
         print("Payment status: %s" % session.payment_status)

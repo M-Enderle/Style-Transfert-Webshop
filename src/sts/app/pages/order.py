@@ -259,14 +259,26 @@ def checkout():
             f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
         unsafe_allow_html=True
     )
+    #get Adress
+    st.header("Shipping Address:")
+    country = st.text_input("Country", value="")
+    state = st.text_input("State", value="")
+    street_and_number = st.text_input("Street and Number", value="test")
+    city = st.text_input("City", value="")
+    zip = st.text_input("zip", value="")
     
-    # Displaying a Payment Button which generates a payment link and directs to the 
-    # stripe payment page
-    link, payment_session = generate_payment_link(checkout_items)
-    st.markdown(f'''
-        <a href={link}><button style="background-color:LightGrey;">Proceed to Payment</button></a>
-        ''', unsafe_allow_html=True)
-    pay_articles(payment_session) 
+    
+    if st.button("Confirm shipping address"):
+        # Displaying a Payment Button which generates a payment link and directs to the 
+        # stripe payment page
+        print(street_and_number)
+        link, payment_session = generate_payment_link(checkout_items)
+        st.markdown(f'''
+            <a href={link}><button style="background-color:LightGrey;">Proceed to Payment</button></a>
+            ''', unsafe_allow_html=True)
+        if pay_articles(payment_session):
+            st.success("Your payment was successfull. The articles will be sent to you within a few days.")
+            #TODO safe address and order
 
 
 def index():
