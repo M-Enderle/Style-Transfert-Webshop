@@ -6,3 +6,4 @@ venv
 .vscode
 src/sts/utils/api_key.conf
 .gitignore
+user.toml
