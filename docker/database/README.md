@@ -8,17 +8,15 @@ develop without the risk of losing or manipulating data.
 ### Requirements
 
 - Docker
+- Compose
 
 ### Setup
 
-1. Clone the repository
-2. Open a terminal in the root directory of the repository
-3. Run `docker build -t database -f docker/database/Dockerfile .`
-4. Run `docker run --name mariadb3 -ti -d -p 3306:3306 database`
+To setup the database, run the following command in the project root:
 
-### Connecting to the database
-
-If you developing without compose, change the connection details in `default.toml` to `localhost` as host.
+```bash
+docker-compose up --build database
+```
 
 ### Adding data
 
