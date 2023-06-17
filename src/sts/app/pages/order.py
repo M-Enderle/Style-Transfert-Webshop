@@ -4,8 +4,9 @@ from streamlit_extras.switch_page_button import switch_page
 import numpy as np
 import pandas as pd
 
-from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image, generate_payment_link, pay_articles
- 
+from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
+from sts.utils.checkout_utils import generate_payment_link 
+
 
 def upload_image(column_num):
     uploaded_file = st.file_uploader(
