@@ -78,28 +78,39 @@ def cart():
         st.write("Current Items in Cart:")
         i = 0
         for item in cart_items:
-            _, col, _s = st.columns((1, 2, 1))
-            with col:
+            st.write(":heavy_minus_sign:" * 32)
+            _, col, _s, _b = st.columns((1, 1, 0.5, 1))
+            with _:
                 st.image(item["image"], use_column_width=True)
-            strg = "Confirm Size: " + item["size"] + " "
-            if item["size"]== "S":
-                label_size = ("S", "M", "L", "XL")
-            elif item["size"] == "M":
-                label_size = ("M", "S", "L", "XL")
-            elif item["size"] == "L":
-                label_size = ("L", "S", "M", "XL")
-            elif item["size"] == "XL":
-                label_size = ("XL", "S", "M", "L")
-            item["size"]=st.selectbox(strg, label_size, key=-i-1)
-            item["count"]=st.number_input(label="Quantity", min_value=0, max_value=69, value=item["count"], format="%i", key = i)
-            st.session_state["cart_items"][i] = cart_items[i]            
+            with col:
+                if item["product"] == "shirt":
+                    k = "Shirt (White)"
+                elif item["product"] == "black":
+                    k = "Shirt (Black)"
+                elif item["product"] == "hoodie":
+                    k = "Hoodie (White)"
+                st.subheader(k)
             with _s:
-                nuke_button = st.button("Delete 🗑️", key = 70+i)
+                strg = "Confirm Size: " + item["size"] + " "
+                if item["size"]== "S":
+                    label_size = ("S", "M", "L", "XL")
+                elif item["size"] == "M":
+                    label_size = ("M", "S", "L", "XL")
+                elif item["size"] == "L":
+                    label_size = ("L", "S", "M", "XL")
+                elif item["size"] == "XL":
+                    label_size = ("XL", "S", "M", "L")
+                item["size"]=st.selectbox(strg, label_size, key=-i-1)
+                item["count"]=st.number_input(label="Quantity", min_value=0, max_value=69, value=item["count"], format="%i", key = i)
+                st.session_state["cart_items"][i] = cart_items[i]            
+            with _b:
+                #st.subheader("")
+                nuke_button = st.button("🗑️", key = 70+i)
                 if nuke_button:
                     del cart_items[i]
                     st.session_state["cart_items"] = cart_items
             i += 1       
-        checkout_button = st.button("Checkout")
+        checkout_button = st.button("CHECKOUT")
     if checkout_button:
         placeholder.empty()
         checkout()
