@@ -42,8 +42,7 @@ def generate_payment_link(checkout_items):
         cancel_url="https://www.metritests.com/metrica/MobileRedirectPage.aspx",
         # We have to find some way to close the tab
     )
-    pay_articles(session)
-    return session.url
+    return session.url, session
 
 def pay_articles(session):
     timeout_after = time.time() + 60 * 60  # 5 minutes from now

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
-from sts.utils.checkout_utils import generate_payment_link 
+from sts.utils.checkout_utils import generate_payment_link, pay_articles
 
 
 def upload_image(column_num):
@@ -259,12 +259,14 @@ def checkout():
             f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
         unsafe_allow_html=True
     )
-    link = generate_payment_link(checkout_items)
+    
     # Displaying a Payment Button which generates a payment link and directs to the 
     # stripe payment page
+    link, payment_session = generate_payment_link(checkout_items)
     st.markdown(f'''
         <a href={link}><button style="background-color:LightGrey;">Proceed to Payment</button></a>
-        ''', unsafe_allow_html=True)     
+        ''', unsafe_allow_html=True)
+    pay_articles(payment_session) 
 
 
 def index():
