@@ -149,6 +149,26 @@ def create_session(_engine: Engine) -> Session:
     _session = sessionmaker(bind=_engine)
     return _session()
 
+def get_user_information(username):
+    try:
+        user = session.query(User).filter_by(username=username).one()
+        return [{"username": user.username,"name": user.name,"email": user.email}]
+    except Exception as e:
+        # If the user is not found
+        return [e]
+
+def get_order_information(username):
+    try:
+        user = session.query(User).filter_by(username=username).one()
+        orders_info = []
+        for order in user.orders:
+            address = order.address
+            address_str = f"{address.country}, {address.state}, \
+                {address.zip}, {address.city}, {address.street}"
+            orders_info.append({"timestamp":order.timestamp,"status": order.status,"address": address_str})
+        return orders_info
+    except Exception as e:
+        return[e]
 
 engine = create_database()
 session = create_session(engine)

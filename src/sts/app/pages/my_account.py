@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 
 from sts.utils.streamlit_utils import get_authenticator
+from sts.app.database import get_user_information, get_order_information
 
 auth = get_authenticator()
 
