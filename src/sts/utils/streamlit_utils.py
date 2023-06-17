@@ -15,15 +15,14 @@ def get_authenticator() -> stauth.Authenticate:
     Returns a streamlit_authenticator.Authenticate object
     """
 
-    credentials = {
-        "usernames": {
-            "test": {
-                "name": "test",
-                "password": "$2b$12$WUXOCZmZqU0HTbggJ4hIBuCutUdQQo3xHWtafRkHtcjbo.TlboHq.",
-                "email": "test@test.com",
-            }
+    users = session.query(db.User).all()
+    credentials: dict = {"usernames": {}}
+    for user in users:
+        credentials["usernames"][user.username] = {
+            "password": user.password_hash,
+            "email": user.email,
+            "name": user.name,
         }
-    }
 
     return stauth.Authenticate(
         credentials=credentials,

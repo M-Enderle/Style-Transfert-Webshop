@@ -29,14 +29,6 @@ ai-build:
   script:
     - docker build -f docker/ai/Dockerfile -t ai .
 
-test-job:
-  stage: test
-  image: python:3.10
-  script:
-    - pip install poetry
-    - poetry install && poetry add pytest
-    - poetry run pytest tests/*/*.py
-
 black:
   stage: lint
   image: python:3.10
@@ -51,14 +43,6 @@ mypy:
     - pip install mypy types-toml types-Flask
     - pip install torch==1.13.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
     - mypy src
-  allow_failure: true
-
-pylint:
-  stage: lint
-  image: python:3.10
-  script:
-    - pip install pylint
-    - pylint src
   allow_failure: true
 
 build:

@@ -35,7 +35,7 @@ class User(MyBase):
     username = Column(VARCHAR(45), nullable=False, unique=True)
     name = Column(VARCHAR(45), nullable=False)
     email = Column(VARCHAR(45), nullable=False, unique=True)
-    password_hash = Column(VARCHAR(45), nullable=False)
+    password_hash = Column(VARCHAR(512), nullable=False)
 
     orders = relationship("Order")
 
@@ -141,6 +141,25 @@ def create_session(_engine: Engine) -> Session:
     """
     _session = sessionmaker(bind=_engine)
     return _session()
+
+
+def add_users(credentails: dict):
+    """
+    This function adds all users from the credentials to the database.
+    """
+
+    for user in credentails["usernames"].keys():
+        if not session.query(User).filter(User.username == user).first():
+            session.add(
+                User(
+                    username=user,
+                    name=credentails["usernames"][user]["name"],
+                    email=credentails["usernames"][user]["email"],
+                    password_hash=credentails["usernames"][user]["password"],
+                )
+            )
+    session.commit()
+    print("Users added.")
 
 
 engine = create_database()
