@@ -1,25 +1,40 @@
 import streamlit as st
-import streamlit_authenticator as stauth
 
-from sts.app.database import User, add_users, session
-from sts.utils.streamlit_utils import get_authenticator
+from sts.app.database import add_users
+from sts.utils.streamlit_utils import (
+    get_authenticator,
+    check_if_logged_in,
+    display_register,
+)
 
-st.title("Style Transfer Shop")
-auth = get_authenticator()
 
-tab1, tab2 = st.tabs(["Login", "Register"])
-with tab1:
-    login_res = auth.login("Login to access the app", location="main")
+def main():
+    """
+    This is the main function of the app.
+    It is called when the app is started.
+    """
 
-with tab2:
-    reg_res = auth.register_user(
-        "Register to access the app", location="main", preauthorization=False
-    )
-    if reg_res:
-        add_users(auth.credentials)
+    st.title("Style Transfer Shop")
+    auth = get_authenticator()
 
-if not login_res[1]:
-    st.stop()
+    if not check_if_logged_in():
+        tab1, tab2 = st.tabs(["Login", "Register"])
+        with tab1:
+            login_res = auth.login("Login to access the app", location="main")
+            if login_res[1]:
+                st.experimental_rerun()
 
-else:
-    auth.logout("Logout")
+        with tab2:
+            reg_res = display_register(auth)
+            if reg_res:
+                st.success("You are registered!")
+                add_users(auth.credentials)
+                st.experimental_rerun()
+
+    else:
+        st.success("You are logged in!")
+        auth.logout("Logout", location="sidebar")
+
+
+if __name__ == "__main__":
+    main()
