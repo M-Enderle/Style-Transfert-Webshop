@@ -1,8 +1,7 @@
 import numpy as np
 import streamlit as st
 from PIL import Image
-from streamlit_extras.switch_page_button import switch_page
-from sts.utils.streamlit_utils import (get_authenticator, overlay_image, transfer)
+from sts.utils.streamlit_utils import (overlay_image, transfer)
 
 
 def upload_image(column_num):

@@ -10,13 +10,13 @@ import streamlit as st
 import streamlit_authenticator as stauth
 from PIL import Image, ImageDraw
 import sts.app.database as db
-from sts.utils.utils import load_user_toml
+from sts.utils.utils import load_user_toml, get_module_root
 
-session = db.session
 user_data = load_user_toml()
-black_tshirt = "src/sts/.images/black_tshirt.png"
-white_tshirt = "src/sts/.images/white_tshirt.png"
-white_hoodie = "src/sts/.images/white_hoodie.png"
+
+black_tshirt = get_module_root() / "images"/ "black_tshirt.png"
+white_tshirt = get_module_root() / "images"/ "white_tshirt.png"
+white_hoodie = get_module_root() / "images"/ "white_hoodie.png"
 
 
 @lru_cache
@@ -65,8 +65,6 @@ def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
     else:
         source_image.paste(input_image, (x, y))
 
-    # Save the output as a PNG image
-  
     return source_image
 
 
