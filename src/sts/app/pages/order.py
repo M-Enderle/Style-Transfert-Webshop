@@ -4,6 +4,7 @@ from PIL import Image
 from streamlit_extras.switch_page_button import switch_page
 from sts.utils.streamlit_utils import (get_authenticator, overlay_image, transfer)
 
+
 def upload_image(column_num):
     uploaded_file = st.file_uploader(
         f"Upload Image {column_num}",
@@ -71,18 +72,15 @@ def create_image():
 def cart():
     placeholder = st.empty()
     with placeholder.container():
-        st.title("Cart")
-        # Access the session state to retrieve the items in the cart
+        st.title("🛒 Cart")
+        st.divider()
         cart_items = st.session_state.get("cart_items", [])
-        # Display the current items in the cart
-        st.write("Current Items in Cart:")
-        i = 0
-        for item in cart_items:
-            st.write(":heavy_minus_sign:" * 32)
-            _, col, _s, _b = st.columns((1, 1, 0.5, 1))
-            with _:
+        for i, item in enumerate(cart_items):
+            img, col2 = st.columns((1.6, 6))
+            with img:
                 st.image(item["image"], use_column_width=True)
-            with col:
+            with col2:
+                # TODO save the actual product name in the session state
                 if item["product"] == "shirt":
                     k = "Shirt (White)"
                 elif item["product"] == "black":
@@ -90,27 +88,24 @@ def cart():
                 elif item["product"] == "hoodie":
                     k = "Hoodie (White)"
                 st.subheader(k)
-            with _s:
-                strg = "Confirm Size: " + item["size"] + " "
-                if item["size"]== "S":
-                    label_size = ("S", "M", "L", "XL")
-                elif item["size"] == "M":
-                    label_size = ("M", "S", "L", "XL")
-                elif item["size"] == "L":
-                    label_size = ("L", "S", "M", "XL")
-                elif item["size"] == "XL":
-                    label_size = ("XL", "S", "M", "L")
-                item["size"]=st.selectbox(strg, label_size, key=-i-1)
-                item["count"]=st.number_input(label="Quantity", min_value=0, max_value=69, value=item["count"], format="%i", key = i)
-                st.session_state["cart_items"][i] = cart_items[i]            
-            with _b:
-                #st.subheader("")
-                nuke_button = st.button("🗑️", key = 70+i)
-                if nuke_button:
-                    del cart_items[i]
-                    st.session_state["cart_items"] = cart_items
-            i += 1       
-        checkout_button = st.button("CHECKOUT")
+                size, quant, delete = st.columns((1,1, 0.3))
+                with size:
+                    item["size"]=st.selectbox("Size", ("S", "M", "L", "XL"), 
+                                              index=["S", "M", "L", "XL"].index(item["size"]),
+                                              key=f"size-{i}")
+                with quant:
+                    item["count"]=st.number_input(label="Quantity", min_value=0, max_value=None, step=1,
+                                                  value=item["count"], format="%i", key=f"count-{i}")
+                with delete:
+                    st.markdown("## ")
+                    delete_button = st.button("🗑️", key=f"delete-{i}")
+                    if delete_button:
+                        del cart_items[i]
+                        st.session_state["cart_items"] = cart_items
+            st.divider()
+
+        checkout_button = st.button("Continue to payment", use_container_width=True)
+
     if checkout_button:
         placeholder.empty()
         checkout()
@@ -120,7 +115,6 @@ def cart():
 
 def place_product():
     st.title("Place Product")
-    # Access the session state to retrieve the AI image
     ai_image = st.session_state.get("ai_image")
     product_preview = st.empty()
     if ai_image is not None:
@@ -174,23 +168,7 @@ def place_product():
 
 def checkout():
     st.title("Checkout")
-    cart_items = st.session_state.get("cart_items", [])
-    if len(cart_items) == 0:
-        st.warning("Your cart is empty!")
-    else:
-        # Display the cart items
-        st.write("Cart Items:")
-        for item in cart_items:
-             for item in cart_items:
-                strg = ""
-                strg = "Größe " + item["size"] + " : " +  item["product"]
-                st.image(item["image"], caption= strg)
-        # Add checkout logic and payment processing here
-        st.success("Checkout completed successfully!")
-
-def index():
-    st.warning("Please continue to either your cart or create another AI Picture")
-
+    st.success("Checkout completed successfully!")
 
 
 def main() -> None:
@@ -213,7 +191,8 @@ def main() -> None:
         st.session_state["circle_image"] = False
 
     cart_btn = st.sidebar.button(
-        "Cart", key="cart_button", use_container_width=True
+        f"Cart [{len(st.session_state.get('cart_items', []))}]", 
+        key="cart_button", use_container_width=True
     )
     create_image_btn = st.sidebar.button(
         "Create AI Image", key="create_image_button", use_container_width=True
@@ -224,7 +203,7 @@ def main() -> None:
         disabled=st.session_state["ai_image"] is None,
     )
     checkout_btn = st.sidebar.button(
-        "Checkout", use_container_width=True, disabled=True
+        "Checkout", use_container_width=True, disabled=len(st.session_state.get("cart_items", [])) == 0
     )
 
     if cart_btn:
@@ -245,8 +224,7 @@ def main() -> None:
 
     else:
         if st.session_state["current_page"] is None:
-            st.warning("Hupsala")
-            pass
+            st.experimental_rerun()
         else:
             st.session_state["current_page"]()
 
