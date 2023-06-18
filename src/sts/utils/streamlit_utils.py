@@ -14,9 +14,9 @@ from sts.utils.utils import load_user_toml, get_module_root
 
 user_data = load_user_toml()
 
-black_tshirt = get_module_root() / "images"/ "black_tshirt.png"
-white_tshirt = get_module_root() / "images"/ "white_tshirt.png"
-white_hoodie = get_module_root() / "images"/ "white_hoodie.png"
+black_tshirt = get_module_root() / "img"/ "black_tshirt.png"
+white_tshirt = get_module_root() / "img"/ "white_tshirt.png"
+white_hoodie = get_module_root() / "img"/ "white_hoodie.png"
 
 
 @lru_cache

@@ -1,7 +1,7 @@
 import numpy as np
 import streamlit as st
 from PIL import Image
-from sts.utils.streamlit_utils import (overlay_image, transfer)
+from sts.utils.streamlit_utils import (overlay_image, transfer, get_module_root)
 
 
 def upload_image(column_num):
@@ -42,7 +42,7 @@ def create_image():
     )
 
     if st.button("Debug", use_container_width=True):
-        st.session_state["ai_image"] = Image.open("src/sts/.images/black_tshirt.png")
+        st.session_state["ai_image"] = Image.open(get_module_root() / "img" / "debug.png")
 
     if generate and all([image is not None for image in st.session_state["images"]]):
         ai_image = transfer(
@@ -101,14 +101,19 @@ def cart():
                     if delete_button:
                         del cart_items[i]
                         st.session_state["cart_items"] = cart_items
+                        st.experimental_rerun()
             st.divider()
 
+    if len(cart_items) != 0:
         checkout_button = st.button("Continue to payment", use_container_width=True)
 
-    if checkout_button:
-        placeholder.empty()
-        checkout()
-        st.session_state["current_page"] = checkout
+        if checkout_button:
+            placeholder.empty()
+            checkout()
+            st.session_state["current_page"] = checkout
+
+    else:
+        st.info("Your cart is empty")
 
 
 
