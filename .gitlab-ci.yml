@@ -40,7 +40,7 @@ mypy:
   stage: lint
   image: python:3.10
   script:
-    - pip install mypy types-toml types-Flask
+    - pip install mypy types-toml types-requests types-tqdm types-pillow sqlalchemy-stubs 
     - pip install torch==1.13.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
     - mypy src
   allow_failure: true
