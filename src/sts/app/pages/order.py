@@ -5,6 +5,16 @@ from sts.utils.streamlit_utils import (overlay_image, transfer, get_module_root)
 
 
 def upload_image(column_num):
+    """
+    Displays a file uploader and allows the user to upload an image.
+
+    Parameters:
+        column_num (int): The column number for displaying the image.
+
+    Returns:
+        None
+    """
+
     uploaded_file = st.file_uploader(
         f"Upload Image {column_num}",
         type=["png", "jpg", "jpeg"],
@@ -24,6 +34,13 @@ def upload_image(column_num):
 
 
 def create_image():
+    """
+    Creates the AI image by uploading two images and generating the AI image.
+
+    Returns:
+        None
+    """
+
     st.title("Create AI Image")
     col1, col2 = st.columns(2)
 
@@ -69,6 +86,12 @@ def create_image():
 
 
 def cart():
+    """
+    Displays the cart with the added products and allows interaction with the cart items.
+
+    Returns:
+        None
+    """
     placeholder = st.empty()
     with placeholder.container():
         st.title("🛒 Cart")
@@ -118,6 +141,12 @@ def cart():
 
 
 def place_product():
+    """
+    Allows the user to select product type, size, and form, and overlays the AI image with the selected product.
+
+    Returns:
+        None
+    """
     st.title("Place Product")
     ai_image = st.session_state.get("ai_image")
     product_preview = st.empty()
@@ -171,11 +200,25 @@ def place_product():
         st.warning("Please generate the AI image first!")
 
 def checkout():
+    """
+    Displays the checkout page and completes the checkout process.
+
+    Returns:
+        None
+    """
+    
     st.title("Checkout")
     st.success("Checkout completed successfully!")
 
 
 def main() -> None:
+    """
+    The main function that serves as the entry point of the Streamlit application.
+
+    Returns:
+        None
+    """
+
     # add sidebar with create_image, place product, cart, checkout
     st.sidebar.title("Order Process")
 

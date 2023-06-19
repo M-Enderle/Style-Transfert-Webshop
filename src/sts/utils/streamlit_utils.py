@@ -21,6 +21,20 @@ white_hoodie = get_module_root() / "img" / "white_hoodie.png"
 
 @lru_cache
 def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
+    """
+    Overlays a specified image on a background image.
+
+    Parameters:
+        strg (str): The type of overlay image to use ("shirt", "black", or "hoodie").
+        input_image (bytes): The input image as a binary bytes object.
+        array_shape (tuple): The shape of the input image array.
+        is_circle (bool): Flag indicating whether the overlay should be a circle.
+        size (float): The size of the overlay image as a percentage of the input image.
+
+    Returns:
+        PIL.Image: The composite image with the overlay.
+    """
+    
     input_image = np.frombuffer(input_image, np.uint8)
     input_image = input_image.reshape(array_shape)
     input_image = Image.fromarray(input_image)
@@ -70,7 +84,10 @@ def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
 
 def get_authenticator() -> stauth.Authenticate:
     """
-    Returns a streamlit_authenticator.Authenticate object
+    Returns a streamlit_authenticator.Authenticate object.
+
+    Returns:
+        streamlit_authenticator.Authenticate: An authentication object.
     """
 
     credentials = {
@@ -93,7 +110,13 @@ def get_authenticator() -> stauth.Authenticate:
 
 def convert_img_to_base64(img) -> str:
     """
-    Converts an image to base64 string.
+    Converts an image to a base64 string.
+
+    Parameters:
+        img (PIL.Image): The input image as a PIL Image object.
+
+    Returns:
+        str: The base64-encoded string representing the image.
     """
 
     result_bytes = io.BytesIO()
@@ -106,6 +129,12 @@ def convert_img_to_base64(img) -> str:
 def convert_base64_to_img(base64_str: str):
     """
     Converts a base64 string to an image.
+
+    Parameters:
+        base64_str (str): The base64-encoded string representing the image.
+
+    Returns:
+        PIL.Image: The decoded image as a PIL Image object.
     """
 
     img = Image.open(io.BytesIO(base64.b64decode(base64_str)))
@@ -113,8 +142,16 @@ def convert_base64_to_img(base64_str: str):
 
 
 def transfer(content_img, style_img):
-    """Transfer style from style image to content image."""
+    """
+    Transfers style from the style image to the content image.
 
+    Parameters:
+        content_img (PIL.Image): The content image as a PIL Image object.
+        style_img (PIL.Image): The style image as a PIL Image object.
+
+    Returns:
+        PIL.Image: The result image with the transferred style.
+    """
     content_img = content_img.convert("RGB")
     style_img = style_img.convert("RGB")
 
