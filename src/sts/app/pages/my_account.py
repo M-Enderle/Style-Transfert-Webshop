@@ -1,10 +1,9 @@
 import streamlit as st
 import pandas as pd
 
-from sts.utils.streamlit_utils import get_authenticator
+from sts.utils.streamlit_utils import get_authenticator, is_logged_in
 from sts.app.database import get_user_information, get_order_information
 
-auth = get_authenticator()
 
 def display_user_information():
     """
@@ -27,9 +26,8 @@ def display_login_possibility():
     """
     Creates the page, that should be shown, when not logged in yet.
     """
-    st.markdown("# Stop")
-    st.markdown("Please login to use this feature")
-    st.stop()
+    st.warning("Stop! Please login to use this feature")
+    auth = get_authenticator()
     res = auth.login("Login to access the app", location="sidebar")
 
 
@@ -39,12 +37,11 @@ def main() -> None:
     organizes what should be shown at the moment.
     """
     st.title("My Account")
-    # if is_logged_in():
-    #    display_user_information()
-    # else:
-    #    display_login_possibility()
+    if is_logged_in():
+        display_user_information()
+    else:
+        display_login_possibility()
 
-    display_user_information()
 
 
 if __name__ == "__main__":
