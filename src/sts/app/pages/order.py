@@ -109,6 +109,8 @@ def cart():
                     k = "Shirt (Black)"
                 elif item["product"] == "hoodie":
                     k = "Hoodie (White)"
+                elif item["product"] == "boodie":
+                    k = "Hoodie (Black)"
                 st.subheader(k)
                 size, quant, delete = st.columns((1,1, 0.3))
                 with size:
