@@ -45,19 +45,20 @@ def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
     if size is None:
         size = 0.25  # Default size: 25% of the smaller dimension
 
-    if strg == "shirt":
-        source_image = Image.open(white_tshirt)
-    elif strg == "black":
-        source_image = Image.open(black_tshirt)
-    elif strg == "hoodie":
-        source_image = Image.open(white_hoodie)
-    elif strg == "boodie":
-        source_image = Image.open(black_hoodie)
-        print(
-            "Human Scientist (HS) disapproved of this meaningless nonsensical bs from M.E."
-        )
-    else:
-        raise EnvironmentError("Something went wrong calling overlay_image()")
+    paths = {
+        "Shirt": {
+            "White": white_tshirt,
+            "Black": black_tshirt,
+        },
+        "Hoodie": {
+            "White": white_hoodie,
+            "Black": black_hoodie,
+        },
+    }
+    try:
+        source_image = Image.open(paths[strg[0]][strg[1]])
+    except KeyError:
+        raise EnvironmentError("Invalid overlay image type and/or color.")
 
     source_image = source_image.convert("RGBA")
     input_image = input_image.convert("RGBA")

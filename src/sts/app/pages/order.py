@@ -5,6 +5,21 @@ from PIL import Image
 from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer
 
 
+class Product:
+    def __init__(self, pimage, psize, ptype, pcolor, pcount) -> None:
+        self.image = pimage
+        self.size = psize
+        self.type = ptype
+        self.color = pcolor
+        self.count = pcount
+
+    def __eq__(self, __value: object) -> bool:
+        return self.image == __value.image and \
+            self.size == __value.size and \
+            self.type == __value.type and \
+            self.color == __value.color
+
+
 def upload_image(column_num):
     """
     Displays a file uploader and allows the user to upload an image.
@@ -99,28 +114,20 @@ def cart():
         st.divider()
         cart_items = st.session_state.get("cart_items", [])
         for i, item in enumerate(cart_items):
-            img, col2 = st.columns((1.6, 6))
+            img, information = st.columns((1.6, 6))
             with img:
-                st.image(item["image"], use_column_width=True)
-            with col2:
-                # TODO save the actual product name in the session state
-                if item["product"] == "shirt":
-                    k = "Shirt (White)"
-                elif item["product"] == "black":
-                    k = "Shirt (Black)"
-                elif item["product"] == "hoodie":
-                    k = "Hoodie (White)"
-                elif item["product"] == "boodie":
-                    k = "Hoodie (Black)"
-                st.subheader(k)
+                st.image(item.image, use_column_width=True)
+            with information:
+                subheader = f"{item.type} ({item.color})"
+                st.subheader(subheader)
                 size, quant, delete = st.columns((1,1, 0.3))
                 with size:
-                    item["size"]=st.selectbox("Size", ("S", "M", "L", "XL"), 
-                                              index=["S", "M", "L", "XL"].index(item["size"]),
+                    item.size=st.selectbox("Size", ("S", "M", "L", "XL"), 
+                                              index=["S", "M", "L", "XL"].index(item.size),
                                               key=f"size-{i}")
                 with quant:
-                    item["count"]=st.number_input(label="Quantity", min_value=0, max_value=None, step=1,
-                                                  value=item["count"], format="%i", key=f"count-{i}")
+                    item.count=st.number_input(label="Quantity", min_value=0, max_value=None, step=1,
+                                                  value=item.count, format="%i", key=f"count-{i}")
                 with delete:
                     st.markdown("## ")
                     delete_button = st.button("🗑️", key=f"delete-{i}")
@@ -151,63 +158,60 @@ def place_product():
         None
     """
     _, col, _ = st.columns((1,3,1))
+    st.title("Select Product")
+    ai_image = st.session_state.get("ai_image")
     with col:
-        st.title("Select Product")
-        ai_image = st.session_state.get("ai_image")
         product_preview = st.empty()
-        if ai_image is not None:
-            if st.session_state["product_picture"] is not None:
-                product_preview.image(st.session_state.get("product_picture"), caption="White Shirt")
-            else:
-                product_preview.image(ai_image, caption="Generated AI Image")
-            product_type = "shirt"
-            ai_image_array = np.array(ai_image)
-            array_shape = ai_image_array.shape
-            ai_image_bytes = ai_image_array.tobytes()
-            circle = False
-            col1, col2 = st.columns((1, 1))
-            with col1:
-                product_type2 = st.selectbox("Product:", ("Shirt", "Hoodie"))
-            with col2:
-                product_type3 = st.selectbox("Color:", ("White", "Black")) 
-            if product_type2 == "Shirt" and product_type3 == "White":
-                product_type = "shirt"
-            elif product_type2 == "Shirt" and product_type3 == "Black":
-                product_type = "black"
-            elif product_type2 == "Hoodie" and product_type3 == "White":
-                product_type = "hoodie"
-            elif product_type3 == "Black" and product_type2 == "Hoodie":
-                product_type = "boodie"           
-            st.subheader("Select Size:")
-            size = st.selectbox("Size", ("S", "M", "L", "XL"))
-            circle = st.checkbox("Form: Circle", False, None, None, on_change = None, args = None, kwargs = None, label_visibility = "visible", )
-            if circle:
-                st.session_state["circle_image"] = True
-            else:
-                st.session_state["circle_image"] = False
-            img_size = st.slider("Image Size:", min_value = 0.25, max_value = 0.75, value = 0.5, step = 0.05, label_visibility = "visible")
-            shirt_image = overlay_image(
-                product_type, ai_image_bytes, array_shape, st.session_state["circle_image"], img_size
-            )
-            st.session_state["product_picture"] = shirt_image
-            product_preview.image(shirt_image, 
-                              caption="Shirt (White)" if product_type=="shirt" else "Hoodie (White)" if product_type=="hoodie" else "Shirt (Black)" if product_type == "black" else "Hoodie (Black)")
-            place_product_button = st.button("Place Product in Cart",use_container_width=True)
-            if place_product_button:
-                cart_items = st.session_state.get("cart_items", [])
-                product = {
-                    "image": st.session_state["product_picture"],
-                    "size": size,
-                    "product": product_type,
-                    "count" : 1,
-                }
-                cart_items.append(product)
-                st.session_state["cart_items"] = cart_items
-                st.success("Product placed in cart!")
-                st.session_state["current_page"] = cart
-                st.experimental_rerun()
+    if ai_image is not None:
+        if st.session_state["product_picture"] is not None:
+            product_preview.image(st.session_state.get("product_picture"), caption="White Shirt")
         else:
-            st.warning("Please generate the AI image first!")
+            product_preview.image(ai_image, caption="Generated AI Image")
+        product_type = "Shirt"
+        ai_image_array = np.array(ai_image)
+        array_shape = ai_image_array.shape
+        ai_image_bytes = ai_image_array.tobytes()
+        circle = False
+        col1, col2 = st.columns((1, 1))
+        with col1:
+            product_type = st.selectbox("Product:", ("Shirt", "Hoodie"))
+        with col2:
+            product_color = st.selectbox("Color:", ("White", "Black"))            
+        st.subheader("Select Size:")
+        size = st.selectbox("Size", ("S", "M", "L", "XL"))
+        circle = st.checkbox("Form: Circle", False, None, None, on_change = None, args = None, kwargs = None, label_visibility = "visible", )
+        if circle:
+            st.session_state["circle_image"] = True
+        else:
+            st.session_state["circle_image"] = False
+        img_size = st.slider("Image Size:", min_value = 0.25, max_value = 0.75, value = 0.5, step = 0.05, label_visibility = "visible")
+        shirt_image = overlay_image(
+            (product_type, product_color), ai_image_bytes, array_shape, st.session_state["circle_image"], img_size
+        )
+        st.session_state["product_picture"] = shirt_image
+        product_preview.image(shirt_image, caption=f"{product_type} ({product_color})")
+        place_product_button = st.button("Place Product in Cart",use_container_width=True)
+        if place_product_button:
+            cart_items = st.session_state.get("cart_items", [])
+            product = Product(pimage=st.session_state["product_picture"], 
+                              psize=size, 
+                              ptype=product_type, 
+                              pcolor=product_color,
+                              pcount=1)
+            for i, item in enumerate(cart_items):
+                if product == item:
+                    cart_items[i].count += 1
+                    break
+            else:
+                cart_items.append(product)
+            st.session_state["cart_items"] = cart_items
+            st.success("Product placed in cart!")
+        cart_button = st.button("Go to Cart", use_container_width=True)
+        if cart_button:
+            st.session_state["current_page"] = cart
+            st.experimental_rerun()
+    else:
+        st.warning("Please generate the AI image first!")
 
 def checkout():
     """
@@ -246,9 +250,9 @@ def main() -> None:
 
     if "circle_image" not in st.session_state:
         st.session_state["circle_image"] = False
-
+        
     cart_btn = st.sidebar.button(
-        f"Cart [{len(st.session_state.get('cart_items', []))}]", 
+        f"Cart [{sum([item.count for item in st.session_state.get('cart_items', [])])}]", 
         key="cart_button", use_container_width=True
     )
     create_image_btn = st.sidebar.button(
