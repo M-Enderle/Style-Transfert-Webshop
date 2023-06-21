@@ -1,21 +1,23 @@
 import numpy as np
 import streamlit as st
 from PIL import Image
+from PIL import ImageChops
 
 from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer
 
 
-class Product:
-    def __init__(self, pimage: Image, psize: str, ptype: str, pcolor: str, pcount: int) -> None:
+class Product: 
+    def __init__(self, pimage: Image.Image, ai_size: float, psize: str, ptype: str, pcolor: str, pcount: int) -> None:
         self.image = pimage
+        self.ai_size = ai_size
         self.size = psize
         self.type = ptype
         self.color = pcolor
         self.count = pcount
 
-    def __eq__(self, __value: object) -> bool:
-        assert isinstance(__value, Product)
-        return self.image == __value.image and \
+    def __eq__(self, __value) -> bool: 
+        return not ImageChops.difference(self.image, __value.image).getbbox() and \
+            self.ai_size == __value.ai_size and \
             self.size == __value.size and \
             self.type == __value.type and \
             self.color == __value.color
@@ -62,11 +64,11 @@ def create_image():
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Image 1")
+        st.subheader("Content Image")
         upload_image(1)
 
     with col2:
-        st.subheader("Image 2")
+        st.subheader("Style Image")
         upload_image(2)
 
     generate = st.button(
@@ -193,6 +195,7 @@ def place_product():
             cart_items = st.session_state.get("cart_items", [])
             product = Product(pimage=st.session_state["product_picture"], 
                               psize=size, 
+                              ai_size=img_size,
                               ptype=product_type, 
                               pcolor=product_color,
                               pcount=1)
