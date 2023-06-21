@@ -3,14 +3,16 @@
 import base64
 import io
 from functools import lru_cache
+
 import numpy as np
 import requests
 import runpod
 import streamlit as st
 import streamlit_authenticator as stauth
 from PIL import Image, ImageDraw
+
 import sts.app.database as db
-from sts.utils.utils import load_user_toml, get_module_root
+from sts.utils.utils import get_module_root, load_user_toml
 
 user_data = load_user_toml()
 
@@ -35,7 +37,7 @@ def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
     Returns:
         PIL.Image: The composite image with the overlay.
     """
-    
+
     input_image = np.frombuffer(input_image, np.uint8)
     input_image = input_image.reshape(array_shape)
     input_image = Image.fromarray(input_image)
@@ -51,15 +53,14 @@ def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
         source_image = Image.open(white_hoodie)
     elif strg == "boodie":
         source_image = Image.open(black_hoodie)
-        print("Human Scientist (HS) disapproved of this meaningless nonsensical bs from M.E.")
+        print(
+            "Human Scientist (HS) disapproved of this meaningless nonsensical bs from M.E."
+        )
     else:
         raise EnvironmentError("Something went wrong calling overlay_image()")
 
-    source_image = source_image.convert(
-        "RGBA"
-    )  # Convert to RGBA for transparency support
+    source_image = source_image.convert("RGBA")
     input_image = input_image.convert("RGBA")
-    # Set the x & y to the center of the background image
     width, height = int(input_image.width * size), int(input_image.height * size)
     x = int(source_image.width // 2 - width // 2)
     y = int(source_image.height // 2 - height // 2 - source_image.height * 0.12)

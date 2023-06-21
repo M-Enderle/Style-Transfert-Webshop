@@ -1,7 +1,8 @@
 import numpy as np
 import streamlit as st
 from PIL import Image
-from sts.utils.streamlit_utils import (overlay_image, transfer, get_module_root)
+
+from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer
 
 
 def upload_image(column_num):
@@ -149,60 +150,64 @@ def place_product():
     Returns:
         None
     """
-    st.title("Place Product")
-    ai_image = st.session_state.get("ai_image")
-    product_preview = st.empty()
-    if ai_image is not None:
-        if st.session_state["product_picture"] is not None:
-            product_preview.image(st.session_state.get("product_picture"), caption="White Shirt")
-        else:
-            product_preview.image(ai_image, caption="Generated AI Image")
-        product_type = "shirt"
-        ai_image_array = np.array(ai_image)
-        array_shape = ai_image_array.shape
-        ai_image_bytes = ai_image_array.tobytes()
-        circle = False
-        st.subheader("Select Product:")
-        product_type2 = st.selectbox("Product:", ("Shirt", "Hoodie"))
-        product_type3 = st.selectbox("Color:", ("White", "Black")) 
-        if product_type2 == "Shirt" and product_type3 == "White":
+    _, col, _ = st.columns((1,3,1))
+    with col:
+        st.title("Select Product")
+        ai_image = st.session_state.get("ai_image")
+        product_preview = st.empty()
+        if ai_image is not None:
+            if st.session_state["product_picture"] is not None:
+                product_preview.image(st.session_state.get("product_picture"), caption="White Shirt")
+            else:
+                product_preview.image(ai_image, caption="Generated AI Image")
             product_type = "shirt"
-        elif product_type2 == "Shirt" and product_type3 == "Black":
-            product_type = "black"
-        elif product_type2 == "Hoodie" and product_type3 == "White":
-            product_type = "hoodie"
-        elif product_type3 == "Black" and product_type2 == "Hoodie":
-            product_type = "boodie"           
-        st.subheader("Select Size:")
-        size = st.selectbox("Size", ("S", "M", "L", "XL"))
-        circle = st.checkbox("Form: Circle", False, None, None, on_change = None, args = None, kwargs = None, label_visibility = "visible", )
-        if circle:
-            st.session_state["circle_image"] = True
-        else:
-            st.session_state["circle_image"] = False
-        img_size = st.slider("Image Size:", min_value = 0.25, max_value = 0.75, value = 0.5, step = 0.05, label_visibility = "visible")
-        shirt_image = overlay_image(
-            product_type, ai_image_bytes, array_shape, st.session_state["circle_image"], img_size
-        )
-        st.session_state["product_picture"] = shirt_image
-        product_preview.image(shirt_image, 
+            ai_image_array = np.array(ai_image)
+            array_shape = ai_image_array.shape
+            ai_image_bytes = ai_image_array.tobytes()
+            circle = False
+            col1, col2 = st.columns((1, 1))
+            with col1:
+                product_type2 = st.selectbox("Product:", ("Shirt", "Hoodie"))
+            with col2:
+                product_type3 = st.selectbox("Color:", ("White", "Black")) 
+            if product_type2 == "Shirt" and product_type3 == "White":
+                product_type = "shirt"
+            elif product_type2 == "Shirt" and product_type3 == "Black":
+                product_type = "black"
+            elif product_type2 == "Hoodie" and product_type3 == "White":
+                product_type = "hoodie"
+            elif product_type3 == "Black" and product_type2 == "Hoodie":
+                product_type = "boodie"           
+            st.subheader("Select Size:")
+            size = st.selectbox("Size", ("S", "M", "L", "XL"))
+            circle = st.checkbox("Form: Circle", False, None, None, on_change = None, args = None, kwargs = None, label_visibility = "visible", )
+            if circle:
+                st.session_state["circle_image"] = True
+            else:
+                st.session_state["circle_image"] = False
+            img_size = st.slider("Image Size:", min_value = 0.25, max_value = 0.75, value = 0.5, step = 0.05, label_visibility = "visible")
+            shirt_image = overlay_image(
+                product_type, ai_image_bytes, array_shape, st.session_state["circle_image"], img_size
+            )
+            st.session_state["product_picture"] = shirt_image
+            product_preview.image(shirt_image, 
                               caption="Shirt (White)" if product_type=="shirt" else "Hoodie (White)" if product_type=="hoodie" else "Shirt (Black)" if product_type == "black" else "Hoodie (Black)")
-        place_product_button = st.button("Place Product in Cart")
-        if place_product_button:
-            cart_items = st.session_state.get("cart_items", [])
-            product = {
-                "image": st.session_state["product_picture"],
-                "size": size,
-                "product": product_type,
-                "count" : 1,
-            }
-            cart_items.append(product)
-            st.session_state["cart_items"] = cart_items
-            st.success("Product placed in cart!")
-            st.session_state["current_page"] = cart
-            st.experimental_rerun()
-    else:
-        st.warning("Please generate the AI image first!")
+            place_product_button = st.button("Place Product in Cart",use_container_width=True)
+            if place_product_button:
+                cart_items = st.session_state.get("cart_items", [])
+                product = {
+                    "image": st.session_state["product_picture"],
+                    "size": size,
+                    "product": product_type,
+                    "count" : 1,
+                }
+                cart_items.append(product)
+                st.session_state["cart_items"] = cart_items
+                st.success("Product placed in cart!")
+                st.session_state["current_page"] = cart
+                st.experimental_rerun()
+        else:
+            st.warning("Please generate the AI image first!")
 
 def checkout():
     """
