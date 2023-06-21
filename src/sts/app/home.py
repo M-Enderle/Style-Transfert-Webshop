@@ -7,6 +7,8 @@ from sts.utils.streamlit_utils import (
     display_register,
 )
 
+from streamlit_extras.app_logo import add_logo
+
 
 def main():
     """
@@ -15,6 +17,7 @@ def main():
     """
 
     st.title("Style Transfer Shop")
+    add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
     auth = get_authenticator()
 
     if not check_if_logged_in():
