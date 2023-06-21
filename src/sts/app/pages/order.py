@@ -155,7 +155,6 @@ def place_product():
             product_preview.image(st.session_state.get("product_picture"), caption="White Shirt")
         else:
             product_preview.image(ai_image, caption="Generated AI Image")
-        st.subheader("Select Product Type:")
         product_type = "shirt"
         ai_image_array = np.array(ai_image)
         array_shape = ai_image_array.shape
@@ -176,8 +175,9 @@ def place_product():
             st.session_state["circle_image"] = True
         else:
             st.session_state["circle_image"] = False
+        img_size = st.slider("Image Size:", min_value = 0.25, max_value = 0.75, value = 0.5, step = 0.05, label_visibility = "visible")
         shirt_image = overlay_image(
-            product_type, ai_image_bytes, array_shape, st.session_state["circle_image"], None
+            product_type, ai_image_bytes, array_shape, st.session_state["circle_image"], img_size
         )
         st.session_state["product_picture"] = shirt_image
         product_preview.image(shirt_image, 
