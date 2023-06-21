@@ -35,7 +35,7 @@ class User(MyBase):
     username = Column(VARCHAR(45), nullable=False, unique=True)
     name = Column(VARCHAR(45), nullable=False)
     email = Column(VARCHAR(45), nullable=False, unique=True)
-    password_hash = Column(VARCHAR(45), nullable=False)
+    password_hash = Column(VARCHAR(512), nullable=False)
 
     orders = relationship("Order")
 
@@ -152,7 +152,9 @@ def create_session() -> Session:
 def get_user_information(username):
     try:
         user = session.query(User).filter_by(username=username).one()
-        return [{"username": user.username,"name": user.name,"email": user.email}]
+        print("user is: " + user)
+        print("data is" + user.username + user.email + user.name)
+        return [{"Username": user.username,"Name": user.name,"E-mail": user.email}]
     except Exception as e:
         # If the user is not found
         return [e]
@@ -165,8 +167,18 @@ def get_order_information(username):
             address = order.address
             address_str = f"{address.country}, {address.state}, \
                 {address.zip}, {address.city}, {address.street}"
-            orders_info.append({"timestamp":order.timestamp,"status": order.status,"address": address_str})
+            orders_info.append({"Order time":order.timestamp,"Status": order.status,"Address": address_str})
         return orders_info
+    except Exception as e:
+        return[e]
+
+def check_if_order(username):
+    try:
+        user = session.query(User).filter_by(username=username).one()
+        if not user.orders == []:
+            return True
+        else:
+            return False
     except Exception as e:
         return[e]
 

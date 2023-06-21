@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 
 from sts.utils.streamlit_utils import get_authenticator, is_logged_in
-from sts.app.database import get_user_information, get_order_information
+from sts.app.database import get_user_information, get_order_information, check_if_order
+
 
 
 def display_user_information():
@@ -10,15 +11,23 @@ def display_user_information():
     The user can have a look at the information which they
     are registered with
     """
-    user_information = [{"Username": st.session_state["username"],
-                        "Name": st.session_state["name"]
-                        #TODO key does not exist "Email": st.session_state["email"]
-                        }
-    ]
+    user_data = get_user_information(st.session_state["username"])
+    print(st.session_state["username"])
+    
     st.write("This is the information about your account")
     st.write("User Information:")
-    user_information_table = pd.DataFrame(user_information)
+    user_information_table = pd.DataFrame(user_data)
     st.table(user_information_table)
+
+
+def display_order_information():
+    """
+    The user can have a look at the information of their places orders.
+    """
+    st.write("These are the orders you have placed:")
+    oder_data = get_order_information(st.session_state["username"])
+    oder_information_table = pd.DataFrame(oder_data)
+    st.table(oder_information_table)
 
 
 
@@ -39,6 +48,9 @@ def main() -> None:
     st.title("My Account")
     if is_logged_in():
         display_user_information()
+        if check_if_order(st.session_state["username"]):
+            display_order_information()
+            print("is order")
     else:
         display_login_possibility()
 

@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `User` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `username` varchar(45) NOT NULL,
-  `password_hash` varchar(45) NOT NULL,
+  `password_hash` varchar(512) NOT NULL,
   `email` varchar(100) NOT NULL UNIQUE,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
