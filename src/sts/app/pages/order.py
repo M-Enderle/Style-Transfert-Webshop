@@ -1,7 +1,10 @@
 import streamlit as st
+from streamlit_extras.app_logo import add_logo
 
 from sts.utils.streamlit_utils import get_authenticator
 from sts.utils.utils import Cart, transfer
+
+add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
 
 # TODO Josh: Add two columns for the two images to be uplaoded
 # TODO Josh: Add a button to apply transfer style
