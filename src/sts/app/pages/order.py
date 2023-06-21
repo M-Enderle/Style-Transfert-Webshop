@@ -6,7 +6,7 @@ from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer
 
 
 class Product:
-    def __init__(self, pimage, psize, ptype, pcolor, pcount) -> None:
+    def __init__(self, pimage: Image, psize: str, ptype: str, pcolor: str, pcount: int) -> None:
         self.image = pimage
         self.size = psize
         self.type = ptype
@@ -14,6 +14,7 @@ class Product:
         self.count = pcount
 
     def __eq__(self, __value: object) -> bool:
+        assert isinstance(__value, Product)
         return self.image == __value.image and \
             self.size == __value.size and \
             self.type == __value.type and \
@@ -73,9 +74,6 @@ def create_image():
         use_container_width=True,
         disabled=not all([image is not None for image in st.session_state["images"]]),
     )
-
-    if st.button("Debug", use_container_width=True):
-        st.session_state["ai_image"] = Image.open(get_module_root() / "img" / "debug.png")
 
     if generate and all([image is not None for image in st.session_state["images"]]):
         ai_image = transfer(
