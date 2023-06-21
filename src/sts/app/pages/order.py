@@ -197,8 +197,6 @@ def checkout():
     the items that he is about to order. On this page the user can direct to payment
     to end his shopping experience.
     """
-    st.title("Checkout")
-
     # Access the session state to retrieve the cart items
     cart_items = st.session_state.get("cart_items", [])
 
@@ -248,45 +246,47 @@ def checkout():
             }
             checkout_items.append(new_item)
 
-    # Displaying the the items in the customers cart.
-    checkout_items.append(shipping_cost)
-    checkout_table = pd.DataFrame(checkout_items)
-    checkout_table = checkout_table.fillna("")
-    total_sum = checkout_table["Price Total"].str.replace(" €", "").astype(float).sum()
-    st.table(checkout_table[["Productname", "Amount", "Size", "Price Item", "Price Total"]])
+    placeholder = st.empty()
+    with placeholder.container():
+        st.title("Checkout")
+        # Displaying the the items in the customers cart.
+        checkout_items.append(shipping_cost)
+        checkout_table = pd.DataFrame(checkout_items)
+        checkout_table = checkout_table.fillna("")
+        total_sum = checkout_table["Price Total"].str.replace(" €", "").astype(float).sum()
+        st.table(checkout_table[["Productname", "Amount", "Size", "Price Item", "Price Total"]])
 
-    # Setting the cart items in the session_state to the more ordered checkout items
-    # st.session_state["cart_items"] = checkout_items
-
-    # Calculating and displaying the total sum of the order including shipping fees.
-    st.markdown(
-        f"<div style='display: flex; justify-content: flex-end;'><p>"\
-            f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
-        unsafe_allow_html=True
-    )
-    # get Adress
-    st.header("Shipping Address:")
-    country = st.text_input("Country", value="")
-    state = st.text_input("State", value="")
-    street_and_number = st.text_input("Street and Number", value="test")
-    city = st.text_input("City", value="")
-    zip = st.text_input("zip", value="")
-    
-    
-    if st.button("Confirm shipping address"):
-        # Displaying a Payment Button which generates a payment link and directs to the 
-        # stripe payment page
+        # Calculating and displaying the total sum of the order including shipping fees.
+        st.markdown(
+            f"<div style='display: flex; justify-content: flex-end;'><p>"\
+                f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
+            unsafe_allow_html=True
+        )
+        # get Adress
+        st.header("Shipping Address:")
+        country = st.text_input("Country", value="")
+        state = st.text_input("State", value="")
+        street_and_number = st.text_input("Street and Number")
+        city = st.text_input("City", value="")
+        zip = st.text_input("zip", value="")
+        shipping_button = st.button("Confirm Shipping Address")
         link, payment_session = generate_payment_link(checkout_items)
-        st.markdown(f'''
-            <a href={link}><button style="background-color:LightGrey;">Proceed to Payment</button></a>
-            ''', unsafe_allow_html=True)
-        if pay_articles(payment_session):
-            create_image(True, True)
-            st.session_state["current_page"] = create_image
-            #TODO safe address and order
-        else:
-            create_image(True, False)
-            st.session_state["current_page"]=create_image
+        if shipping_button:
+            # Displaying a Payment Button which generates a payment link and directs to the 
+            # stripe payment page
+            st.markdown(f'''
+                <a href={link}><button style="background-color:LightGrey;">Proceed to Payment</button></a>
+                ''', unsafe_allow_html=True)
+    if pay_articles(payment_session):
+        placeholder.empty()
+        create_image(True, True)
+        st.session_state["current_page"] = create_image
+        print("Hi")
+        #TODO safe address and order
+    else:
+        placeholder.empty()
+        create_image(True, False)
+        st.session_state["current_page"]=create_image
 
 
 def index():
