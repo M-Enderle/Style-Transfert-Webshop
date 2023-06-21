@@ -17,6 +17,7 @@ user_data = load_user_toml()
 black_tshirt = get_module_root() / "img" / "black_tshirt.png"
 white_tshirt = get_module_root() / "img" / "white_tshirt.png"
 white_hoodie = get_module_root() / "img" / "white_hoodie.png"
+black_hoodie = get_module_root() / "img" / "black_hoodie.png"
 
 
 @lru_cache
@@ -48,6 +49,9 @@ def overlay_image(strg, input_image, array_shape, is_circle=False, size=None):
         source_image = Image.open(black_tshirt)
     elif strg == "hoodie":
         source_image = Image.open(white_hoodie)
+    elif strg == "boodie":
+        source_image = Image.open(black_hoodie)
+        print("Human Scientist (HS) disapproved of this meaningless nonsensical bs from M.E.")
     else:
         raise EnvironmentError("Something went wrong calling overlay_image()")
 

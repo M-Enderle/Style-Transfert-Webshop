@@ -161,13 +161,16 @@ def place_product():
         ai_image_bytes = ai_image_array.tobytes()
         circle = False
         st.subheader("Select Product:")
-        product_type2 = st.selectbox("Product:", ("Shirt White", "Shirt Black", "Hoodie")) 
-        if product_type2 == "Shirt White":
+        product_type2 = st.selectbox("Product:", ("Shirt", "Hoodie"))
+        product_type3 = st.selectbox("Color:", ("White", "Black")) 
+        if product_type2 == "Shirt" and product_type3 == "White":
             product_type = "shirt"
-        elif product_type2 == "Shirt Black":
+        elif product_type2 == "Shirt" and product_type3 == "Black":
             product_type = "black"
-        elif product_type2 == "Hoodie":
-            product_type = "hoodie"           
+        elif product_type2 == "Hoodie" and product_type3 == "White":
+            product_type = "hoodie"
+        elif product_type3 == "Black" and product_type2 == "Hoodie":
+            product_type = "boodie"           
         st.subheader("Select Size:")
         size = st.selectbox("Size", ("S", "M", "L", "XL"))
         circle = st.checkbox("Form: Circle", False, None, None, on_change = None, args = None, kwargs = None, label_visibility = "visible", )
