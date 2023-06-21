@@ -1,10 +1,12 @@
 import numpy as np
 import streamlit as st
+from streamlit_extras.app_logo import add_logo
 from PIL import Image
 from PIL import ImageChops
 
 from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer
 
+add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
 
 class Product: 
     def __init__(self, pimage: Image.Image, ai_size: float, psize: str, ptype: str, pcolor: str, pcount: int) -> None:

@@ -13,3 +13,4 @@ output.png
 src/style_ai/.images/
 pylint-log.txt
 src/sts/img/debug.png
+user.toml

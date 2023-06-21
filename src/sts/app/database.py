@@ -34,8 +34,8 @@ class User(MyBase):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     username = Column(VARCHAR(45), nullable=False, unique=True)
     name = Column(VARCHAR(45), nullable=False)
-    email = Column(VARCHAR(45), nullable=False, unique=True)
-    password_hash = Column(VARCHAR(45), nullable=False)
+    email = Column(VARCHAR(45), nullable=False, unique=False)
+    password_hash = Column(VARCHAR(512), nullable=False)
 
     orders = relationship("Order")
 
@@ -135,13 +135,38 @@ def create_database() -> Engine:
     return _engine
 
 
-def create_session(_engine: Engine) -> Session:
+def create_session() -> Session:
     """
     This function creates the session.
     """
-    _session = sessionmaker(bind=_engine)
+    _session = sessionmaker(engine)
     return _session()
 
 
+def add_users(credentails: dict):
+    """
+    This function adds all users from the credentials to the database.
+    """
+
+    session = create_session()
+    for user in credentails["usernames"].keys():
+        try:
+            if not session.query(User).filter(User.username == user).first():
+                session.add(
+                    User(
+                        username=user,
+                        name=credentails["usernames"][user]["name"],
+                        email=credentails["usernames"][user]["email"],
+                        password_hash=credentails["usernames"][user]["password"],
+                    )
+                )
+                session.commit()
+                session.flush()
+        except Exception as e:
+            print(e)
+            session.rollback()
+
+    session.close()
+
+
 engine = create_database()
-session = create_session(engine)
