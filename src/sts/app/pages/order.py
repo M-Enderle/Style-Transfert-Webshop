@@ -27,7 +27,12 @@ def upload_image(column_num):
         )
 
 
-def create_image():
+def create_image(paid = False, success = False):
+    if paid and success:
+        st.success("You have paid successfully!")
+    elif paid:
+        st.warning("Something in the payment process went wrong. Please try again")
+
     st.title("Create AI Image")
 
     col1, col2 = st.columns(2)
@@ -259,7 +264,7 @@ def checkout():
             f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
         unsafe_allow_html=True
     )
-    #get Adress
+    # get Adress
     st.header("Shipping Address:")
     country = st.text_input("Country", value="")
     state = st.text_input("State", value="")
@@ -271,14 +276,17 @@ def checkout():
     if st.button("Confirm shipping address"):
         # Displaying a Payment Button which generates a payment link and directs to the 
         # stripe payment page
-        print(street_and_number)
         link, payment_session = generate_payment_link(checkout_items)
         st.markdown(f'''
             <a href={link}><button style="background-color:LightGrey;">Proceed to Payment</button></a>
             ''', unsafe_allow_html=True)
         if pay_articles(payment_session):
-            st.success("Your payment was successfull. The articles will be sent to you within a few days.")
+            create_image(True, True)
+            st.session_state["current_page"] = create_image
             #TODO safe address and order
+        else:
+            create_image(True, False)
+            st.session_state["current_page"]=create_image
 
 
 def index():
