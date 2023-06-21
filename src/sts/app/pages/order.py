@@ -186,7 +186,7 @@ def place_product():
         )
         st.session_state["product_picture"] = shirt_image
         product_preview.image(shirt_image, 
-                              caption="T-Shirt" if product_type=="shirt" else "Hoodie" if product_type=="hoodie" else "Black Shirt")
+                              caption="Shirt (White)" if product_type=="shirt" else "Hoodie (White)" if product_type=="hoodie" else "Shirt (Black)" if product_type == "black" else "Hoodie (Black)")
         place_product_button = st.button("Place Product in Cart")
         if place_product_button:
             cart_items = st.session_state.get("cart_items", [])
