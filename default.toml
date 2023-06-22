@@ -8,3 +8,8 @@ password="Test123456"
 cookie_name="stauth"
 cookie_secret_key="Test123456"
 cookie_expiry_days=30  # days
+
+[runpod]
+use="false"
+api_key=""
+endpoint=""
