@@ -7,6 +7,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.exc import IntegrityError
 
 from sts.utils.utils import load_user_toml
 
@@ -149,19 +150,23 @@ def create_session() -> Session:
     _session = sessionmaker(engine)
     return _session()
 
+
 def get_user_information(username):
+    session = create_session()
     try:
         user = session.query(User).filter_by(username=username).one()
-        print("user is: " + user)
-        print("data is" + user.username + user.email + user.name)
+        session.close()
         return [{"Username": user.username,"Name": user.name,"E-mail": user.email}]
     except Exception as e:
         # If the user is not found
+        session.close()
         return [e]
 
 def get_order_information(username):
+    session = create_session()
     try:
         user = session.query(User).filter_by(username=username).one()
+        session.close()
         orders_info = []
         for order in user.orders:
             address = order.address
@@ -170,17 +175,25 @@ def get_order_information(username):
             orders_info.append({"Order time":order.timestamp,"Status": order.status,"Address": address_str})
         return orders_info
     except Exception as e:
+        session.close()
         return[e]
 
 def check_if_order(username):
+    session = create_session()
+    global engine
     try:
         user = session.query(User).filter_by(username=username).one()
-        if not user.orders == []:
-            return True
-        else:
-            return False
+        orders = user.orders
+        session.close()
+        return len(orders) > 0
+    except IntegrityError:
+        # no order found
+        session.close()
+        return False
     except Exception as e:
-        return[e]
+        print("debug Exception", e)
+        session.close()
+        return False
 
 
 def add_users(credentails: dict):
@@ -189,6 +202,7 @@ def add_users(credentails: dict):
     """
 
     session = create_session()
+    
     for user in credentails["usernames"].keys():
         try:
             if not session.query(User).filter(User.username == user).first():
@@ -202,12 +216,16 @@ def add_users(credentails: dict):
                 )
                 session.commit()
                 session.flush()
+        except IntegrityError:
+            session.rollback()
+            return False
         except Exception as e:
             print(e)
             session.rollback()
+            return False
 
     session.close()
+    return True
 
 
 engine = create_database()
-session = create_session()

@@ -11,7 +11,6 @@ from PIL import Image
 import sts.app.database as db
 from sts.utils.utils import load_user_toml
 
-session = db.session
 user_data = load_user_toml()
 
 
@@ -19,7 +18,7 @@ def get_authenticator() -> stauth.Authenticate:
     """
     Returns a streamlit_authenticator.Authenticate object
     """
-
+    session = db.create_session()
     users = session.query(db.User).all()
     credentials: dict = {"usernames": {}}
     for user in users:
@@ -29,7 +28,7 @@ def get_authenticator() -> stauth.Authenticate:
             "name": user.name,
         }
 
-
+    session.close()
     return stauth.Authenticate(
         credentials=credentials,
         cookie_name=user_data["stauth"]["cookie_name"],
@@ -85,6 +84,7 @@ def display_register(auth: stauth.Authenticate):
     """
     session = db.create_session()
     
+    
     register_user_form = st.form("Register user")
     register_user_form.subheader("Register to access the app")
     new_email = register_user_form.text_input("Email")
@@ -102,7 +102,8 @@ def display_register(auth: stauth.Authenticate):
             and len(new_name)
             and len(new_password) > 0
         ):
-            if new_username not in [u.username for u in session.query(db.User).all()]:
+            if new_username not in [u.username for u in session.query(db.User).all()] and \
+                new_email not in [u.email for u in session.query(db.User).all()]:
                 if new_password == new_password_repeat:
                     auth._register_credentials(
                         new_username, new_name, new_password, new_email, False
@@ -114,7 +115,7 @@ def display_register(auth: stauth.Authenticate):
                 else:
                     st.error("Passwords do not match")
             else:
-                st.error("Username already exists")
+                st.error("Username or email already exists")
         else:
             st.error("Please fill in all fields")
 

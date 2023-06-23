@@ -54,8 +54,10 @@ def main() -> None:
         with tab2:
             reg_res = display_register(auth)
             if reg_res:
-                st.success("You are registered!")
-                add_users(auth.credentials)
+                if add_users(auth.credentials):
+                    st.success("You are registered!")
+                else:
+                    st.warning("Username or email already exists.")
                 st.experimental_rerun()
 
 
