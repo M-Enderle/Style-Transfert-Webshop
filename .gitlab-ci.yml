@@ -1,11 +1,12 @@
 stages:
-  - build
+  - docker-build
   - test
   - lint
+  - build
   - deploy
 
 webserver-build:
-  stage: build
+  stage: docker-build
   image: docker:latest
   services:
     - docker:dind
@@ -13,7 +14,7 @@ webserver-build:
     - docker build -f docker/webserver/Dockerfile -t webserver .
 
 database-build:
-  stage: build
+  stage: docker-build
   image: docker:latest
   services:
     - docker:dind
@@ -21,20 +22,12 @@ database-build:
     - docker build -f docker/database/Dockerfile -t database .
 
 ai-build:
-  stage: build
+  stage: docker-build
   image: docker:latest
   services:
     - docker:dind
   script:
     - docker build -f docker/ai/Dockerfile -t ai .
-
-test-job:
-  stage: test
-  image: python:3.10
-  script:
-    - pip install poetry
-    - poetry install && poetry add pytest
-    - poetry run pytest tests/*/*.py
 
 black:
   stage: lint
@@ -47,24 +40,45 @@ mypy:
   stage: lint
   image: python:3.10
   script:
-    - pip install mypy types-toml types-Flask
+    - pip install mypy types-toml types-requests types-tqdm types-pillow sqlalchemy-stubs 
     - pip install torch==1.13.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
     - mypy src
   allow_failure: true
 
-pylint:
-  stage: lint
-  image: python:3.10
+build:
+  image: docker:20.10.16
+  stage: build
+  services:
+    - docker:20.10.16-dind
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    IMAGE_TAG_LATEST: $CI_REGISTRY_IMAGE:latest
   script:
-    - pip install pylint
-    - pylint src
-  allow_failure: true
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG -t $IMAGE_TAG_LATEST -f docker/webserver/Dockerfile .
+    - docker push $IMAGE_TAG
 
-deploy-job:
+deploy:
+  image: alpine:latest
   stage: deploy
+  tags:
+    - deployment
+    - docker:20.10.16-dind
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - apk add --no-cache openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY"
+    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $IMAGE_TAG"
+    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f sts-website || true"
+    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 5000:8501 --name sts-website --net styletransfer --ip 172.18.0.21 --restart unless-stopped $IMAGE_TAG"
+    - ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker cp /media/user.toml sts-website:/style-transfer-webshop/user.toml"
+  environment:
+    name: production
+    url: "https://styletransfer.humanscientists.de/"
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
       when: always

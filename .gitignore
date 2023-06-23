@@ -4,6 +4,13 @@
 .env
 venv
 .vscode
-src/sts/utils/api_key.conf
-.gitignore
+**.gitignore
+src/sts/utils/images/orginal_tshirt.avif
+src/sts/utils/images/1000_F_258989952_88GbEoXeMZHypGbkvK7wkC9eVBUqYICX.jpg
+src/sts/utils/images/black-t-shirts-with-copy-space_53876-102012.avif
+src/sts/app/pages/order.py
+output.png
+src/style_ai/.images/
+pylint-log.txt
+src/sts/img/debug.png
 user.toml

@@ -17,7 +17,7 @@ user_data = load_user_toml()
 host = user_data["database"]["host"]
 port = int(user_data["database"]["port"])
 username = user_data["database"]["username"]
-user_password = user_data["database"]["password"]
+password = user_data["database"]["password"]
 
 
 class User(MyBase):
@@ -35,7 +35,7 @@ class User(MyBase):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     username = Column(VARCHAR(45), nullable=False, unique=True)
     name = Column(VARCHAR(45), nullable=False)
-    email = Column(VARCHAR(45), nullable=False, unique=True)
+    email = Column(VARCHAR(45), nullable=False, unique=False)
     password_hash = Column(VARCHAR(512), nullable=False)
 
     orders = relationship("Order")
@@ -56,10 +56,6 @@ class User(MyBase):
         return self.password_hash
 
     def set_plain_password(self, password):
-        """
-        This function sets the password for the user. This is used, when registering.
-        TODO: hash the password
-        """
         self.password_hash = password
 
 
@@ -138,7 +134,7 @@ def create_database() -> Engine:
     """
 
     _engine = create_engine(
-        f"mysql+pymysql://{username}:{user_password}@{host}:{port}/StyleTransfer"
+        f"mysql+pymysql://{username}:{password}@{host}:{port}/StyleTransfer"
     )
     return _engine
 
