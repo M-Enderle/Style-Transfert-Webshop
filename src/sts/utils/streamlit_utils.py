@@ -114,7 +114,6 @@ def get_authenticator() -> stauth.Authenticate:
     )
 
 
-
 def check_if_logged_in():
     """
     This function checks if the user is logged in.

@@ -9,6 +9,7 @@ add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
 auth = get_authenticator()
 res = auth.login("Login to access the app", location="sidebar")
 
+
 def display_user_information():
     """
     The user can have a look at the information which they
@@ -18,10 +19,10 @@ def display_user_information():
 
     st.write("This is the information about your account")
     st.write("User information:")
-    st.text_input("Username", disabled=True, value = user_data["Username"])
-    st.text_input("Name", disabled=True, value = user_data["Name"])
-    st.text_input("E-Mail", disabled=True, value = user_data["E-mail"])
-    
+    st.text_input("Username", disabled=True, value=user_data["Username"])
+    st.text_input("Name", disabled=True, value=user_data["Name"])
+    st.text_input("E-Mail", disabled=True, value=user_data["E-mail"])
+
 
 def display_order_information():
     """
