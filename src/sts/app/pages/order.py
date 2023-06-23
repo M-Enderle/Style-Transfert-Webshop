@@ -263,13 +263,14 @@ def checkout():
                 f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
             unsafe_allow_html=True
         )
-        # get Adress
-        st.header("Shipping Address:")
-        country = st.text_input("Country", value="")
-        state = st.text_input("State", value="")
-        street_and_number = st.text_input("Street and Number")
-        city = st.text_input("City", value="")
-        zip = st.text_input("zip", value="")
+        # get Shipping Address
+        shipping_address_from = st.form("Shipping address")
+        shipping_address_from.subheader("Shipping Address")
+        country = shipping_address_from.text_input("Country")
+        state = shipping_address_from.text_input("State")
+        street_and_number = shipping_address_from.text_input("Street and Number")
+        city = shipping_address_from.text_input("City")
+        zip = shipping_address_from.text_input("zip")
         shipping_button = st.button("Confirm Shipping Address")
         link, payment_session = generate_payment_link(checkout_items)
         if shipping_button:
