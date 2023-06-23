@@ -164,7 +164,7 @@ def get_user_information(username):
     try:
         user = session.query(User).filter_by(username=username).one()
         session.close()
-        return [{"Username": user.username, "Name": user.name, "E-mail": user.email}]
+        return {"Username": user.username, "Name": user.name, "E-mail": user.email}
     except Exception as e:
         # If the user is not found
         session.close()

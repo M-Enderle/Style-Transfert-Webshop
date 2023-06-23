@@ -15,13 +15,13 @@ def display_user_information():
     are registered with
     """
     user_data = get_user_information(st.session_state["username"])
-    print(st.session_state["username"])
 
     st.write("This is the information about your account")
-    st.write("User Information:")
-    user_information_table = pd.DataFrame(user_data)
-    st.table(user_information_table)
-
+    st.write("User information:")
+    st.text_input("Username", disabled=True, value = user_data["Username"])
+    st.text_input("Name", disabled=True, value = user_data["Name"])
+    st.text_input("E-Mail", disabled=True, value = user_data["E-mail"])
+    
 
 def display_order_information():
     """
