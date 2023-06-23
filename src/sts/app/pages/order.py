@@ -103,8 +103,9 @@ def cart():
     if checkout_button:
         # Set the current page to the checkout function
         placeholder.empty()
-        checkout()
         st.session_state["current_page"] = checkout
+        checkout()
+        
         
 
 
@@ -281,7 +282,6 @@ def checkout():
         placeholder.empty()
         create_image(True, True)
         st.session_state["current_page"] = create_image
-        print("Hi")
         #TODO safe address and order
     else:
         placeholder.empty()

@@ -45,7 +45,7 @@ def generate_payment_link(checkout_items):
     return session.url, session
 
 def pay_articles(session):
-    timeout_after = time.time() + 60 * 60  # 5 minutes from now
+    timeout_after = time.time() + 60 * 60  # an hour from now
 
     while session.payment_status != "paid":
         if time.time() > timeout_after:
