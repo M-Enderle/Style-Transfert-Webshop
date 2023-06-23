@@ -271,9 +271,8 @@ def checkout():
         street_and_number = shipping_address_from.text_input("Street and Number")
         city = shipping_address_from.text_input("City")
         zip = shipping_address_from.text_input("zip")
-        shipping_button = st.button("Confirm Shipping Address")
         link, payment_session = generate_payment_link(checkout_items)
-        if shipping_button:
+        if shipping_address_from.form_submit_button("Confirm shipping address"):
             # Displaying a Payment Button which generates a payment link and directs to the 
             # stripe payment page
             st.markdown(f'''
