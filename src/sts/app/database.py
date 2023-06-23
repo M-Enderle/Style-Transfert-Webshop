@@ -154,7 +154,7 @@ def create_session() -> Session:
 def get_user_information(username):
     """
     Retrieve user information for a given username.
-    Args: 
+    Args:
         username (str): The username of the user.
     Returns:
         list: A list containing a dictionary with user information. The dictionary includes the following keys:
@@ -168,23 +168,24 @@ def get_user_information(username):
     try:
         user = session.query(User).filter_by(username=username).one()
         session.close()
-        return [{"Username": user.username,"Name": user.name,"E-mail": user.email}]
+        return [{"Username": user.username, "Name": user.name, "E-mail": user.email}]
     except Exception as e:
         # If the user is not found
         session.close()
         return [e]
 
+
 def get_order_information(username):
     """
     Retrieve order information for a given user.
-    Args: 
+    Args:
         username (str): The username of the user.
-    Returns: 
-    list: A list of dictionaries containing order information. 
+    Returns:
+    list: A list of dictionaries containing order information.
         Each dictionary represents an order and includes the following keys:
               - "Order time": Timestamp indicating when the order was made.
               - "Status": Current status of the order.
-              - "Address": String representation of the order's address 
+              - "Address": String representation of the order's address
                 in the format "country, state, zip, city, street".
     """
     session = create_session()
@@ -196,11 +197,18 @@ def get_order_information(username):
             address = order.address
             address_str = f"{address.country}, {address.state}, \
                 {address.zip}, {address.city}, {address.street}"
-            orders_info.append({"Order time":order.timestamp,"Status": order.status,"Address": address_str})
+            orders_info.append(
+                {
+                    "Order time": order.timestamp,
+                    "Status": order.status,
+                    "Address": address_str,
+                }
+            )
         return orders_info
     except Exception as e:
         session.close()
-        return[e]
+        return [e]
+
 
 def check_if_order(username):
     """
@@ -210,7 +218,7 @@ def check_if_order(username):
     Raises: None
     """
     session = create_session()
-    
+
     try:
         user = session.query(User).filter_by(username=username).one()
         orders = user.orders
@@ -231,7 +239,7 @@ def add_users(credentails: dict):
     This function adds all users from the credentials to the database.
     """
     session = create_session()
-    
+
     for user in credentails["usernames"].keys():
         try:
             if not session.query(User).filter(User.username == user).first():

@@ -5,7 +5,6 @@ from sts.utils.streamlit_utils import get_authenticator, is_logged_in
 from sts.app.database import get_user_information, get_order_information, check_if_order
 
 
-
 def display_user_information():
     """
     The user can have a look at the information which they
@@ -13,7 +12,7 @@ def display_user_information():
     """
     user_data = get_user_information(st.session_state["username"])
     print(st.session_state["username"])
-    
+
     st.write("This is the information about your account")
     st.write("User Information:")
     user_information_table = pd.DataFrame(user_data)
@@ -28,7 +27,6 @@ def display_order_information():
     oder_data = get_order_information(st.session_state["username"])
     oder_information_table = pd.DataFrame(oder_data)
     st.table(oder_information_table)
-
 
 
 def display_login_possibility():
@@ -53,7 +51,6 @@ def main() -> None:
             print("is order")
     else:
         display_login_possibility()
-
 
 
 if __name__ == "__main__":

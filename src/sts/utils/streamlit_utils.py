@@ -83,8 +83,7 @@ def display_register(auth: stauth.Authenticate):
     in the WebApp.
     """
     session = db.create_session()
-    
-    
+
     register_user_form = st.form("Register user")
     register_user_form.subheader("Register to access the app")
     new_email = register_user_form.text_input("Email")
@@ -102,8 +101,9 @@ def display_register(auth: stauth.Authenticate):
             and len(new_name)
             and len(new_password) > 0
         ):
-            if new_username not in [u.username for u in session.query(db.User).all()] and \
-                new_email not in [u.email for u in session.query(db.User).all()]:
+            if new_username not in [
+                u.username for u in session.query(db.User).all()
+            ] and new_email not in [u.email for u in session.query(db.User).all()]:
                 if new_password == new_password_repeat:
                     auth._register_credentials(
                         new_username, new_name, new_password, new_email, False
@@ -135,4 +135,3 @@ def is_logged_in():
         return False
 
     return True
-
