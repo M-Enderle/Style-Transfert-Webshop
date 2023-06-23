@@ -4,6 +4,7 @@ from sts.app.database import User, add_users, create_session
 from sqlalchemy.exc import IntegrityError
 
 from sts.utils.streamlit_utils import get_authenticator, is_logged_in, display_register
+from streamlit_extras.app_logo import add_logo
 
 
 def logged_in_home():
@@ -36,6 +37,7 @@ def main() -> None:
     organizes what should be shown at the moment.
     """
     st.title("Style Transfer Shop")
+    add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
     auth = get_authenticator()
     if is_logged_in():
         st.success("You are logged in!")

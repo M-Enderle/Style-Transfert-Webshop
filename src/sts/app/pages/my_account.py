@@ -1,10 +1,13 @@
 import streamlit as st
 from streamlit_extras.app_logo import add_logo
 import pandas as pd
-
+from streamlit_extras.app_logo import add_logo
 from sts.utils.streamlit_utils import get_authenticator, is_logged_in
 from sts.app.database import get_user_information, get_order_information, check_if_order
 
+add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
+auth = get_authenticator()
+res = auth.login("Login to access the app", location="sidebar")
 
 def display_user_information():
     """
@@ -20,9 +23,6 @@ def display_user_information():
     st.table(user_information_table)
 
 
-add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
-auth = get_authenticator()
-res = auth.login("Login to access the app", location="sidebar")
 def display_order_information():
     """
     The user can have a look at the information of their places orders.

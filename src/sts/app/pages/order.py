@@ -4,8 +4,8 @@ from streamlit_extras.app_logo import add_logo
 from PIL import Image
 from PIL import ImageChops
 
-from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer
-from sts.utils.streamlit_utils import get_authenticator, transfer, is_logged_in
+from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer,get_authenticator, transfer, is_logged_in
+
 
 add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
 
@@ -239,59 +239,66 @@ def main() -> None:
 
     # add sidebar with create_image, place product, cart, checkout
     st.sidebar.title("Order Process")
+    if is_logged_in():
+        if "images" not in st.session_state:
+            st.session_state["images"] = [None, None]
 
-    if "images" not in st.session_state:
-        st.session_state["images"] = [None, None]
+        if "ai_image" not in st.session_state:
+            st.session_state["ai_image"] = None
 
-    if "ai_image" not in st.session_state:
-        st.session_state["ai_image"] = None
+        if "current_page" not in st.session_state:
+            st.session_state["current_page"] = create_image
 
-    if "current_page" not in st.session_state:
-        st.session_state["current_page"] = create_image
+        if "product_picture" not in st.session_state:
+            st.session_state["product_picture"] = None
 
-    if "product_picture" not in st.session_state:
-        st.session_state["product_picture"] = None
+        if "circle_image" not in st.session_state:
+            st.session_state["circle_image"] = False
 
-    if "circle_image" not in st.session_state:
-        st.session_state["circle_image"] = False
+        cart_btn = st.sidebar.button(
+            f"Cart [{sum([item.count for item in st.session_state.get('cart_items', [])])}]",
+            key="cart_button", use_container_width=True
+        )
+        create_image_btn = st.sidebar.button(
+            "Create AI Image", key="create_image_button", use_container_width=True
+        )
+        place_product_btn = st.sidebar.button(
+            "Place Product",
+            use_container_width=True,
+            disabled=st.session_state["ai_image"] is None,
+        )
+        checkout_btn = st.sidebar.button(
+            "Checkout", use_container_width=True, disabled=len(st.session_state.get("cart_items", [])) == 0
+        )
 
-    cart_btn = st.sidebar.button(
-        f"Cart [{sum([item.count for item in st.session_state.get('cart_items', [])])}]",
-        key="cart_button", use_container_width=True
-    )
-    create_image_btn = st.sidebar.button(
-        "Create AI Image", key="create_image_button", use_container_width=True
-    )
-    place_product_btn = st.sidebar.button(
-        "Place Product",
-        use_container_width=True,
-        disabled=st.session_state["ai_image"] is None,
-    )
-    checkout_btn = st.sidebar.button(
-        "Checkout", use_container_width=True, disabled=len(st.session_state.get("cart_items", [])) == 0
-    )
+        if cart_btn:
+            cart()
+            st.session_state["current_page"] = cart
 
-    if cart_btn:
-        cart()
-        st.session_state["current_page"] = cart
+        elif create_image_btn:
+            create_image()
+            st.session_state["current_page"] = create_image
 
-    elif create_image_btn:
-        create_image()
-        st.session_state["current_page"] = create_image
+        elif place_product_btn:
+            place_product()
+            st.session_state["current_page"] = place_product
 
-    elif place_product_btn:
-        place_product()
-        st.session_state["current_page"] = place_product
+        elif checkout_btn:
+            checkout()
+            st.session_state["current_page"] = checkout
 
-    elif checkout_btn:
-        checkout()
-        st.session_state["current_page"] = checkout
-
-    else:
-        if st.session_state["current_page"] is None:
-            st.experimental_rerun()
         else:
-            st.session_state["current_page"]()
+            if st.session_state["current_page"] is None:
+                st.experimental_rerun()
+            else:
+                st.session_state["current_page"]()
+    else:
+        st.warning(
+            "You have to log in to use the features of the Webshop. Please log in."
+            "\nIf you do not have an account yet, feel free to register in home."
+        )
+        auth = get_authenticator()
+        res = auth.login("Login to access the app", location="sidebar")
 
 if __name__ == "__main__":
     main()
