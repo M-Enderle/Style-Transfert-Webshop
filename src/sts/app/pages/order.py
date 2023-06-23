@@ -282,6 +282,7 @@ def checkout():
         placeholder.empty()
         create_image(True, True)
         st.session_state["current_page"] = create_image
+        st.session_state["ai_image"] = None
         #TODO safe address and order
     else:
         placeholder.empty()
