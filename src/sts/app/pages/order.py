@@ -1,11 +1,11 @@
 import streamlit as st
 from PIL import Image
-from streamlit_extras.switch_page_button import switch_page
+from streamlit_extras import add_vertical_space
 import numpy as np
-import pandas as pd
+import stripe
 
 from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
-from sts.utils.checkout_utils import generate_payment_link, pay_articles
+from sts.utils.checkout_utils import generate_payment_link, generate_cart
 
 
 def upload_image(column_num):
@@ -106,8 +106,6 @@ def cart():
         st.session_state["current_page"] = checkout
         checkout()
         
-        
-
 
 def place_product():
     st.title("Place Product")
@@ -190,6 +188,7 @@ def place_product():
     else:
         st.warning("Please generate the AI image first!")
 
+
 def checkout():
     """
     Creates the checkout page. 
@@ -198,101 +197,88 @@ def checkout():
     the items that he is about to order. On this page the user can direct to payment
     to end his shopping experience.
     """
-    # Access the session state to retrieve the cart items
-    cart_items = st.session_state.get("cart_items", [])
 
-    # Adding information about shipping cost.
-    shipping_cost = {
-        "Productname": "Shipping",
-        "Amount": "1",
-        "Size": "via DHL",
-        "Price Total": "5.49 €",
-        "product_type": "shipping"
-    }
-    
-    # Clustering and storing items the customer added to his cart.
-    checkout_items = []
-    for item in cart_items:
-        already_added = False
-        size = item["size"]
-        product = item["product"]
+    shipping_address_from = st.form("Shipping address", )
+    shipping_address_from.subheader("Shipping Address")
+    full_name = shipping_address_from.text_input("Full Name")
+    country = shipping_address_from.text_input("Country")
+    street_and_number = shipping_address_from.text_input("Street and Number")
+    city = shipping_address_from.text_input("City")
+    zip = shipping_address_from.text_input("zip")
+    shipping_address_from.divider()
+    if shipping_address_from.form_submit_button("Continue to payment", use_container_width=True):
 
-        for checkout_item in checkout_items:
-            if checkout_items:
-                if checkout_item["Size"] == size and checkout_item["product_type"] == product:
-                    checkout_item["Amount"] += 1
-                    sum = int(checkout_item["Price Item"].replace(" €", "")) * int(checkout_item["Amount"])
-                    checkout_item["Price Total"] = str(sum) + " €"
-                    already_added = True 
+        if country == "" or street_and_number == "" or city == "" or zip == "" or full_name == "":
+            st.error("Please fill out all fields!")
+            return
+        
+        st.session_state["address"] = {
+            "full_name": full_name,
+            "country": country,
+            "street_and_number": street_and_number,
+            "city": city,
+            "zip": zip
+        }
+        st.session_state["current_page"] = payment
 
-        if not already_added:
-            product_name="T-Shirt - white" if product=="shirt" \
-                else "Hoodie - white" if product=="hoodie" \
-                else "T-Shirt - black"
-            amount = 1
-            image_paths = {
-                "hoodie": "src/sts/utils/images/white_hoodie.png",
-                "shirt":"src/sts/utils/images/white_tshirt.png",
-                "black": "src/sts/utils/images/black_tshirt.png"
-            }
+        _, checkout_items, _ = generate_cart(st.session_state.get("cart_items", []))
+        st.session_state["stripe_url"], st.session_state["payment_session"] = generate_payment_link(checkout_items)
 
-            single_price = item["price"]
-            new_item = {
-                "Productname": product_name,
-                "product_type": product,
-                "Amount": amount,
-                "Size": size,
-                "Price Item": str(single_price) + " €",
-                "Price Total": str(single_price) + " €"
-            }
-            checkout_items.append(new_item)
+        st.experimental_rerun()
 
-    placeholder = st.empty()
-    with placeholder.container():
-        st.title("Checkout")
-        # Displaying the the items in the customers cart.
-        checkout_items.append(shipping_cost)
-        checkout_table = pd.DataFrame(checkout_items)
-        checkout_table = checkout_table.fillna("")
-        total_sum = checkout_table["Price Total"].str.replace(" €", "").astype(float).sum()
-        st.table(checkout_table[["Productname", "Amount", "Size", "Price Item", "Price Total"]])
+def payment():
+    """
+    Creates the payment page.
+    The user can pay via stripe.
+    """
 
-        # Calculating and displaying the total sum of the order including shipping fees.
-        st.markdown(
+    total_sum, _, table = generate_cart(st.session_state["cart_items"])
+
+    st.title("Payment")
+
+    add_vertical_space.add_vertical_space(3)
+    st.table(table)
+    st.markdown(
             f"<div style='display: flex; justify-content: flex-end;'><p>"\
                 f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
             unsafe_allow_html=True
         )
-        # get Shipping Address
-        shipping_address_from = st.form("Shipping address")
-        shipping_address_from.subheader("Shipping Address")
-        country = shipping_address_from.text_input("Country")
-        state = shipping_address_from.text_input("State")
-        street_and_number = shipping_address_from.text_input("Street and Number")
-        city = shipping_address_from.text_input("City")
-        zip = shipping_address_from.text_input("zip")
-        link, payment_session = generate_payment_link(checkout_items)
-        if shipping_address_from.form_submit_button("Confirm shipping address"):
-            # Displaying a Payment Button which generates a payment link and directs to the 
-            # stripe payment page
-            st.markdown(f'''
-                <a href={link}><button style="background-color:LightGrey;">Proceed to Payment</button></a>
-                ''', unsafe_allow_html=True)
-    if pay_articles(payment_session):
-        placeholder.empty()
-        create_image(True, True)
-        st.session_state["current_page"] = create_image
-        st.session_state["ai_image"] = None
-        #TODO safe address and order
-    else:
-        placeholder.empty()
-        create_image(True, False)
-        st.session_state["current_page"]=create_image
+    
+    st.divider()
+    
+    st.markdown(f'''
+        <a href={st.session_state["stripe_url"]} style="color: inherit;">
+            <button class="css-1a359ur e1ewe7hr10">
+                <div data-testid="stMarkdownContainer" class="css-x78sv8 eqr7zpz4"><p>Pay Now</p></div>
+            </button>
+        </a>''', unsafe_allow_html=True)
+    add_vertical_space.add_vertical_space(1)
+    check_button = st.button("Check payment status", use_container_width=True)
 
+    if check_button:
+        st.session_state["payment_session"] = stripe.checkout.Session.retrieve(st.session_state["payment_session"].id)
+        status = st.session_state["payment_session"].payment_status
+        if status == "paid":
+            st.success("Payment successful!")
+            st.session_state["current_page"] = success
+            st.session_state["cart_items"] = []
+            st.session_state["ai_image"] = None
+            st.session_state["images"] = [None, None]
+            st.experimental_rerun()
+        else:
+            st.warning("Payment not successful yet. Please pay and recheck afterwards.")
+
+def success():
+    st.markdown("# Thank you")
+    st.success("Your order has been placed successfully!")
+
+    back_home = st.button("Back to home")
+    if back_home:
+        st.session_state["current_page"] = create_image
+        st.experimental_rerun()
 
 def index():
     st.warning("Please continue to either your cart or create another AI Picture")
-
 
 
 def main() -> None:

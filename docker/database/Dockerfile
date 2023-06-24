@@ -1,4 +1,4 @@
-FROM mariadb:latest
+FROM mariadb:10.8
 
 ENV MYSQL_ROOT_PASSWORD Test123456
 ENV MYSQL_DATABASE StyleTransfer
