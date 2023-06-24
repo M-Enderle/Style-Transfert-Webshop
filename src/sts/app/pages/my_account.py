@@ -53,7 +53,6 @@ def main() -> None:
         display_user_information()
         if check_if_order(st.session_state["username"]):
             display_order_information()
-            print("is order")
     else:
         display_login_possibility()
 

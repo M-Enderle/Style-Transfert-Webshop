@@ -225,7 +225,6 @@ def check_if_order(username):
         session.close()
         return False
     except Exception as e:
-        print("debug Exception", e)
         session.close()
         return False
 
@@ -253,7 +252,6 @@ def add_users(credentails: dict):
             session.rollback()
             return False
         except Exception as e:
-            print(e)
             session.rollback()
             return False
 

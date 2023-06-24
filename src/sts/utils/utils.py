@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+from PIL import ImageChops
+from PIL import Image
 
 import toml
 
@@ -21,35 +23,18 @@ def load_user_toml() -> dict:
     return toml.load(get_project_root() / "default.toml")
 
 
-class Cart:
-    def __init__(self):
-        self.items = []
+class Product:
+    def __init__(self, pimage: Image.Image, ai_size: float, psize: str, ptype: str, pcolor: str, pcount: int) -> None:
+        self.image = pimage
+        self.ai_size = ai_size
+        self.size = psize
+        self.type = ptype
+        self.color = pcolor
+        self.count = pcount
 
-    def add_item(self, item):
-        """Adds an item to the cart."""
-        self.items.append(item)
-
-    def remove_item(self, item):
-        """Removes an item from the cart."""
-        if item in self.items:
-            self.items.remove(item)
-
-    def clear_cart(self):
-        """Clears all items from the cart."""
-        self.items = []
-
-    def get_items(self):
-        """Returns a list of items in the cart."""
-        return self.items
-
-    def get_total_items(self):
-        """Returns the total number of items in the cart."""
-        return len(self.items)
-
-    def calculate_total_price(self):
-        """Calculates the total price of items in the cart."""
-        total_price = 0
-        # Assuming each item has a 'price' attribute
-        for item in self.items:
-            total_price += item.price
-        return total_price
+    def __eq__(self, __value) -> bool:
+        return not ImageChops.difference(self.image, __value.image).getbbox() and \
+            self.ai_size == __value.ai_size and \
+            self.size == __value.size and \
+            self.type == __value.type and \
+            self.color == __value.color
