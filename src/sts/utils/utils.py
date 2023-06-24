@@ -8,6 +8,11 @@ def get_project_root() -> Path:
     return Path(__file__).parent.parent.parent.parent
 
 
+def get_module_root() -> Path:
+    """Returns module root folder."""
+    return Path(__file__).parent.parent
+
+
 def load_user_toml() -> dict:
     """Loads user.toml file."""
     if os.path.exists(get_project_root() / "user.toml"):
