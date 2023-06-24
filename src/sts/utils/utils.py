@@ -24,7 +24,15 @@ def load_user_toml() -> dict:
 
 
 class Product:
-    def __init__(self, pimage: Image.Image, ai_size: float, psize: str, ptype: str, pcolor: str, pcount: int) -> None:
+    def __init__(
+        self,
+        pimage: Image.Image,
+        ai_size: float,
+        psize: str,
+        ptype: str,
+        pcolor: str,
+        pcount: int,
+    ) -> None:
         self.image = pimage
         self.ai_size = ai_size
         self.size = psize
@@ -33,8 +41,10 @@ class Product:
         self.count = pcount
 
     def __eq__(self, __value) -> bool:
-        return not ImageChops.difference(self.image, __value.image).getbbox() and \
-            self.ai_size == __value.ai_size and \
-            self.size == __value.size and \
-            self.type == __value.type and \
-            self.color == __value.color
+        return (
+            not ImageChops.difference(self.image, __value.image).getbbox()
+            and self.ai_size == __value.ai_size
+            and self.size == __value.size
+            and self.type == __value.type
+            and self.color == __value.color
+        )
