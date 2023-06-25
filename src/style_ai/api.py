@@ -1,3 +1,6 @@
+"""
+API Endpoint for the style transfer AI.
+"""
 import base64
 import io
 

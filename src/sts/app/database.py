@@ -50,22 +50,22 @@ class User(MyBase):
     orders = relationship("Order")
 
     def __repr__(self):
+        """
+        This function returns the representation of the user.
+        """
         return f"User {self.username} with email {self.email}."
 
     def __str__(self):
+        """
+        This function returns the string representation of the user.
+        """
         return self.__repr__()
 
     def __eq__(self, other):
+        """
+        This function checks if two users are equal.
+        """
         return self.email == other.email
-
-    def get_plain_password(self):
-        """
-        This function returns the password of the user.
-        """
-        return self.password_hash
-
-    def set_plain_password(self, password):
-        self.password_hash = password
 
 
 class Address(MyBase):
@@ -89,9 +89,15 @@ class Address(MyBase):
     zip = Column(VARCHAR(45), nullable=False)
 
     def __repr__(self):
+        """
+        This function returns the representation of the address.
+        """
         return f"Address {self.street} in {self.city}, {self.zip}."
 
     def __str__(self):
+        """
+        This function returns the string representation of the address.
+        """
         return self.__repr__()
 
 
@@ -119,13 +125,22 @@ class Order(MyBase):
     address = relationship("Address")
 
     def __repr__(self):
+        """
+        This function returns the representation of the order.
+        """
         return f"Order {self.id} for user {self.user.username} \
             at address {self.address_id}."
 
     def __str__(self):
+        """
+        This function returns the string representation of the order.
+        """
         return self.__repr__()
 
     def __eq__(self, other):
+        """
+        This function checks if two orders are equal.
+        """
         return self.user == other.user and self.address == other.address
 
 
@@ -264,7 +279,6 @@ def save_order(username: str, address: dict, price: float):
     try:
         user = session.query(User).filter_by(username=username).one()
     except Exception as e:
-        print(session.query(User).all())
         session.rollback()
         session.close()
         raise e
@@ -279,7 +293,6 @@ def save_order(username: str, address: dict, price: float):
         session.add(address)
         session.commit()
         session.flush()
-        print(session.query(Address).all())
     except Exception as e:
         session.rollback()
         session.close()
@@ -296,7 +309,6 @@ def save_order(username: str, address: dict, price: float):
         session.add(order)
         session.commit()
         session.flush()
-        print(session.query(Order).all())
         session.close()
         return True
     except Exception as e:

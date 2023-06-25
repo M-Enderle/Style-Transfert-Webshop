@@ -1,3 +1,7 @@
+"""
+This module contains utility functions for the Streamlit app.
+"""
+
 import base64
 import io
 from functools import lru_cache

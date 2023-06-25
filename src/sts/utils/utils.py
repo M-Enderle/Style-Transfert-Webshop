@@ -1,3 +1,7 @@
+"""
+Utility functions and classes.
+"""
+
 import os
 from pathlib import Path
 
@@ -23,6 +27,17 @@ def load_user_toml() -> dict:
 
 
 class Product:
+    """
+    Product class.
+    
+    Parameters:
+        pimage (Image.Image): The product image as a PIL Image object.
+        ai_size (float): The size of the product image as a float.
+        psize (str): The size of the product as a string.
+        ptype (str): The type of the product as a string.
+        pcolor (str): The color of the product as a string.
+        pcount (int): The number of products as an integer.
+    """
     def __init__(
         self,
         pimage: Image.Image,
@@ -32,6 +47,9 @@ class Product:
         pcolor: str,
         pcount: int,
     ) -> None:
+        """
+        Initializes the Product class.
+        """
         self.image = pimage
         self.ai_size = ai_size
         self.size = psize
@@ -40,6 +58,9 @@ class Product:
         self.count = pcount
 
     def __eq__(self, __value) -> bool:
+        """
+        Compares two Product objects.
+        """
         return (
             not ImageChops.difference(self.image, __value.image).getbbox()
             and self.ai_size == __value.ai_size

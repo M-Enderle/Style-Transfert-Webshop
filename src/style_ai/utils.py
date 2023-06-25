@@ -110,7 +110,7 @@ def np_to_tensor(npy, space):
     )
 
 
-def tensor_resample(tensor, dst_size, mode="bilinear"):
+def tensor_resample(tensor, dst_size, mode="bilinear") -> torch.Tensor:
     """
     Resample torch.Tensor object
     :params:

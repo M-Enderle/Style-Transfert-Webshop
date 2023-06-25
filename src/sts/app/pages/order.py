@@ -1,3 +1,6 @@
+"""
+This module contains the functions for the order page.
+"""
 import numpy as np
 import streamlit as st
 import stripe
@@ -98,7 +101,6 @@ def cart():
         None
     """
     placeholder = st.empty()
-    checkout_button = None
     with placeholder.container():
         st.title("🛒 Cart")
         st.divider()
@@ -213,11 +215,11 @@ def checkout():
     full_name = shipping_address_from.text_input("Full Name")
     street_and_number = shipping_address_from.text_input("Street and Number")
     city = shipping_address_from.text_input("City")
-    zip = shipping_address_from.text_input("zip")
+    zipcode = shipping_address_from.text_input("zip")
     shipping_address_from.divider()
     if shipping_address_from.form_submit_button("Continue to payment", use_container_width=True):
 
-        if street_and_number == "" or city == "" or zip == "" or full_name == "":
+        if street_and_number == "" or city == "" or zipcode == "" or full_name == "":
             st.error("Please fill out all fields!")
             return
 
@@ -225,7 +227,7 @@ def checkout():
             "full_name": full_name,
             "street_and_number": street_and_number,
             "city": city,
-            "zip": zip
+            "zip": zipcode
         }
         st.session_state["current_page"] = payment
 
@@ -277,6 +279,10 @@ def payment():
             st.warning("Payment not successful yet. Please pay and recheck afterwards.")
 
 def success():
+    """
+    Creates the success page.
+    The user gets a thank you message and can go back to the home page.
+    """
     st.markdown("# Thank you")
     st.success("Your order has been placed successfully!")
 
@@ -284,9 +290,6 @@ def success():
     if back_home:
         st.session_state["current_page"] = create_image
         st.experimental_rerun()
-
-def index():
-    st.warning("Please continue to either your cart or create another AI Picture")
 
 def main() -> None:
     """
@@ -296,7 +299,6 @@ def main() -> None:
         None
     """
 
-    # add sidebar with create_image, place product, cart, checkout
     st.sidebar.title("Order Process")
     if is_logged_in():
 
@@ -359,7 +361,7 @@ def main() -> None:
             "If you do not have an account yet, feel free to register in home."
         )
         auth = get_authenticator()
-        res = auth.login("Login to access the app", location="sidebar")
+        auth.login("Login to access the app", location="sidebar")
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,6 @@
+"""
+Runpod entry point for the Style AI example.
+"""
 import base64
 import io
 
@@ -7,10 +10,12 @@ from PIL import Image
 from style_ai.style_transfer import Vgg16Extractor, style_transfer
 
 extractor = Vgg16Extractor(space="uniform")
-print("VGG16 extractor loaded!")
 
 
 def process_image(job):
+    """
+    Processes the image and returns the result.
+    """
     content_img_raw = job["input"]["content_img"]
     style_img_raw = job["input"]["style_img"]
     resize_to = job["input"]["resize_to"]

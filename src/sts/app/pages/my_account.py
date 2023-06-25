@@ -1,3 +1,6 @@
+"""
+This file contains the page, that should be shown, when the user is logged in.
+"""
 import pandas as pd
 import streamlit as st
 from streamlit_extras.app_logo import add_logo

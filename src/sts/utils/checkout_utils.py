@@ -1,3 +1,8 @@
+"""
+This module contains all the functions needed to generate a payment link via
+the stripe API.
+"""
+
 import pandas as pd
 import stripe
 
@@ -24,7 +29,6 @@ def generate_payment_link(checkout_items):
     }
 
     order = []
-    print(items)
 
     for item in checkout_items:
         copy_item = {"Product": item["product_type"], "Amount": item["Amount"]}
@@ -41,15 +45,15 @@ def generate_payment_link(checkout_items):
         ],
         mode="payment",
         success_url="https://www.metritests.com/metrica/MobileRedirectPage.aspx",
-        # We have to find some way to close the tab
         cancel_url="https://www.metritests.com/metrica/MobileRedirectPage.aspx",
-        # We have to find some way to close the tab
     )
     return session.url, session
 
 
 def generate_cart(cart_items):
-    # Adding information about shipping cost.
+    """
+    Adding information about shipping cost
+    """
     shipping_cost = {
         "Productname": "Shipping",
         "Amount": "1",
@@ -58,7 +62,6 @@ def generate_cart(cart_items):
         "product_type": "shipping",
     }
 
-    # Clustering and storing items the customer added to his cart.
     checkout_items = []
     for item in cart_items:
         item: Product

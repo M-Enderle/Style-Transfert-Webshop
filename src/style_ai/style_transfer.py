@@ -1,9 +1,6 @@
 """
 Style transfer implementation using strotss
 """
-
-# TODO Flo: Typing!
-
 from argparse import ArgumentParser
 from time import time
 
@@ -35,7 +32,7 @@ class Vgg16Extractor(nn.Module):
     VGG16 feature extractor for style transfer
     """
 
-    def __init__(self, space):
+    def __init__(self, space) -> None:
         super().__init__()
         self.vgg_layers = models.vgg16(weights=models.VGG16_Weights.DEFAULT).features
 
@@ -44,7 +41,7 @@ class Vgg16Extractor(nn.Module):
         self.capture_layers = [1, 3, 6, 8, 11, 13, 15, 22, 29]
         self.space = space
 
-    def forward_base(self, tensor):
+    def forward_base(self, tensor: torch.Tensor) -> list:
         """
         Forward pass for feature extraction
         :params:
@@ -59,7 +56,7 @@ class Vgg16Extractor(nn.Module):
                 feat.append(tensor)
         return feat
 
-    def forward(self, tensor):
+    def forward(self, tensor: torch.Tensor) -> list:
         """
         Forward pass for feature extraction
         :params:
@@ -78,7 +75,7 @@ class Vgg16Extractor(nn.Module):
         feat = self.forward_base(tensor)
         return feat
 
-    def forward_samples_hypercolumn(self, input_tensor, samps=100):
+    def forward_samples_hypercolumn(self, input_tensor: torch.Tensor, samps:int=100) -> torch.Tensor:
         """
         Forward pass for sampling hypercolumn features
         :params:
@@ -123,7 +120,7 @@ class Vgg16Extractor(nn.Module):
         return feat
 
 
-def optimize(res, content, style, w_content, learning_rate, extractor):
+def optimize(res, content:Image.Image, style, w_content, learning_rate, extractor):
     """
     Optimizes the result image
     :params:
