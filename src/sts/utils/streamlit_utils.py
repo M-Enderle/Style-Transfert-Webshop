@@ -267,5 +267,5 @@ def is_logged_in():
     """
     auth_status = st.session_state.get("authentication_status", False)
     user_name = st.session_state.get("username", None)
-    
+
     return auth_status and user_name
