@@ -1,4 +1,7 @@
-""" This file is used to run the fastAPI using uvicorn when the package is run as a module. """
+""" 
+This file is used to run the fastAPI using 
+uvicorn when the package is run as a module. 
+"""
 
 import sys
 from pathlib import Path

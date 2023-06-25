@@ -1,4 +1,6 @@
-# https://github.com/mkhorasani/Streamlit-Authenticator
+"""
+This module contains utility functions for the Streamlit app.
+"""
 
 import base64
 import io
@@ -267,10 +269,7 @@ def is_logged_in():
     This function checks if the user is logged in.
     If the user is not logged in, the login page is displayed.
     """
-    if "authentication_status" not in st.session_state:
-        st.session_state["authentication_status"] = False
+    auth_status = st.session_state.get("authentication_status", False)
+    user_name = st.session_state.get("username", None)
 
-    if not st.session_state["authentication_status"]:
-        return False
-
-    return True
+    return auth_status and user_name

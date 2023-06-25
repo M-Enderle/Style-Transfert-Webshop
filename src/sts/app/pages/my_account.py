@@ -1,9 +1,12 @@
+"""
+This file contains the page, that should be shown, when the user is logged in.
+"""
+import pandas as pd
 import streamlit as st
 from streamlit_extras.app_logo import add_logo
-import pandas as pd
-from streamlit_extras.app_logo import add_logo
+
+from sts.app.database import check_if_order, get_order_information, get_user_information
 from sts.utils.streamlit_utils import get_authenticator, is_logged_in
-from sts.app.database import get_user_information, get_order_information, check_if_order
 
 add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
 
@@ -14,7 +17,7 @@ def display_user_information():
     are registered with
     """
     user_data = get_user_information(st.session_state["username"])
-    if len(user_data) > 0:
+    if user_data is not None:
         st.write("This is the information about your account")
         st.write("User information:")
         st.text_input("Username", disabled=True, value=user_data["Username"])
@@ -29,11 +32,15 @@ def display_order_information():
     """
     The user can have a look at the information of their places orders.
     """
-    order_data = get_order_information(st.session_state["username"])
-    if len(order_data) > 0:
-        st.write("These are the orders you have placed:")
+    st.markdown("## My Orders")
+    order_data = get_order_information(st.session_state.get("username", None))
+    if order_data is not None:
         order_information_table = pd.DataFrame(order_data)
         st.table(order_information_table)
+    elif len(order_data) == 0:
+        st.warning("You have not placed any orders yet.")
+    else:
+        st.error("There was an error loading your orders. Please try again later.")
 
 
 def display_login_possibility():

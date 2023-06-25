@@ -12,5 +12,8 @@ src/sts/app/pages/order.py
 output.png
 src/style_ai/.images/
 pylint-log.txt
+src/sts/utils/api_key.conf
+user.toml
+.idea
 src/sts/img/debug.png
 user.toml

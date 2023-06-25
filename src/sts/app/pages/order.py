@@ -1,11 +1,18 @@
+"""
+This module contains the functions for the order page.
+"""
 import numpy as np
 import streamlit as st
-from streamlit_extras.app_logo import add_logo
+import stripe
 from PIL import Image
+from streamlit_extras import add_vertical_space
+from streamlit_extras.app_logo import add_logo
 
-from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer,get_authenticator, transfer, is_logged_in
+from sts.app.database import save_order
+from sts.utils.checkout_utils import generate_cart, generate_payment_link
+from sts.utils.streamlit_utils import (get_authenticator, is_logged_in,
+                                       overlay_image, transfer)
 from sts.utils.utils import Product
-
 
 add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
 
@@ -37,7 +44,6 @@ def upload_image(column_num):
             caption=f"Uploaded Image {column_num}",
             use_column_width=True,
         )
-
 
 def create_image():
     """
@@ -87,7 +93,6 @@ def create_image():
                 st.session_state["current_page"] = place_product
                 st.experimental_rerun()
 
-
 def cart():
     """
     Displays the cart with the added products and allows interaction with the cart items.
@@ -134,8 +139,6 @@ def cart():
 
     else:
         st.info("Your cart is empty")
-
-
 
 def place_product():
     """
@@ -193,9 +196,6 @@ def place_product():
             else:
                 cart_items.append(product)
             st.session_state["cart_items"] = cart_items
-            st.success("Product placed in cart!")
-        cart_button = st.button("Go to Cart", use_container_width=True)
-        if cart_button:
             st.session_state["current_page"] = cart
             st.experimental_rerun()
     else:
@@ -203,15 +203,93 @@ def place_product():
 
 def checkout():
     """
-    Displays the checkout page and completes the checkout process.
-
-    Returns:
-        None
+    Creates the checkout page.
+    All of the items, added to the cart and stored in the session are shown.
+    The user should just get an overview of his order means the amount and
+    the items that he is about to order. On this page the user can direct to payment
+    to end his shopping experience.
     """
 
-    st.title("Checkout")
-    st.success("Checkout completed successfully!")
+    shipping_address_from = st.form("Shipping address", )
+    shipping_address_from.subheader("Shipping Address")
+    full_name = shipping_address_from.text_input("Full Name")
+    street_and_number = shipping_address_from.text_input("Street and Number")
+    city = shipping_address_from.text_input("City")
+    zipcode = shipping_address_from.text_input("zip")
+    shipping_address_from.divider()
+    if shipping_address_from.form_submit_button("Continue to payment", use_container_width=True):
 
+        if street_and_number == "" or city == "" or zipcode == "" or full_name == "":
+            st.error("Please fill out all fields!")
+            return
+
+        st.session_state["address"] = {
+            "full_name": full_name,
+            "street_and_number": street_and_number,
+            "city": city,
+            "zip": zipcode
+        }
+        st.session_state["current_page"] = payment
+
+        _, checkout_items, _ = generate_cart(st.session_state.get("cart_items", []))
+        st.session_state["stripe_url"], st.session_state["payment_session"] = generate_payment_link(checkout_items)
+
+        st.experimental_rerun()
+
+def payment():
+    """
+    Creates the payment page.
+    The user can pay via stripe.
+    """
+
+    total_sum, _, table = generate_cart(st.session_state["cart_items"])
+
+    st.title("Payment")
+
+    add_vertical_space.add_vertical_space(3)
+    st.table(table)
+    st.markdown(
+            f"<div style='display: flex; justify-content: flex-end;'><p>"\
+                f"Total sum of your order: <strong> {total_sum:.2f}€</strong></p></div>",
+            unsafe_allow_html=True
+        )
+
+    st.divider()
+
+    st.markdown(f'''
+        <a href={st.session_state["stripe_url"]} style="color: inherit;">
+            <button class="css-1a359ur e1ewe7hr10">
+                <div data-testid="stMarkdownContainer" class="css-x78sv8 eqr7zpz4"><p>Pay Now</p></div>
+            </button>
+        </a>''', unsafe_allow_html=True)
+    add_vertical_space.add_vertical_space(1)
+    check_button = st.button("Check payment status", use_container_width=True)
+
+    if check_button:
+        st.session_state["payment_session"] = stripe.checkout.Session.retrieve(st.session_state["payment_session"].id)
+        status = st.session_state["payment_session"].payment_status
+        if status == "paid":
+            st.session_state["current_page"] = success
+            st.session_state["cart_items"] = []
+            st.session_state["ai_image"] = None
+            st.session_state["images"] = [None, None]
+            save_order(st.session_state["username"], st.session_state["address"], total_sum)
+            st.experimental_rerun()
+        else:
+            st.warning("Payment not successful yet. Please pay and recheck afterwards.")
+
+def success():
+    """
+    Creates the success page.
+    The user gets a thank you message and can go back to the home page.
+    """
+    st.markdown("# Thank you")
+    st.success("Your order has been placed successfully!")
+
+    back_home = st.button("Back to home")
+    if back_home:
+        st.session_state["current_page"] = create_image
+        st.experimental_rerun()
 
 def main() -> None:
     """
@@ -221,9 +299,9 @@ def main() -> None:
         None
     """
 
-    # add sidebar with create_image, place product, cart, checkout
     st.sidebar.title("Order Process")
     if is_logged_in():
+
         if "images" not in st.session_state:
             st.session_state["images"] = [None, None]
 
@@ -283,7 +361,7 @@ def main() -> None:
             "If you do not have an account yet, feel free to register in home."
         )
         auth = get_authenticator()
-        res = auth.login("Login to access the app", location="sidebar")
+        auth.login("Login to access the app", location="sidebar")
 
 if __name__ == "__main__":
     main()

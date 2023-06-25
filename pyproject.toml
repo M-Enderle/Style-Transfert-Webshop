@@ -28,6 +28,8 @@ streamlit-extras = "^0.2.7"
 streamlit-authenticator = "^0.2.2"
 types-requests = "^2.31.0.1"
 runpod = "^0.9.10"
+stripe = "^5.4.0"
+ruff = "^0.0.275"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.0"

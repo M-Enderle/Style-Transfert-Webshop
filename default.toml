@@ -13,3 +13,6 @@ cookie_expiry_days=30  # days
 use="false"
 api_key=""
 endpoint=""
+
+[stripe]
+api_key = ""
