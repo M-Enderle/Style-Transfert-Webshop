@@ -31,7 +31,7 @@ def display_order_information():
     """
     st.markdown("## My Orders")
     order_data = get_order_information(st.session_state.get("username", None))
-    if order_data is None:
+    if order_data is not None:
         order_information_table = pd.DataFrame(order_data)
         st.table(order_information_table)
     elif len(order_data) == 0:
