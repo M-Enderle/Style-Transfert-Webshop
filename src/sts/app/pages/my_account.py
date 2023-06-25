@@ -40,7 +40,11 @@ def display_login_possibility():
     """
     Creates the page, that should be shown, when not logged in yet.
     """
-    st.warning("Stop! Please login to use this feature")
+    st.title("MyAccount")
+    st.warning(
+            "You have to log in to use the features of the Webshop. Please log in."
+            "If you do not have an account yet, feel free to register in home."
+        )
     auth = get_authenticator()
     auth.login("Login to access the app", location="sidebar")
 

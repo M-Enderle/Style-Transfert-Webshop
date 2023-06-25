@@ -279,7 +279,7 @@ def main() -> None:
     else:
         st.warning(
             "You have to log in to use the features of the Webshop. Please log in."
-            "\nIf you do not have an account yet, feel free to register in home."
+            "If you do not have an account yet, feel free to register in home."
         )
         auth = get_authenticator()
         res = auth.login("Login to access the app", location="sidebar")
