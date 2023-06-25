@@ -204,10 +204,6 @@ def place_product():
                 cart_items.append(product)
             st.session_state["cart_items"] = cart_items
             st.success("Product placed in cart!")
-        cart_button = st.button("Go to Cart", use_container_width=True)
-        if cart_button:
-            st.session_state["current_page"] = cart
-            st.experimental_rerun()
     else:
         st.warning("Please generate the AI image first!")
 

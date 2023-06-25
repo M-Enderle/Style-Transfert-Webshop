@@ -1,5 +1,3 @@
-# https://github.com/mkhorasani/Streamlit-Authenticator
-
 import base64
 import io
 from functools import lru_cache
