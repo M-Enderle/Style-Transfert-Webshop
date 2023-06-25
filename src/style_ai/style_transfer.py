@@ -280,7 +280,7 @@ def style_transfer(
     content: Image,
     style: Image,
     extractor: Vgg16Extractor = None,
-    weight: float = 1.5,
+    weight: float = 1.5 * 16,
     device: str = "cuda:0",
     resize_to: int = 512,
 ) -> Image:
