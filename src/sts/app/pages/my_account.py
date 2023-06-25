@@ -16,22 +16,26 @@ def display_user_information():
     are registered with
     """
     user_data = get_user_information(st.session_state["username"])
-
-    st.write("This is the information about your account")
-    st.write("User information:")
-    st.text_input("Username", disabled=True, value=user_data["Username"])
-    st.text_input("Name", disabled=True, value=user_data["Name"])
-    st.text_input("E-Mail", disabled=True, value=user_data["E-mail"])
+    if len(user_data) >0:
+        st.write("This is the information about your account")
+        st.write("User information:")
+        st.text_input("Username", disabled=True, value=user_data["Username"])
+        st.text_input("Name", disabled=True, value=user_data["Name"])
+        st.text_input("E-Mail", disabled=True, value=user_data["E-mail"])
+    else:
+        st.session_state["username"] = None
+        st.experimental_rerun()
 
 
 def display_order_information():
     """
     The user can have a look at the information of their places orders.
     """
-    st.write("These are the orders you have placed:")
-    oder_data = get_order_information(st.session_state["username"])
-    oder_information_table = pd.DataFrame(oder_data)
-    st.table(oder_information_table)
+    order_data = get_order_information(st.session_state["username"])
+    if len(order_data) > 0:
+        st.write("These are the orders you have placed:")
+        order_information_table = pd.DataFrame(order_data)
+        st.table(order_information_table)
 
 
 def display_login_possibility():

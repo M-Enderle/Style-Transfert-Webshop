@@ -168,7 +168,7 @@ def get_user_information(username):
     except Exception as e:
         # If the user is not found
         session.close()
-        return [e]
+        return []
 
 
 def get_order_information(username):
@@ -203,7 +203,7 @@ def get_order_information(username):
         return orders_info
     except Exception as e:
         session.close()
-        return [e]
+        return []
 
 
 def check_if_order(username):
