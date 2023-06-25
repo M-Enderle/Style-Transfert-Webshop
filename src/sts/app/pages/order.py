@@ -9,7 +9,7 @@ from PIL import ImageChops
 
 from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer
 
-from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image
+from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image, black_tshirt
 from sts.utils.checkout_utils import generate_payment_link, generate_cart
 
 add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
@@ -86,7 +86,7 @@ def create_image():
     )
 
     if st.button("Debug", use_container_width=True):
-        st.session_state["ai_image"] = Image.open("src/sts/utils/images/black_tshirt.png")
+        st.session_state["ai_image"] = Image.open(black_tshirt)
 
     if generate and all([image is not None for image in st.session_state["images"]]):
         ai_image = transfer(
