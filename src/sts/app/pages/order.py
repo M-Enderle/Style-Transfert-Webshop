@@ -277,6 +277,7 @@ def main() -> None:
             else:
                 st.session_state["current_page"]()
     else:
+        st.title("Order")
         st.warning(
             "You have to log in to use the features of the Webshop. Please log in."
             "If you do not have an account yet, feel free to register in home."
@@ -285,5 +286,4 @@ def main() -> None:
         res = auth.login("Login to access the app", location="sidebar")
 
 if __name__ == "__main__":
-    st.title("Order")
     main()
