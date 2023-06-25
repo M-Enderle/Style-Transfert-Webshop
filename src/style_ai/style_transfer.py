@@ -75,7 +75,9 @@ class Vgg16Extractor(nn.Module):
         feat = self.forward_base(tensor)
         return feat
 
-    def forward_samples_hypercolumn(self, input_tensor: torch.Tensor, samps:int=100) -> torch.Tensor:
+    def forward_samples_hypercolumn(
+        self, input_tensor: torch.Tensor, samps: int = 100
+    ) -> torch.Tensor:
         """
         Forward pass for sampling hypercolumn features
         :params:
@@ -120,7 +122,7 @@ class Vgg16Extractor(nn.Module):
         return feat
 
 
-def optimize(res, content:Image.Image, style, w_content, learning_rate, extractor):
+def optimize(res, content: Image.Image, style, w_content, learning_rate, extractor):
     """
     Optimizes the result image
     :params:

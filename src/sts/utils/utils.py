@@ -29,7 +29,7 @@ def load_user_toml() -> dict:
 class Product:
     """
     Product class.
-    
+
     Parameters:
         pimage (Image.Image): The product image as a PIL Image object.
         ai_size (float): The size of the product image as a float.
@@ -38,6 +38,7 @@ class Product:
         pcolor (str): The color of the product as a string.
         pcount (int): The number of products as an integer.
     """
+
     def __init__(
         self,
         pimage: Image.Image,
