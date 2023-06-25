@@ -7,6 +7,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.exc import IntegrityError
 
 from sts.utils.utils import load_user_toml
 
@@ -49,6 +50,9 @@ class User(MyBase):
         return self.email == other.email
 
     def get_plain_password(self):
+        """
+        This function returns the password of the user.
+        """
         return self.password_hash
 
     def set_plain_password(self, password):
@@ -134,12 +138,94 @@ def create_session() -> Session:
     return _session()
 
 
+def get_user_information(username):
+    """
+    Retrieve user information for a given username.
+    Args:
+        username (str): The username of the user.
+    Returns:
+        list: A list containing a dictionary with user information. The dictionary includes the following keys:
+              - "Username": The username of the user.
+              - "Name": The name of the user.
+              - "E-mail": The email address of the user.
+    Raises:
+        None.
+    """
+    session = create_session()
+    try:
+        user = session.query(User).filter_by(username=username).one()
+        session.close()
+        return {"Username": user.username, "Name": user.name, "E-mail": user.email}
+    except Exception as e:
+        # If the user is not found
+        session.close()
+        return []
+
+
+def get_order_information(username):
+    """
+    Retrieve order information for a given user.
+    Args:
+        username (str): The username of the user.
+    Returns:
+    list: A list of dictionaries containing order information.
+        Each dictionary represents an order and includes the following keys:
+              - "Order time": Timestamp indicating when the order was made.
+              - "Status": Current status of the order.
+              - "Address": String representation of the order's address
+                in the format "country, state, zip, city, street".
+    """
+    session = create_session()
+    try:
+        user = session.query(User).filter_by(username=username).one()
+        session.close()
+        orders_info = []
+        for order in user.orders:
+            address = order.address
+            address_str = f"{address.country}, {address.state}, \
+                {address.zip}, {address.city}, {address.street}"
+            orders_info.append(
+                {
+                    "Order time": order.timestamp,
+                    "Status": order.status,
+                    "Address": address_str,
+                }
+            )
+        return orders_info
+    except Exception as e:
+        session.close()
+        return []
+
+
+def check_if_order(username):
+    """
+    Check if a user has any orders.
+    Args: username(str): The username of the user to check.
+    Returns: bool: Treu if the user has at least one orther, False otherwise.
+    Raises: None
+    """
+    session = create_session()
+
+    try:
+        user = session.query(User).filter_by(username=username).one()
+        orders = user.orders
+        session.close()
+        return len(orders) > 0
+    except IntegrityError:
+        # no order found
+        session.close()
+        return False
+    except Exception as e:
+        session.close()
+        return False
+
+
 def add_users(credentails: dict):
     """
     This function adds all users from the credentials to the database.
     """
-
     session = create_session()
+
     for user in credentails["usernames"].keys():
         try:
             if not session.query(User).filter(User.username == user).first():
@@ -153,11 +239,15 @@ def add_users(credentails: dict):
                 )
                 session.commit()
                 session.flush()
-        except Exception as e:
-            print(e)
+        except IntegrityError:
             session.rollback()
+            return False
+        except Exception as e:
+            session.rollback()
+            return False
 
     session.close()
+    return True
 
 
 engine = create_database()
