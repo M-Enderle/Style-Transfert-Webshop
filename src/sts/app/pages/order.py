@@ -285,4 +285,5 @@ def main() -> None:
         res = auth.login("Login to access the app", location="sidebar")
 
 if __name__ == "__main__":
+    st.title("Order")
     main()
