@@ -1,7 +1,7 @@
 import pandas as pd
-
 import stripe
-from sts.utils.utils import load_user_toml, Product
+
+from sts.utils.utils import Product, load_user_toml
 
 user = load_user_toml()
 
@@ -18,13 +18,13 @@ def generate_payment_link(checkout_items):
     stripe.api_key = user["stripe"]["api_key"]
 
     items = {
-        "shirt": "price_1NIwaDESoYzI2jIeLtaeYFB1",
-        "hoodie": "price_1NIwbjESoYzI2jIerbxUMCYb",
-        "black": "price_1NIwYnESoYzI2jIeRGmnZbVs",
+        "Shirt": "price_1NIwaDESoYzI2jIeLtaeYFB1",
+        "Hoodie": "price_1NIwbjESoYzI2jIerbxUMCYb",
         "shipping": "price_1NJL88ESoYzI2jIeOdv5xcY6",
     }
 
     order = []
+    print(items)
 
     for item in checkout_items:
         copy_item = {"Product": item["product_type"], "Amount": item["Amount"]}
@@ -61,48 +61,17 @@ def generate_cart(cart_items):
     # Clustering and storing items the customer added to his cart.
     checkout_items = []
     for item in cart_items:
-        already_added = False
-        size = item.size
-        product = item.product
-
-        for checkout_item in checkout_items:
-            if checkout_items:
-                if (
-                    checkout_item["Size"] == size
-                    and checkout_item["product_type"] == product
-                ):
-                    checkout_item["Amount"] += 1
-                    sum = int(checkout_item["Price Item"].replace(" €", "")) * int(
-                        checkout_item["Amount"]
-                    )
-                    checkout_item["Price Total"] = str(sum) + " €"
-                    already_added = True
-
-        if not already_added:
-            product_name = (
-                "T-Shirt - white"
-                if product == "shirt"
-                else "Hoodie - white"
-                if product == "hoodie"
-                else "T-Shirt - black"
-            )
-            amount = 1
-            image_paths = {
-                "hoodie": "src/sts/utils/images/white_hoodie.png",
-                "shirt": "src/sts/utils/images/white_tshirt.png",
-                "black": "src/sts/utils/images/black_tshirt.png",
-            }
-
-            single_price = item["price"]
-            new_item = {
-                "Productname": product_name,
-                "product_type": product,
-                "Amount": amount,
-                "Size": size,
-                "Price Item": str(single_price) + " €",
-                "Price Total": str(single_price) + " €",
-            }
-            checkout_items.append(new_item)
+        item: Product
+        price = 25.0 if item.type == "Hoodie" else 15.0
+        new_item = {
+            "Productname": f"{item.type} - {item.color}",
+            "product_type": item.type,
+            "Amount": item.count,
+            "Size": item.size,
+            "Price Item": str(price) + " €",
+            "Price Total": str(price) + " €",
+        }
+        checkout_items.append(new_item)
 
     checkout_items.append(shipping_cost)
     checkout_table = pd.DataFrame(checkout_items)

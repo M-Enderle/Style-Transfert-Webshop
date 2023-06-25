@@ -1,18 +1,15 @@
 import numpy as np
 import streamlit as st
-from streamlit_extras.app_logo import add_logo
+import stripe
 from PIL import Image
 from streamlit_extras import add_vertical_space
-import numpy as np
-import stripe
-from PIL import ImageChops
+from streamlit_extras.app_logo import add_logo
 
-from sts.utils.streamlit_utils import get_module_root, overlay_image, transfer,get_authenticator, transfer, is_logged_in
+from sts.app.database import save_order
+from sts.utils.checkout_utils import generate_cart, generate_payment_link
+from sts.utils.streamlit_utils import (get_authenticator, is_logged_in,
+                                       overlay_image, transfer)
 from sts.utils.utils import Product
-
-
-from sts.utils.streamlit_utils import get_authenticator, transfer, overlay_image, black_tshirt
-from sts.utils.checkout_utils import generate_payment_link, generate_cart
 
 add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
 
@@ -45,7 +42,6 @@ def upload_image(column_num):
             use_column_width=True,
         )
 
-
 def create_image():
     """
     Creates the AI image by uploading two images and generating the AI image.
@@ -71,9 +67,6 @@ def create_image():
         disabled=not all([image is not None for image in st.session_state["images"]]),
     )
 
-    if st.button("Debug", use_container_width=True):
-        st.session_state["ai_image"] = Image.open(black_tshirt)
-
     if generate and all([image is not None for image in st.session_state["images"]]):
         ai_image = transfer(
             st.session_state["images"][0], st.session_state["images"][1]
@@ -96,7 +89,6 @@ def create_image():
             if place_prod_btn:
                 st.session_state["current_page"] = place_product
                 st.experimental_rerun()
-
 
 def cart():
     """
@@ -145,7 +137,6 @@ def cart():
 
     else:
         st.info("Your cart is empty")
-
 
 def place_product():
     """
@@ -203,10 +194,10 @@ def place_product():
             else:
                 cart_items.append(product)
             st.session_state["cart_items"] = cart_items
-            st.success("Product placed in cart!")
+            st.session_state["current_page"] = cart
+            st.experimental_rerun()
     else:
         st.warning("Please generate the AI image first!")
-
 
 def checkout():
     """
@@ -220,20 +211,18 @@ def checkout():
     shipping_address_from = st.form("Shipping address", )
     shipping_address_from.subheader("Shipping Address")
     full_name = shipping_address_from.text_input("Full Name")
-    country = shipping_address_from.text_input("Country")
     street_and_number = shipping_address_from.text_input("Street and Number")
     city = shipping_address_from.text_input("City")
     zip = shipping_address_from.text_input("zip")
     shipping_address_from.divider()
     if shipping_address_from.form_submit_button("Continue to payment", use_container_width=True):
 
-        if country == "" or street_and_number == "" or city == "" or zip == "" or full_name == "":
+        if street_and_number == "" or city == "" or zip == "" or full_name == "":
             st.error("Please fill out all fields!")
             return
 
         st.session_state["address"] = {
             "full_name": full_name,
-            "country": country,
             "street_and_number": street_and_number,
             "city": city,
             "zip": zip
@@ -278,11 +267,11 @@ def payment():
         st.session_state["payment_session"] = stripe.checkout.Session.retrieve(st.session_state["payment_session"].id)
         status = st.session_state["payment_session"].payment_status
         if status == "paid":
-            st.success("Payment successful!")
             st.session_state["current_page"] = success
             st.session_state["cart_items"] = []
             st.session_state["ai_image"] = None
             st.session_state["images"] = [None, None]
+            save_order(st.session_state["username"], st.session_state["address"], total_sum)
             st.experimental_rerun()
         else:
             st.warning("Payment not successful yet. Please pay and recheck afterwards.")
@@ -299,7 +288,6 @@ def success():
 def index():
     st.warning("Please continue to either your cart or create another AI Picture")
 
-
 def main() -> None:
     """
     The main function that serves as the entry point of the Streamlit application.
@@ -311,6 +299,7 @@ def main() -> None:
     # add sidebar with create_image, place product, cart, checkout
     st.sidebar.title("Order Process")
     if is_logged_in():
+
         if "images" not in st.session_state:
             st.session_state["images"] = [None, None]
 

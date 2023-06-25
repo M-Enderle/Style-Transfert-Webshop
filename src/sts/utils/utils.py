@@ -1,9 +1,8 @@
 import os
 from pathlib import Path
-from PIL import ImageChops
-from PIL import Image
 
 import toml
+from PIL import Image, ImageChops
 
 
 def get_project_root() -> Path:

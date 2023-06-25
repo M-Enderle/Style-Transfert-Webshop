@@ -34,15 +34,16 @@ CREATE TABLE IF NOT EXISTS `Address` (
 
 CREATE TABLE IF NOT EXISTS `Order` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `customer_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `timestamp` datetime(6) NOT NULL,
   `address_id` int(11) NOT NULL,
   `status` varchar(45) DEFAULT NULL,
+  `total_price` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `customer_id_idx` (`customer_id`),
+  KEY `user_id_idx` (`user_id`),
   KEY `address_id_idx` (`address_id`),
   CONSTRAINT `address_id` FOREIGN KEY (`address_id`) REFERENCES `Address` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `customer_id` FOREIGN KEY (`customer_id`) REFERENCES `User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `User` (

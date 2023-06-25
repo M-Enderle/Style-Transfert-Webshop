@@ -1,10 +1,8 @@
 import streamlit as st
-import streamlit_authenticator as stauth
-from sts.app.database import User, add_users, create_session
-from sqlalchemy.exc import IntegrityError
-
-from sts.utils.streamlit_utils import get_authenticator, is_logged_in, display_register
 from streamlit_extras.app_logo import add_logo
+
+from sts.app.database import add_users
+from sts.utils.streamlit_utils import display_register, get_authenticator, is_logged_in
 
 
 def logged_in_home():
