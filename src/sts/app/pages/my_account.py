@@ -6,8 +6,6 @@ from sts.utils.streamlit_utils import get_authenticator, is_logged_in
 from sts.app.database import get_user_information, get_order_information, check_if_order
 
 add_logo(logo_url="src/sts/img/Style-Transfer_Webshop_Logo.png", height=80)
-auth = get_authenticator()
-res = auth.login("Login to access the app", location="sidebar")
 
 
 def display_user_information():
@@ -44,7 +42,7 @@ def display_login_possibility():
     """
     st.warning("Stop! Please login to use this feature")
     auth = get_authenticator()
-    res = auth.login("Login to access the app", location="sidebar")
+    auth.login("Login to access the app", location="sidebar")
 
 
 def main() -> None:
