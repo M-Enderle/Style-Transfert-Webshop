@@ -1,7 +1,7 @@
 import pandas as pd
 
 import stripe
-from sts.utils.utils import load_user_toml
+from sts.utils.utils import load_user_toml, Product
 
 user = load_user_toml()
 
@@ -62,8 +62,8 @@ def generate_cart(cart_items):
     checkout_items = []
     for item in cart_items:
         already_added = False
-        size = item["size"]
-        product = item["product"]
+        size = item.size
+        product = item.product
 
         for checkout_item in checkout_items:
             if checkout_items:
