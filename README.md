@@ -1,71 +1,91 @@
-# Style Transfer Webshop
+# Style Transfer Webshop 🎨
 
-## Introduction
+## Introduction 📝
 
-This is a webshop for style transfer merch. It is a project for the course "AI Project" at the Deggendorf Institute of Technology.
+Welcome to the Style Transfer Webshop—a unique online store for style transfer merchandise! This project was developed as part of the "AI Project" course at the Deggendorf Institute of Technology. 🏫
 
-## Development
+---
 
-To keep the requirements for this project consistent, we use [poetry](https://python-poetry.org/) to manage the dependencies. You can install it with `pip install poetry`.
+## Development 🛠️
 
-### Requirements
+To ensure consistent dependency management, we use [Poetry](https://python-poetry.org/). Install it with `pip install poetry` if you don’t already have it.
 
-- [Python 3.10.*](https://www.python.org/) 
-- [Poetry](https://python-poetry.org/)
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
+### Requirements ✅
 
-### Setup Local
+- [Python 3.10.*](https://www.python.org/)  
+- [Poetry](https://python-poetry.org/)  
+- [Docker](https://www.docker.com/)  
+- [Docker Compose](https://docs.docker.com/compose/)  
 
-1. Clone the repository with `git clone https://mygit.th-deg.de/me04536/style-transfer-webshop.git`
-2. Open a terminal in the root directory of the repository
-3. Run `poetry install` to install the dependencies
-    - If the python version is not matching, but the correct version is installed, use `poetry env use /path/to/preferred/python/version` to manually set the correct python version as default
-4. Run `poetry shell` to activate the virtual environment
+### Setup Local ⚙️
 
-### Setup with Compose
+1. Clone the repository:  
+   `git clone https://mygit.th-deg.de/me04536/style-transfer-webshop.git`  
+2. Open a terminal in the root directory of the repository.  
+3. Install dependencies:  
+   `poetry install`  
+   - If the Python version doesn’t match but the correct version is installed, set it manually with:  
+     `poetry env use /path/to/preferred/python/version`  
+4. Activate the virtual environment:  
+   `poetry shell`  
 
-1. Clone the repository with `git clone https://mygit.th-deg.de/me04536/style-transfer-webshop.git`
-2. Open a terminal in the root directory of the repository
-3. Run `docker-compose up --build` to build and run the services
+### Setup with Compose 🐳
 
-### Compose for local development
+1. Clone the repository:  
+   `git clone https://mygit.th-deg.de/me04536/style-transfer-webshop.git`  
+2. Open a terminal in the root directory of the repository.  
+3. Build and run the services:  
+   `docker-compose up --build`  
 
-For development, you can also run the services individually. To do so, run `docker-compose up --build <service>` in the root directory of the repository.
-It is recommended to run the database and the ai service using the docker containers. The web service can be run locally using `python -m sts`.
+### Compose for Local Development 💻
 
-### Adding dependencies
+For development, you can run services individually:  
+- Start a specific service with:  
+  `docker-compose up --build <service>`  
+- Recommended: Run the database and AI service in Docker containers, then run the web service locally with:  
+  `python -m sts`  
 
-To add a dependency, run `poetry add <dependency>`. If you want to add a development dependency, run `poetry add --dev <dependency>`. 
-Do not install any dependencies via pip as this will not update the `pyproject.toml` file.
+### Adding Dependencies 📦
 
-### Linting
+- Add a runtime dependency:  
+  `poetry add <dependency>`  
+- Add a development dependency:  
+  `poetry add --dev <dependency>`  
+- **Note**: Avoid using `pip` to install dependencies, as it won’t update the `pyproject.toml` file.
 
-Before committing, please check your code with the following commands:
+### Linting 🧹
 
-- `black src` to format the code (will fix errors automatically)
-- `mypy src` to check for type errors
+Before committing, ensure code quality with:  
+- Format code (auto-fixes errors):  
+  `black src`  
+- Check for type errors:  
+  `mypy src`  
+- **Warning**: Unresolved errors will block your commit! 🚫
 
-If you do not fix all errors, the commit will be rejected!
+---
 
-## Authors
+## Authors 👥
 
-- [Moritz Enderle](https://mygit.th-deg.de/me04536)
-    - Project Owner
-    - Lead Developer
-    - Backend Development
-    - Project Maintenance
-    - Deployment
-    - UI Design
-- [Florian Eder](https://mygit.th-deg.de/fe02174)
-    - AI Development
-    - Backend Development
-    - Streamlit Development
-- [Amelie Kammerer](https://mygit.th-deg.de/ak23131)
-    - Streamlit Development
-    - User Area
-    - Checkout Process
-- [Quirin Joshua Groszeibl](https://mygit.th-deg.de/qg23320)
-    - Streamlit Development
-    - Lead Design
-    - Product Design Process
+- **[Moritz Enderle](https://mygit.th-deg.de/me04536)**  
+  - Project Owner  
+  - Lead Developer  
+  - Backend Development  
+  - Project Maintenance  
+  - Deployment  
+  - UI Design  
+- **[Florian Eder](https://mygit.th-deg.de/fe02174)**  
+  - AI Development  
+  - Backend Development  
+  - Streamlit Development  
+- **[Amelie Kammerer](https://mygit.th-deg.de/ak23131)**  
+  - Streamlit Development  
+  - User Area  
+  - Checkout Process  
+- **[Quirin Joshua Groszeibl](https://mygit.th-deg.de/qg23320)**  
+  - Streamlit Development  
+  - Lead Design  
+  - Product Design Process  
+
+---
+
+Happy coding and shopping! 🎉
